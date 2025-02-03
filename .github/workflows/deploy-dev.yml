@@ -1,0 +1,17 @@
+name: deploy-dev
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Repo frissites
+        uses: actions/checkout@v3
