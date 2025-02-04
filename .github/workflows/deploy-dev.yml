@@ -1,0 +1,42 @@
+name: deploy-dev
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: .env copy
+        run: mv .env /tmp/.env || true
+
+      - name: Frissítés
+        uses: actions/checkout@v3
+
+      - name: .env visszaállítás
+        run: mv /tmp/.env .env || true
+
+      - name: Jogosultságok beállítása
+        run: chmod -R 775 storage bootstrap/cache
+
+      - name: Composer install
+        run: |
+          composer install
+
+      - name: Clear és cache konfiguráció
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan migrate --force
+          php artisan optimize
+
+      - name: npm install & Vue build
+        run: |
+          npm install
+          npm run build
