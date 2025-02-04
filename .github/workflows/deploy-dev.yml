@@ -13,5 +13,26 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
+      - name: Move existing .env to a safe location
+        run: mv .env /tmp/.env || true
+
       - name: Repo frissites
         uses: actions/checkout@v3
+
+      - name: Restore .env file
+        run: mv /tmp/.env .env || true
+
+      - name: Set permissions
+        run: chmod -R 775 storage bootstrap/cache
+
+      - name: Clear and cache configuration
+        run: |
+          php artisan config:clear
+          php artisan cache:clear
+          php artisan migrate --force
+          php artisan optimize
+
+      - name: Build Vue
+        run: |
+          npm install
+          npm run build
