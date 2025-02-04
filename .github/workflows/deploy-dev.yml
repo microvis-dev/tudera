@@ -13,26 +13,30 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Move existing .env to a safe location
+      - name: .env copy
         run: mv .env /tmp/.env || true
 
-      - name: Repo frissites
+      - name: Frissítés
         uses: actions/checkout@v3
 
-      - name: Restore .env file
+      - name: .env visszaállítás
         run: mv /tmp/.env .env || true
 
-      - name: Set permissions
+      - name: Jogosultságok beállítása
         run: chmod -R 775 storage bootstrap/cache
 
-      - name: Clear and cache configuration
+      - name: Composer install
+        run: |
+          composer install
+
+      - name: Clear és cache konfiguráció
         run: |
           php artisan config:clear
           php artisan cache:clear
           php artisan migrate --force
           php artisan optimize
 
-      - name: Build Vue
+      - name: npm install & Vue build
         run: |
           npm install
           npm run build
