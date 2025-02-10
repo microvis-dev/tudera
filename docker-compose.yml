@@ -3,7 +3,7 @@ services:
         command:
             - /bin/sh
             - '-c'
-            - 'php artisan serve --host=192.168.101.10 --port=8080 & npm run dev'
+            - 'composer install & npm i && php artisan serve --host=192.168.101.10 --port=${LARAVEL_PORT} & npm run dev'
         build:
             context: ./vendor/laravel/sail/runtimes/8.4
             dockerfile: Dockerfile
@@ -13,7 +13,7 @@ services:
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
-            - '8080:8080'
+            - '${LARAVEL_PORT}:${LARAVEL_PORT}'
             - '${VITE_PORT}:${VITE_PORT}'
         environment:
             WWWUSER: '${WWWUSER}'
@@ -53,6 +53,14 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - '${ADMINER_PORT}:${ADMINER_PORT}'
+        networks:
+            sail:
+                ipv4_address: 192.168.101.12
 networks:
     sail:
         driver: bridge
