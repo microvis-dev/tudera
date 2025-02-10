@@ -8,10 +8,10 @@ const add = (() => counter.value++)
 <template>
   <main>
     <h1>Hello World!</h1>
-    <Button @click="add">Click me {{ counter }}</Button>
+    <button @click="add">Click me {{ counter }}</button>
   </main>
 </template>
 
 <style scoped>
-  
+
 </style>
