@@ -9,6 +9,7 @@ const add = (() => counter.value++)
   <main>
     <h1>Hello World!</h1>
     <button @click="add">Click me {{ counter }}</button>
+    <p class="italic">Hello Tailwind CSS!</p>
   </main>
 </template>
 
