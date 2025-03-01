@@ -2407,7 +2407,8 @@ namespace PHPSTORM_META {
 'signed','throttle','verified',);
         registerArgumentsSet('routes', 
 'debugbar.openhandler','debugbar.clockwork','debugbar.assets.css','debugbar.assets.js','debugbar.cache.delete',
-'debugbar.queries.explain','generated::FdODX75A3kojFdv1','generated::WlyH7A1pfGefOOey','storage.local',);
+'debugbar.queries.explain','login','login.store',
+'logout','storage.local',);
         registerArgumentsSet('views', 
 'app','laravel-exceptions::401','laravel-exceptions::402','laravel-exceptions::403','laravel-exceptions::404',
 'laravel-exceptions::419','laravel-exceptions::429','laravel-exceptions::500','laravel-exceptions::503','laravel-exceptions::layout',
