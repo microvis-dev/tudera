@@ -13,7 +13,8 @@ const add = (() => counter.value++)
     <button @click="add">Click me {{ counter }}</button>
     <p class="italic">Hello Tailwind CSS!</p>
     <Link :href="route('login')">Login</Link><br> <!--MainLayout-->
-    <Link :href="route('logout')" method="delete" as="button">Logout</Link>
+    <Link :href="route('logout')" method="delete" as="button">Logout</Link><br>
+    <Link :href="route('user-account.create')">Sign up</Link>
   </main>
 </template>
 

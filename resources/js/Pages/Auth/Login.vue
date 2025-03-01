@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 
 const loginForm = useForm({
@@ -8,7 +8,7 @@ const loginForm = useForm({
 })
 
 const login = (() => {
-    loginForm.post(route('login.store')); 
+    loginForm.post(route('login.store'));
     //loginForm.post('login.store')
 })
 //remember me
@@ -33,6 +33,11 @@ const login = (() => {
                 </div>
                 <div class="mt-4">
                     <button class="btn-primary w-full" type="submit">Login</button>
+                </div>
+                <div class="mt-2 text-center">
+                    <Link :href="route('user-account.create')" class="text-sm text-gray-500">
+                    Need an account? Click here
+                    </Link>
                 </div>
             </div>
         </form>
