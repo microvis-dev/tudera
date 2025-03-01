@@ -84,6 +84,5 @@ watchEffect(() => {
         </div>
     </AuthLayout>
 </template>
-
 <style scoped>
 </style>
