@@ -1,16 +1,14 @@
 <script setup>
 import {ref} from 'vue'
+import AuthLayout from "../../Layout/AuthLayout.vue";
 
 const counter = ref(0)
 const add = (() => counter.value++)
 </script>
 
 <template>
-  <main>
-    <h1>Hello World!</h1>
-    <button @click="add">Click me {{ counter }}</button>
-    <p class="italic">Hello Tailwind CSS!</p>
-  </main>
+    <AuthLayout>
+    </AuthLayout>
 </template>
 
 <style scoped>
