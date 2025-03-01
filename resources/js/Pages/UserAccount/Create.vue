@@ -5,7 +5,7 @@ import { route } from 'ziggy-js';
 const registerForm = useForm({
     email: null,
     name: null,
-    phone: null,
+    phone_number: null,
     password: null,
     password_confirmation: null
 })
@@ -21,28 +21,28 @@ const register = (() => {
             <div>
                 <label for="email" class="label">E-mail</label>
                 <input id="email" v-model="registerForm.email" type="text" class="input" />
-                <div v-if="registerForm.errors.email" class="input-error">Potential errors</div>
+                <div v-if="registerForm.errors.email" class="input-error">{{ registerForm.errors.email }}</div>
             </div>
             <div>
                 <label for="name" class="label">Name</label>
                 <input id="name" v-model="registerForm.name" type="text" class="input" />
-                <div v-if="registerForm.errors.name" class="input-error">Potential errors</div>
+                <div v-if="registerForm.errors.name" class="input-error">{{ registerForm.errors.name }}</div>
             </div>
             <div class="mt-4">
                 <label for="phone" class="label">Phone number</label>
-                <input id="phone" v-model="registerForm.phone" type="tel" class="input" />
-                <div v-if="registerForm.errors.phone" class="input-error">Potential errors</div>
+                <input id="phone" v-model="registerForm.phone_number" type="tel" class="input" />
+                <div v-if="registerForm.errors.phone_number" class="input-error">{{ registerForm.errors.phone_number }}</div>
             </div>
             <div class="mt-4">
                 <label for="password" class="label">Password</label>
                 <input id="password" v-model="registerForm.password" type="password" class="input" />
-                <div v-if="registerForm.errors.password" class="input-error">Potential errors</div>
+                <div v-if="registerForm.errors.password" class="input-error">{{ registerForm.errors.password }}</div>
             </div>
             <div class="mt-4">
                 <label for="password_confirmation" class="label">Password confirmation</label>
                 <input id="password_confirmation" v-model="registerForm.password_confirmation" type="password"
                     class="input" />
-                <div v-if="registerForm.errors.password_confirmation" class="input-error">Potential errors</div>
+                <div v-if="registerForm.errors.password_confirmation" class="input-error">{{ password_confirmation }}</div>
             </div>
             <div class="mt-4">
                 <button class="btn-primary w-full" type="submit">Create account</button>

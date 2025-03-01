@@ -24,12 +24,12 @@ const login = (() => {
                 <div>
                     <label for="email" class="label">E-mail (username)</label>
                     <input id="email" v-model="loginForm.email" type="text" class="input" />
-                    <div v-if="loginForm.errors.email" class="input-error">Potential errors</div>
+                    <div v-if="loginForm.errors.email" class="input-error">{{ loginForm.errors.email }}</div>
                 </div>
                 <div class="mt-4">
                     <label for="password" class="label">Password</label>
                     <input id="password" v-model="loginForm.password" type="password" class="input" />
-                    <div v-if="loginForm.errors.password" class="input-error">Potential errors</div>
+                    <div v-if="loginForm.errors.password" class="input-error">{{ loginForm.errors.password }}</div>
                 </div>
                 <div class="mt-4">
                     <button class="btn-primary w-full" type="submit">Login</button>

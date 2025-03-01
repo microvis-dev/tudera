@@ -15,7 +15,8 @@ class UserAccountController extends Controller
     public function store(Request $request) {
         $user = User::make($request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'unique:users,phone_number',
             'password' => 'required|min:8|confirmed'
         ]));
         $user->save();
