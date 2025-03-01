@@ -1,5 +1,24 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
+import { ref, watchEffect } from "vue";
+const message = ref("Welcome Back");
+const signIn = ref('signin');
+
+const handleClick = () => {
+    if (signIn.value === 'signin') {
+        console.log('Sign In');// This will be replaced with a redirect to the login page
+    } else {
+        console.log('Sign Up'); // This will be replaced with a redirect to the register page
+    }
+};
+
+watchEffect(() => {
+    if (signIn.value === 'signin') {
+        message.value = 'Welcome Back';
+    } else {
+        message.value = 'Welcome';
+    }
+});
 </script>
 
 <template>
@@ -9,12 +28,12 @@ import AuthLayout from "../../Layout/AuthLayout.vue";
                 <img src="../../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
             </header>
             <main class="flex flex-col items-center">
-                <h1 class="roboto-font-bold text-3xl capitalize p-1">Welcome Back</h1>
-                <p class="text-[#B3B3B3] roboto-font-light text-sm mb-5 ">Welcome back, Please enter your details</p>
+                <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
+                <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter your details</p>
                 <form class="flex flex-col w-full">
                     <div class="relative flex bg-[#5D5E5B] rounded-lg p-1 w-75 h-11 text-center mb-5">
-                        <input type="radio" id="sign-in" value="signin" name="toggle" class="hidden peer/signin" checked>
-                        <input type="radio" id="sign-up" value="signup" name="toggle" class="hidden peer/signup">
+                        <input type="radio" id="sign-in" value="signin" name="toggle" class="hidden peer/signin" checked v-model="signIn">
+                        <input type="radio" id="sign-up" value="signup" name="toggle" class="hidden peer/signup" v-model="signIn">
                         <div
                             class="absolute left-0 top-0 w-1/2 h-full bg-gray-300 rounded-lg transition-all duration-300 peer-checked/signup:left-1/2"></div>
                         <label for="sign-in"
@@ -31,10 +50,11 @@ import AuthLayout from "../../Layout/AuthLayout.vue";
                                class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                                placeholder=" "/>
                         <label for="name"
-                               class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light">Email
-                            address</label>
+                               class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light">Email address</label>
                     </div>
-                    <button class="bg-blue-600 rounded-md h-10 roboto-font-light">Continue</button>
+                    <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light" @click="handleClick()">
+                        Continue
+                    </button>
                 </form>
             </main>
             <footer class="flex justify-center">
