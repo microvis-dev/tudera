@@ -6,9 +6,11 @@ const loginForm = useForm({
     password: null,
 })
 const login = (() => {
-    //loginForm.post(route('login.store'))
-    loginForm.post('/login')
+    loginForm.post(route('/login'))
+    //loginForm.post('login.store')
+
 })
+//remember me
 </script>
 
 <template>
