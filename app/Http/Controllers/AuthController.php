@@ -14,7 +14,7 @@ class AuthController extends Controller
 
     public function store(Request $request) {
         if (!Auth::attempt($request->validate([
-            'email' => 'required|strint|email',
+            'email' => 'required|string|email',
             'password' => 'required|string'
         ]), true)) { // true = remember me
             throw ValidationException::withMessages([

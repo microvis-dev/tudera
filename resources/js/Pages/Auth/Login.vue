@@ -1,14 +1,15 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 
 const loginForm = useForm({
     email: null,
     password: null,
 })
-const login = (() => {
-    loginForm.post(route('/login'))
-    //loginForm.post('login.store')
 
+const login = (() => {
+    loginForm.post(route('login.store')); 
+    //loginForm.post('login.store')
 })
 //remember me
 </script>
