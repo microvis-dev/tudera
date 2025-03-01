@@ -1,6 +1,10 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import {ref, watchEffect} from "vue";
+import {ref, watchEffect, defineOptions } from "vue";
+
+defineOptions({
+    layout: AuthLayout
+})
 
 const message = ref("Welcome Back");
 const signIn = ref('signin');
@@ -23,7 +27,6 @@ watchEffect(() => {
 </script>
 
 <template>
-    <AuthLayout>
         <div class="flex flex-col h-full justify-between items-center">
             <header class="p-8 flex justify-center mt-5 w-80">
                 <img src="../../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
@@ -82,7 +85,6 @@ watchEffect(() => {
                     business decisions.</p>
             </footer>
         </div>
-    </AuthLayout>
 </template>
 <style scoped>
 </style>
