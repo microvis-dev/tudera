@@ -1,16 +1,23 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { ref, watchEffect, computed, defineOptions } from "vue";
+import { ref, watchEffect, computed, defineOptions, reactive } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
+import axios from "axios";
 
 defineOptions({
     layout: AuthLayout
 })
 
-const isSignIn = ref(true)
+const viewState = reactive({
+    isSignIn: true,
+    authMethodDisabled: false,
+    passwordField: false,
+    errorField: ""
+})
+
 const message = computed(() => {
-    if (isSignIn.value == true) {
+    if (viewState.isSignIn) {
         return "Welcome Back"
     }
     return "Welcome"
@@ -25,14 +32,42 @@ const authForm = useForm({
     is_remember: false,
 })
 
-const continueAuth = () => {
-    if (isSignIn.value) {
-        console.log('Sign In');// This will be replaced with a redirect to the login page
-        authForm.get(route('auth.check_email'))
-    } else {
-        console.log('Sign Up'); // This will be replaced with a redirect to the register page
+const isEmailExists = async (email) => {
+    try {
+        const response = await axios.get(route('auth.check_email', { email: email }));
+        if (response.data.status = 'error') {
+            viewState.errorField = response.data.message
+            return false
+        }
+        return response.data.exists;
+    } catch (error) {
+        console.error("Error checking email:", error);
+        return false;
     }
 };
+
+
+const continueAuth = async () => {
+    const isExists = await isEmailExists(authForm.email);
+
+    if (viewState.isSignIn) {
+        if (isExists) {
+            viewState.authMethodDisabled = true
+            viewState.passwordField = true
+        } else {
+            alert("nem letezo email")
+        }
+    } else {
+        console.log('Sign Up');
+
+        if (!isExists) {
+            alert("continue user create")
+        } else {
+            alert("letezo email")
+        }
+
+    }
+}
 
 </script>
 
@@ -47,10 +82,10 @@ const continueAuth = () => {
                 your details</p>
             <form class="flex flex-col w-full">
                 <div class="relative flex bg-[#5D5E5B] rounded-lg p-1 w-75 h-11 text-center mb-5">
-                    <input type="radio" id="sign-in" :value="true" name="toggle" class="hidden peer/signin" checked
-                        v-model="isSignIn">
-                    <input type="radio" id="sign-up" :value="false" name="toggle" class="hidden peer/signup"
-                        v-model="isSignIn">
+                    <input :disabled="viewState.authMethodDisabled" type="radio" id="sign-in" :value="true"
+                        name="toggle" class="hidden peer/signin" checked v-model="viewState.isSignIn">
+                    <input :disabled="viewState.authMethodDisabled" type="radio" id="sign-up" :value="false"
+                        name="toggle" class="hidden peer/signup" v-model="viewState.isSignIn">
                     <div
                         class="absolute left-0 top-0 w-1/2 h-full bg-gray-300 rounded-lg transition-all duration-300 peer-checked/signup:left-1/2">
                     </div>
@@ -70,8 +105,9 @@ const continueAuth = () => {
                     <label for="name"
                         class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light">Email
                         address</label>
+                    <p v-if="authForm.errors.email">{{ authForm.errors.email }}</p>
                 </div>
-                <div class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
+                <div v-if="viewState.passwordField" class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
                     <input type="password" id="password"
                         class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                         placeholder=" " />
@@ -97,6 +133,7 @@ const continueAuth = () => {
                         Remember me
                     </label>
                 </div>
+                <p v-if="viewState.errorField">Errors: {{ viewState.errorField }}</p>
                 <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light" @click="continueAuth()">
                     Continue
                 </button>
