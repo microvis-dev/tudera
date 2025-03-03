@@ -1,6 +1,6 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { ref, watchEffect, computed, defineOptions, reactive } from "vue";
+import { computed, defineOptions, reactive } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
@@ -35,10 +35,12 @@ const authForm = useForm({
 const isEmailExists = async (email) => {
     try {
         const response = await axios.get(route('auth.check_email', { email: email }));
-        if (response.data.status = 'error') {
+
+        if (response.data.status == 'error') {
             viewState.errorField = response.data.message
             return false
         }
+
         return response.data.exists;
     } catch (error) {
         console.error("Error checking email:", error);
@@ -58,8 +60,6 @@ const continueAuth = async () => {
             alert("nem letezo email")
         }
     } else {
-        console.log('Sign Up');
-
         if (!isExists) {
             alert("continue user create")
         } else {
@@ -68,6 +68,10 @@ const continueAuth = async () => {
 
     }
 }
+
+const login = (() => {
+    authForm.post(route('auth.store'))
+})
 
 </script>
 
@@ -108,7 +112,7 @@ const continueAuth = async () => {
                     <p v-if="authForm.errors.email">{{ authForm.errors.email }}</p>
                 </div>
                 <div v-if="viewState.passwordField" class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
-                    <input type="password" id="password"
+                    <input v-model="authForm.password" type="password" id="password"
                         class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
                         placeholder=" " />
                     <label for="password"
@@ -134,7 +138,8 @@ const continueAuth = async () => {
                     </label>
                 </div>
                 <p v-if="viewState.errorField">Errors: {{ viewState.errorField }}</p>
-                <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light" @click="continueAuth()">
+                <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light"
+                    @click.prevent="viewState.passwordField ? login() : continueAuth()">
                     Continue
                 </button>
             </form>
