@@ -20,11 +20,6 @@ Route::post('auth', [AuthController::class, 'store'])
 Route::delete('logout', [AuthController::class, 'destroy'])
     ->name('logout');
 
-/*
-Route::get('/fontos_oldal', [FontosController::class], 'fontos')
-    ->name('fontos')
-    ->middleware('auth');  (78)
-*/
 // login/create
 // login
 // login {login}
