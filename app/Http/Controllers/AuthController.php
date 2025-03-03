@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -9,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     public function create() {
-        return inertia('Auth/Login');
+        return inertia('Auth/Auth');
     }
 
     public function store(Request $request) {
@@ -26,6 +27,18 @@ class AuthController extends Controller
 
         
         return redirect()->intended('/'); // !
+    }
+
+    public function check_email(Request $request) {
+        $request->validate([
+            'email' => 'required|string|email'
+        ]);
+
+        $emailExists = User::where('email', $request->email)->exists();
+
+        //dd(response()->json(['exists' => $emailExists]));
+
+        return response()->json(['exists' => $emailExists]);
     }
 
     public function destroy(Request $request) {
