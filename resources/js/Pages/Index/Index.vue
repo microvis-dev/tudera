@@ -1,15 +1,15 @@
 <script setup>
-import {ref} from 'vue'
 import AuthLayout from "../../Layout/AuthLayout.vue";
-const counter = ref(0)
-const add = (() => counter.value++)
+import {ref, watchEffect, defineOptions } from "vue";
+import UserCreationForm from "../Auth/UserCreationForm.vue";
+
+defineOptions({
+    layout: AuthLayout
+})
 </script>
 
 <template>
-    <AuthLayout>
-    </AuthLayout>
+    <UserCreationForm/>
 </template>
-
 <style scoped>
-
 </style>
