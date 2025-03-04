@@ -46,6 +46,10 @@ const user_workspaces = computed(() => {
       <Link :href="route('setup.workspace.create')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
       Create new workspace
       </Link>
+      <br><br>
+      <Link :href="route('workspaces')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+        Workspaces
+      </Link>
     </div>
   </div>
   <div v-if="user_workspaces">
@@ -55,6 +59,4 @@ const user_workspaces = computed(() => {
   <slot></slot>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

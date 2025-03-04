@@ -6,25 +6,22 @@ use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use Exception;
 use Illuminate\Http\Request;
+use Log;
 
 class WorkspaceController extends Controller
 {
-    public function index(Request $request) {
-        $user_workspaces = [];
-        
+    function index(Request $request) {
         try {
-            //throw new Exception("error");
-            $user_id = $request->user()->id;
-            $workspace_ids = UsersToWorkspace::where('user_id', $user_id)->pluck('workspace_id');
-            
-            $user_workspaces = Workspace::whereIn('id', $workspace_ids)->get(['name']);
+            $user = $request->user();
+            $user_workspaces = $user->workspaces()->pluck('name')->toArray();
+
+            return inertia('Workspaces/Index', [
+                'user_workspaces' => $user_workspaces
+            ]);
         } catch (Exception $e) {
-            return redirect('/')->with('error', 'Failed to retrieve workspaces.');
+            Log::error('Hiba WorkspaceController: ' . $e->getMessage());
+            return redirect()->intended('/')->with('error', 'An error occurred while retrieving your workspaces. Please try again later.');
         }
         
-
-        return inertia('Workspaces/Index', [
-            'user_workspaces' => $user_workspaces
-        ]);
     }
 }
