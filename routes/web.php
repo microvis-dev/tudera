@@ -29,5 +29,9 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 Route::get('setup/create-user', [SetupController::class, 'createUser'])
     ->name('setup.user.create');
 
+
 Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
     ->name('setup.workspace.create');
+
+Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'])
+    ->name('setup.workspace.store');

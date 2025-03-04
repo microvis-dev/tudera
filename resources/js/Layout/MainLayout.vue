@@ -5,14 +5,24 @@ import { route } from 'ziggy-js';
 
 const page = usePage()
 
+const flashSucess = computed(() => {
+  return page.props.flash.success
+})
+
 const user = computed(() => {
   return page.props.user
 })
-console.log(user)
+
+const user_workspaces = computed(() => {
+  return null
+})
 
 </script>
 
 <template>
+  <div v-if="flashSucess" class="flash-success p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+    {{ flashSucess }}
+  </div>
   <div v-if="user" class="p-4 bg-white rounded shadow-md">
     <div class="mb-4">
       <p class="text-lg font-semibold">{{ user.name }}</p>
@@ -22,10 +32,21 @@ console.log(user)
     </div>
     <div>
       <Link :href="route('logout')" method="delete" as="button"
-        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Logout</Link>
+        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+      Logout
+      </Link>
+      <br><br>
+      <Link :href="route('setup.workspace.create')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+      Create new workspace
+      </Link>
     </div>
+  </div>
+  <div v-if="user_workspaces">
+    <span>Workspaces</span>
   </div>
   <slot></slot>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
