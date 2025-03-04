@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,3 +37,9 @@ Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace']
 
 Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'])
     ->name('setup.workspace.store');
+
+
+Route::get('workspaces', [WorkspaceController::class, 'index'])
+    ->name('workspaces');
+
+

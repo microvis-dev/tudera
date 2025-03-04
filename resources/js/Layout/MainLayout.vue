@@ -9,6 +9,10 @@ const flashSucess = computed(() => {
   return page.props.flash.success
 })
 
+const flashErrors = computed(() => {
+  return page.props.flash.error
+})
+
 const user = computed(() => {
   return page.props.user
 })
@@ -22,6 +26,9 @@ const user_workspaces = computed(() => {
 <template>
   <div v-if="flashSucess" class="flash-success p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
     {{ flashSucess }}
+  </div>
+  <div v-if="flashErrors" class="flash-error p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+    {{ flashErrors }}
   </div>
   <div v-if="user" class="p-4 bg-white rounded shadow-md">
     <div class="mb-4">
@@ -43,6 +50,7 @@ const user_workspaces = computed(() => {
   </div>
   <div v-if="user_workspaces">
     <span>Workspaces</span>
+
   </div>
   <slot></slot>
 </template>
