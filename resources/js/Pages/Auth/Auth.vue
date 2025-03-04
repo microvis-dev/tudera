@@ -1,7 +1,7 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
 import { computed, defineOptions, reactive } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 
@@ -61,7 +61,7 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
-            alert("continue user create")
+            router.visit(route('setup.user.create'))
         } else {
             alert("letezo email")
         }
