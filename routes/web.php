@@ -8,20 +8,18 @@ Route::get('/', function () {
     return inertia('Index/Index');
 });
 
-Route::get('login', [AuthController::class, 'create'])
-    ->name('login');
+Route::get('auth', [AuthController::class, 'create'])
+    ->name('auth');
 
-Route::post('login', [AuthController::class, 'store'])
-    ->name('login.store');
+Route::get('auth.check_email', [AuthController::class, 'check_email'])
+    ->name('auth.check_email');
+
+Route::post('auth', [AuthController::class, 'store'])
+    ->name('auth.store');
 
 Route::delete('logout', [AuthController::class, 'destroy'])
     ->name('logout');
 
-/*
-Route::get('/fontos_oldal', [FontosController::class], 'fontos')
-    ->name('fontos')
-    ->middleware('auth');  (78)
-*/
 // login/create
 // login
 // login {login}
