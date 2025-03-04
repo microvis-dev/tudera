@@ -3,7 +3,7 @@
 
 <template>
     <div class="flex items-center justify-center min-h-screen bg-[#1C1D21] text-[#F5F7F9]">
-        <div class="container flex flex-col w-full h-screen xl:h-full sm:px-4 sm:py-8 xl:flex-row xl:px-20">
+        <div class="container flex flex-col w-full h-screen xl:h-full lg:h-full sm:px-4 sm:py-8 xl:flex-row xl:px-20">
             <section class="login w-full h-full flex items-center justify-center sm:rounded-l-lg xl:rounded-l-lg border border-[#2B2C30] xl:w-[678px] xl:h-[866px] overflow-auto">
                 <slot></slot>
             </section>
