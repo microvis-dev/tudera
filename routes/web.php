@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserAccountController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Index/Index');
-});
+})->middleware('auth');
 
 Route::get('auth', [AuthController::class, 'create'])
     ->name('auth');
@@ -24,6 +25,9 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 // login
 // login {login}
 
-// create user
-Route::resource('user-account', UserAccountController::class)
-    ->only(['create', 'store']);
+// setup
+Route::get('setup/create-user', [SetupController::class, 'createUser'])
+    ->name('setup.user.create');
+
+Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
+    ->name('setup.workspace.create');

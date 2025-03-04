@@ -6,10 +6,10 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
-class UserAccountController extends Controller
+class UserController extends Controller
 {
     public function create() {
-        return inertia('UserAccount/Create');
+        return inertia('User/Create');
     }
 
     public function store(Request $request) {
@@ -21,7 +21,7 @@ class UserAccountController extends Controller
         ]));
         $user->save();
         Auth::login($user);
-            
+
         return redirect()->route('login')->with('success', 'Account created!');
     }
 }
