@@ -5,6 +5,7 @@ use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
+use App\Models\Workspace;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,4 +43,8 @@ Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'
 Route::get('workspaces', [WorkspaceController::class, 'index'])
     ->name('workspaces');
 
+Route::delete('workspaces/delete/{id}', [WorkspaceController::class, 'delete_workspace'])
+    ->name('workspace.delete');
 
+Route::put('workspaces/update/{id}', [WorkspaceController::class, 'update_workspace'])
+    ->name('workspace.update');
