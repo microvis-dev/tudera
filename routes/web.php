@@ -43,8 +43,14 @@ Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'
 Route::get('workspaces', [WorkspaceController::class, 'index'])
     ->name('workspaces');
 
-Route::delete('workspaces/delete/{id}', [WorkspaceController::class, 'delete_workspace'])
+Route::delete('workspaces/{id}', [WorkspaceController::class, 'delete_workspace'])
     ->name('workspace.delete');
 
-Route::put('workspaces/update/{id}', [WorkspaceController::class, 'update_workspace'])
+Route::put('workspaces/{id}', [WorkspaceController::class, 'update_workspace'])
     ->name('workspace.update');
+
+Route::get('workspaces/create-workspace', [WorkspaceController::class, 'create_workspace'])
+    ->name('workspace.create');
+
+Route::post('workspaces/create-workspace', [WorkspaceController::class, 'store_workspace'])
+    ->name('workspace.store');

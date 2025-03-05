@@ -1,38 +1,55 @@
 <script setup>
-import { ref, nextTick, defineEmits } from "vue";
+import { nextTick, defineEmits, reactive } from "vue";
 
 const props = defineProps({
     workspace: Object
 })
 
-const emit = defineEmits(["update-name"])
+const emit = defineEmits(["update-name", "remove-workspace"])
 
-const isEditing = ref(false)
-const editedName = ref(props.workspace.name)
-const inputField = ref(null)
-
-const enableEditing = async () => {
-    isEditing.value = true
-    await nextTick()
-    inputField.value.focus()
-}
-
-const saveEdit = (() => {
-    if (editedName.value.trim() && editedName.value !== props.workspace.name) {
-        emit("update-name", { id: props.workspace.workspace_id, name: editedName.value })
-    }
-
-    isEditing.value = false
+const editState = reactive({
+    isEditing: false,
+    editedName: props.workspace.name,
+    nameInputTextField: null
 })
 
+const enableEditing = async () => {
+    editState.isEditing = true
+    await nextTick()
+    if (editState.nameInputTextField) {
+        editState.nameInputTextField.focus()
+    }
+}
 
+const saveEdit = () => {
+    if (editState.editedName.trim() && editState.editedName !== props.workspace.name) {
+        emit("update-name", { id: props.workspace.workspace_id, name: editState.editedName })
+    }
+
+    editState.isEditing = false
+}
+
+const removeWorkspace = () => {
+    if (confirm('Are you sure?')) {
+        emit("remove-workspace", props.workspace.workspace_id)
+    }
+}
 </script>
 
 <template>
-    <div @dblclick="enableEditing" class="p-2 cursor-pointer">
-        <input v-if="isEditing" v-model="editedName" @blur="saveEdit" @keyup.enter="saveEdit"
-            class="border px-2 py-1 rounded" ref="inputField" />
-        <span v-else>{{ workspace.name }}</span>
+    <div class="p-4 border-b border-gray-200">
+        <div @dblclick="enableEditing" class="p-2 cursor-pointer">
+            <input v-if="editState.isEditing" v-model="editState.editedName" @blur="saveEdit" @keyup.enter="saveEdit"
+                class="border px-2 py-1 rounded" ref="el => editState.nameInputTextField = el" />
+            <span v-else>{{ workspace.name }}</span>
+        </div>
+        <button v-if="!editState.isEditing" @click="enableEditing"
+            class="ml-2 px-2 py-1 bg-blue-500 text-white rounded">
+            Edit
+        </button>
+        <button @click="removeWorkspace" class="ml-4 px-2 py-1 bg-red-500 text-white rounded">
+            Remove
+        </button>
     </div>
 </template>
 

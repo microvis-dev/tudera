@@ -7,12 +7,6 @@ const props = defineProps({
   user_workspaces: Array
 })
 
-const removeWorkspace = (id) => {
-  if (confirm('?')) {
-    router.delete(route('workspace.delete', { id }))
-  }
-}
-
 const updateWorkspaceName = (workspace) => {
   const new_workspace = {
     id: workspace.id,
@@ -21,18 +15,21 @@ const updateWorkspaceName = (workspace) => {
 
   router.put(route('workspace.update', new_workspace))
 }
+
+const removeWorkspace = (id) => {
+  router.delete(route('workspace.delete', { id }))
+}
 </script>
 
 <template>
+  <br><br>
+  <div>
+    <Link :href="route('workspace.create')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+    Create new workspace
+    </Link>
+  </div>
   <div v-for="workspace in user_workspaces" class="p-4 border-b border-gray-200">
-    <Workspace :workspace="workspace" @update-name="updateWorkspaceName" />
-
-    <button @click="removeWorkspace(workspace.workspace_id)" class="ml-4 px-2 py-1 bg-red-500 text-white rounded">
-      Remove
-    </button>
-    <button as="button" class="ml-2 px-2 py-1 bg-blue-500 text-white rounded">
-      Edit
-    </button>
+    <Workspace :workspace="workspace" @update-name="updateWorkspaceName" @remove-workspace="removeWorkspace" />
   </div>
 </template>
 

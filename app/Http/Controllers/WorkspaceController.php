@@ -87,6 +87,15 @@ class WorkspaceController extends Controller
             return redirect()->back()->with('error', 'An error occurred while updating the workspace name.');
         }
     }
+
+    function create_workspace(Request $request) {
+        return inertia('Workspaces/Create');
+    }
+
+    function store_workspace(Request $request) { // !
+        $SetupController = new SetupController();
+        $SetupController->store_workspace($request);
+    }
     
     
 }
