@@ -1,24 +1,23 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import CreateWorkspaceForm from '../../Components/CreateWorkspaceForm.vue';
+
+const props = defineProps({
+    submitRoute: String
+})
 
 const createWorkspaceForm = useForm({
     name: null
 })
 
-const createWorkspace = (() => {
-    createWorkspaceForm.post(route('setup.workspace.store'))
-})
-
-const SUBMIT_ROUTE = 'setup.workspace.store'
-
+const createWorkspace = () => {
+    createWorkspaceForm.post(route(props.submitRoute))
+    createWorkspaceForm.name = ""
+}
 </script>
 
 <template>
-    <CreateWorkspaceForm :submitRoute="SUBMIT_ROUTE" />
-
-    <form v-if="false" @submit.prevent="createWorkspace" class="space-y-4 mt-5">
+    <form @submit.prevent="createWorkspace" class="space-y-4 mt-5">
         <div class="flex flex-col">
             <label for="workspace-name" class="mb-2 text-sm font-medium text-gray-700">Workspace Name:</label>
             <input type="text" id="workspace-name" v-model="createWorkspaceForm.name"
@@ -30,5 +29,3 @@ const SUBMIT_ROUTE = 'setup.workspace.store'
         </button>
     </form>
 </template>
-
-<style scoped></style>

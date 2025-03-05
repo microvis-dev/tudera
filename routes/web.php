@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkspaceController;
+use App\Models\Workspace;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,5 +32,25 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 Route::get('setup/create-user', [SetupController::class, 'createUser'])
     ->name('setup.user.create');
 
+
 Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
     ->name('setup.workspace.create');
+
+Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'])
+    ->name('setup.workspace.store');
+
+
+Route::get('workspaces', [WorkspaceController::class, 'index'])
+    ->name('workspaces');
+
+Route::delete('workspaces/{id}', [WorkspaceController::class, 'delete_workspace'])
+    ->name('workspace.delete');
+
+Route::put('workspaces/{id}', [WorkspaceController::class, 'update_workspace'])
+    ->name('workspace.update');
+
+Route::get('workspaces/create-workspace', [WorkspaceController::class, 'create_workspace'])
+    ->name('workspace.create');
+
+Route::post('workspaces/create-workspace', [WorkspaceController::class, 'store_workspace'])
+    ->name('workspace.store');
