@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
-use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
 use App\Models\Workspace;
@@ -15,7 +14,7 @@ Route::get('/', function () {
 Route::get('auth', [AuthController::class, 'create'])
     ->name('auth');
 
-Route::get('auth.check_email', [AuthController::class, 'check_email'])
+Route::get('auth/check_email', [AuthController::class, 'check_email'])
     ->name('auth.check_email');
 
 Route::post('auth', [AuthController::class, 'store'])
@@ -29,9 +28,16 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 // login {login}
 
 // setup
-Route::get('setup/create-user', [SetupController::class, 'createUser'])
+Route::any('setup/create-user', [SetupController::class, 'createUser'])
     ->name('setup.user.create');
 
+Route::any('setup/create-workspace', [SetupController::class, 'createWorkspace'])
+    ->name('setup.workspace.create')
+    ->middleware('auth');
+
+// user
+Route::resource('user', UserController::class)
+    ->only(['store']);
 
 Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
     ->name('setup.workspace.create');
