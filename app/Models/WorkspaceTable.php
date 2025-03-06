@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
-class Workspace extends Model
+class WorkspaceTable extends Model
 {
     use HasFactory, Notifiable;
 
@@ -18,17 +18,17 @@ class Workspace extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'workspace_id',
         'name',
     ];
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'users_to_workspace', 'workspace_id', 'user_id');
+    public function workspace(): BelongsTo {
+        return $this->belongsTo(Workspace::class);
     }
 
-    public function tables(): HasMany {
-        return $this->hasMany(WorkspaceTable::class, 'workspace_id', 'id');
-    }    
+    public function columns(): HasMany {
+        return $this->hasMany(WorkspaceColumn::class, 'table_id');
+    }
 
     /**
      * The attributes that should be cast.
@@ -36,6 +36,7 @@ class Workspace extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'workspace_id' => 'integer',
         'name' => 'string',
     ];
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('workspace_tables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('workspace_id')->unique()->constrained('workspaces')->onDelete('cascade');
+            $table->foreignId('workspace_id')->constrained()->onDelete('cascade'); 
             $table->string('name');
             $table->timestamps();
         });

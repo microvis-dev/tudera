@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceTableController;
 use App\Models\Workspace;
 use Illuminate\Support\Facades\Route;
 
@@ -56,3 +57,9 @@ Route::get('workspaces/create-workspace', [WorkspaceController::class, 'create_w
 
 Route::post('workspaces/create-workspace', [WorkspaceController::class, 'store_workspace'])
     ->name('workspace.store');
+
+Route::resource('workspace-table', WorkspaceTableController::class)
+    ->only(['index', 'create', 'store', 'update', 'destroy']);
+
+Route::post('workspace-table/select', [WorkspaceTableController::class, 'select'])
+    ->name('workspace-table.select'); // *
