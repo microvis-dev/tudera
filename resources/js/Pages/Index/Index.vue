@@ -1,15 +1,13 @@
 <script setup>
-import {ref} from 'vue'
 import AuthLayout from "../../Layout/AuthLayout.vue";
-const counter = ref(0)
-const add = (() => counter.value++)
+import {ref, watchEffect, defineOptions } from "vue";
+
+defineOptions({
+    layout: null
+})
 </script>
 
 <template>
-    <AuthLayout>
-    </AuthLayout>
 </template>
-
 <style scoped>
-
 </style>

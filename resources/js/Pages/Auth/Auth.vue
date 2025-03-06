@@ -1,7 +1,7 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
 import { computed, defineOptions, reactive } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 
@@ -61,7 +61,9 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
-            alert("continue user create")
+            router.post(route('setup.user.create'), {
+                email: authForm.email
+            });
         } else {
             alert("letezo email")
         }
@@ -76,11 +78,11 @@ const login = (() => {
 </script>
 
 <template>
-    <div class="flex flex-col h-full justify-between items-center">
-        <header class="p-8 flex justify-center mt-5 w-80">
+    <div class="flex flex-col h-full justify-around items-center">
+        <header class="p-8 flex justify-center mt-5 w-80 py-10">
             <img src="../../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
         </header>
-        <main class="flex flex-col items-center">
+        <main class="flex flex-col items-center py-10">
             <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
             <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter
                 your details</p>
@@ -138,13 +140,13 @@ const login = (() => {
                     </label>
                 </div>
                 <p v-if="viewState.errorField">Errors: {{ viewState.errorField }}</p>
-                <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light"
+                <button type="submit" class="bg-blue-600 rounded-md h-12 roboto-font-light"
                     @click.prevent="viewState.passwordField ? login() : continueAuth()">
                     Continue
                 </button>
             </form>
         </main>
-        <footer class="flex justify-center">
+        <footer class="flex justify-center py-5">
             <p class="text-center roboto-font-light text-sm w-xl mb-5 px-3 text-[#B3B3B3]">Join thousands of
                 businesses
                 who trust our CRM to

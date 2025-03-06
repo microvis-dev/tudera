@@ -1,17 +1,20 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\SetupController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkspaceController;
+use App\Models\Workspace;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Index/Index');
-})->middleware('auth');
+})->middleware('auth')->name('index');
 
 Route::get('auth', [AuthController::class, 'create'])
     ->name('auth');
 
-Route::get('auth.check_email', [AuthController::class, 'check_email'])
+Route::get('auth/check_email', [AuthController::class, 'check_email'])
     ->name('auth.check_email');
 
 Route::post('auth', [AuthController::class, 'store'])
@@ -24,6 +27,32 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 // login
 // login {login}
 
-// create user
-Route::resource('user-account', UserAccountController::class)
-    ->only(['create', 'store']);
+// setup
+Route::any('setup/create-user', [SetupController::class, 'createUser'])
+    ->name('setup.user.create');
+
+// user
+Route::resource('user', UserController::class)
+    ->only(['store']);
+
+Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
+    ->name('setup.workspace.create');
+
+Route::post('setup/create-workspace', [WorkspaceController::class, 'store_workspace'])
+    ->name('setup.workspace.store');
+
+
+Route::get('workspaces', [WorkspaceController::class, 'index'])
+    ->name('workspaces');
+
+Route::delete('workspaces/{id}', [WorkspaceController::class, 'delete_workspace'])
+    ->name('workspace.delete');
+
+Route::put('workspaces/{id}', [WorkspaceController::class, 'update_workspace'])
+    ->name('workspace.update');
+
+Route::get('workspaces/create-workspace', [WorkspaceController::class, 'create_workspace'])
+    ->name('workspace.create');
+
+Route::post('workspaces/create-workspace', [WorkspaceController::class, 'store_workspace'])
+    ->name('workspace.store');
