@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
+use Illuminate\Support\Facades\DB;
 
 class WorkspaceController extends Controller
 {
@@ -32,37 +34,17 @@ class WorkspaceController extends Controller
             if (!$workspace) {
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
             }
-    
-            $workspace->delete();
-    
+            
+            if ($workspace->users()->count() === 0) {
+                $workspace->delete();
+            } else {
+                $user->workspaces()->detach($workspace->id);
+            }
+
             return redirect()->back()->with('success', 'Workspace deleted successfully.');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while deleting the workspace. Please try again later.');
-        }
-    }
-
-    // csak levalaszt a workspace-rol ha van tobb user a workspacehez
-    public function delete_workspace_2(Request $request, $id) {
-        try {
-            $user = $request->user();
-    
-            $workspace = $user->workspaces()->find($id);
-    
-            if (!$workspace) {
-                return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
-            }
-    
-            $user->workspaces()->detach($workspace->id);
-    
-            if ($workspace->users()->count() === 0) {
-                $workspace->delete();
-            }
-    
-            return redirect()->back()->with('success', 'Workspace removed successfully.');
-        } catch (Exception $e) {
-            Log::error('Hiba WorkspaceController: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while removing the workspace. Please try again later.');
         }
     }
 
@@ -92,9 +74,26 @@ class WorkspaceController extends Controller
         return inertia('Workspaces/Create');
     }
 
-    function store_workspace(Request $request) { // !
-        $SetupController = new SetupController();
-        $SetupController->store_workspace($request);
+    public function store_workspace(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+
+        DB::transaction(function () use ($request) {
+            $workspace = new Workspace();
+            $workspace->name = $request->input('name');
+            $workspace->save();
+            
+            $users_to_workspace = new UsersToWorkspace();
+
+            $users_to_workspace->workspace_id = $workspace->id;
+            $users_to_workspace->user_id = $request->user()->id;
+            $users_to_workspace->save();
+        });
+
+        return redirect()->back()->with('success', 'Workspace created successfully!');
+        // return redirect()->intended('/')->with('success', 'Workspace created successfully!');
     }
     
     
