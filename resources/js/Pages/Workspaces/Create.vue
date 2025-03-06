@@ -8,10 +8,10 @@ const createWorkspaceForm = useForm({
 })
 
 const createWorkspace = (() => {
-    createWorkspaceForm.post(route('setup.workspace.store'))
+    createWorkspaceForm.post(route('workspace.store'))
 })
 
-const SUBMIT_ROUTE = 'setup.workspace.store'
+const SUBMIT_ROUTE = 'workspace.store'
 
 </script>
 
