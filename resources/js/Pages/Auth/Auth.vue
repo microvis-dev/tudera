@@ -80,7 +80,7 @@ const login = (() => {
         <header class="p-8 flex justify-center mt-5 w-80 py-10">
             <img src="../../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
         </header>
-        <main class="flex flex-col items-center py-20">
+        <main class="flex flex-col items-center py-10">
             <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
             <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter
                 your details</p>
@@ -144,7 +144,7 @@ const login = (() => {
                 </button>
             </form>
         </main>
-        <footer class="flex justify-center pt-20">
+        <footer class="flex justify-center py-5">
             <p class="text-center roboto-font-light text-sm w-xl mb-5 px-3 text-[#B3B3B3]">Join thousands of
                 businesses
                 who trust our CRM to
