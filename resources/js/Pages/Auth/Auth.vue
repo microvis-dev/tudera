@@ -138,7 +138,7 @@ const login = (() => {
                     </label>
                 </div>
                 <p v-if="viewState.errorField">Errors: {{ viewState.errorField }}</p>
-                <button type="button" class="bg-blue-600 rounded-md h-12 roboto-font-light"
+                <button type="submit" class="bg-blue-600 rounded-md h-12 roboto-font-light"
                     @click.prevent="viewState.passwordField ? login() : continueAuth()">
                     Continue
                 </button>

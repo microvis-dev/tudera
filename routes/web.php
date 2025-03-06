@@ -36,7 +36,7 @@ Route::get('setup/create-user', [SetupController::class, 'createUser'])
 Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
     ->name('setup.workspace.create');
 
-Route::post('setup/create-workspace', [SetupController::class, 'store_workspace'])
+Route::post('setup/create-workspace', [WorkspaceController::class, 'store_workspace'])
     ->name('setup.workspace.store');
 
 
