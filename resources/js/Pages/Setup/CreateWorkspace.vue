@@ -3,6 +3,10 @@ import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import CreateWorkspaceForm from '../../Components/CreateWorkspaceForm.vue';
 
+defineOptions({
+    layout: null
+})
+
 const createWorkspaceForm = useForm({
     name: null
 })
