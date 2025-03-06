@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Validator;
@@ -40,6 +41,7 @@ class UserController extends Controller
 
         $user = User::make($validator->validated());
         if ($user->save()) {
+            Auth::login($user);
             return redirect()->route($redirectTo);
         } else {
             return back()

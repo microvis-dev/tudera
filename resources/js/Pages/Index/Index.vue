@@ -3,7 +3,7 @@ import AuthLayout from "../../Layout/AuthLayout.vue";
 import {ref, watchEffect, defineOptions } from "vue";
 
 defineOptions({
-    layout: AuthLayout
+    layout: null
 })
 </script>
 

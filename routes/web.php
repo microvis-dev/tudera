@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Index/Index');
-})->middleware('auth');
+})->middleware('auth')->name('index');
 
 Route::get('auth', [AuthController::class, 'create'])
     ->name('auth');
