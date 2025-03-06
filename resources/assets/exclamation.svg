@@ -1,0 +1,5 @@
+<svg id='Exclamation_Mark_24' width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><rect width='24' height='24' stroke='none' fill='#000000' opacity='0'/>
+    <g transform="matrix(0.83 0 0 0.83 12 12)" >
+        <path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: oklch(0.637 0.237 25.331); fill-rule: nonzero; opacity: 1;" transform=" translate(-15, -15)" d="M 12.355469 3 L 12.785156 19 L 17.199219 19 L 17.644531 3 L 12.355469 3 z M 15.007812 22 C 13.364813 22 12.339844 22.953813 12.339844 24.507812 C 12.339844 26.047813 13.365813 27 15.007812 27 C 16.649812 27 17.662109 26.047812 17.662109 24.507812 C 17.662109 22.953813 16.650813 22 15.007812 22 z" stroke-linecap="round" />
+    </g>
+</svg>

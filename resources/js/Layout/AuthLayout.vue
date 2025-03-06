@@ -17,7 +17,6 @@
     </div>
   </div>
 </template>
-
 <style scoped>
 @keyframes glow {
   100% {
