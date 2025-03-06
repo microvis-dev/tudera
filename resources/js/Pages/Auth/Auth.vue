@@ -61,7 +61,9 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
-            router.visit(route('setup.user.create'))
+            router.post(route('setup.user.create'), {
+                email: authForm.email
+            });
         } else {
             alert("letezo email")
         }

@@ -5,23 +5,72 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Validator;
 
 class UserController extends Controller
 {
-    public function create() {
-        return inertia('User/Create');
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
     }
 
-    public function store(Request $request) {
-        $user = User::make($request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'unique:users,phone_number',
-            'password' => 'required|min:8|confirmed'
-        ]));
-        $user->save();
-        Auth::login($user);
+    /**
+     * Store a newly created resource in storage.
+     * @throws ValidationException
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'name' => 'required|string|max:255',
+            'password' => 'required|string|min:8|max:255',
+            'phone' => 'string',
+        ]);
 
-        return redirect()->route('login')->with('success', 'Account created!');
+        $redirectTo = $request->input('redirectTo', 'setup.workspace.create');
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = User::make($validator->validated());
+        if ($user->save()) {
+            Auth::login($user);
+            return redirect()->route($redirectTo);
+        } else {
+            return back()
+                ->withErrors(['error' => 'Failed to create user'])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(User $user)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, User $user)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(User $user)
+    {
+        //
     }
 }
