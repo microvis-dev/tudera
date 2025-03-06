@@ -2,17 +2,14 @@
 </script>
 
 <template>
-    <div class="flex items-center justify-center min-h-screen bg-[#1C1D21] text-[#F5F7F9] overflow-hidden">
-        <div class="container flex flex-col w-full h-full max-h-screen sm:px-4 sm:py-8 xl:flex-row xl:px-20">
-            <section
-                class="w-full flex items-center justify-center sm:rounded-l-lg xl:rounded-l-lg border border-[#2B2C30] xl:w-[678px] xl:max-h-[866px]">
+    <div class="flex items-center justify-center min-h-screen bg-[#1C1D21] text-[#F5F7F9]">
+        <div class="container mx-auto flex flex-col w-full h-full sm:px-4 sm:py-8 xl:flex-row xl:p-8">
+            <section class="login w-full h-full flex items-center justify-center sm:rounded-t-lg xl:rounded-t-none xl:rounded-l-lg border border-[#2B2C30] xl:w-[678px] xl:h-[866px] overflow-auto">
                 <slot></slot>
             </section>
             <section class="w-full xl:w-[678px]">
-                <div
-                    class="hidden xl:flex animation rounded-r-lg h-full bg-gradient-to-br from-[#a8b4e7] to-[#2b3a76] justify-center items-center">
-                    <img src="../../assets/cloud.svg" alt="cloud"
-                         class="w-2/5 filter drop-shadow-2xl animate-glow"/>
+                <div class="hidden xl:flex animation rounded-r-lg h-full bg-gradient-to-br from-[#a8b4e7] to-[#2b3a76] justify-center items-center">
+                    <img src="../../assets/cloud.svg" alt="cloud" class="w-2/5 filter drop-shadow-2xl animate-glow" />
                 </div>
             </section>
         </div>
