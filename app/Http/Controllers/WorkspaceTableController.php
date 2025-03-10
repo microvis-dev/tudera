@@ -10,13 +10,13 @@ use Log;
 
 class WorkspaceTableController extends Controller
 {
-    public function select(Request $request) {
+    public function show(Request $request) {
         try {
             $user = $request->user();
-            $workspaceId = $request->input('workspace_id');
-            $workspace = $user->workspaces()->find($workspaceId);
+            $workspace_id = $request->input('workspace_id');
+            $workspace = $user->workspaces()->find($workspace_id);
             
-            if (!$workspaceId) {
+            if (!$workspace_id) {
                 return redirect()->route('workspaces')->with('error', 'Invalid workspace selected.');
             }
             
@@ -24,7 +24,6 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
-            $request->session()->put('selected_workspace_id', $workspaceId);
             
             return redirect()->route('workspace-table.index');
         } catch (Exception $e) {
@@ -35,31 +34,42 @@ class WorkspaceTableController extends Controller
 
     public function index(Request $request) {
         try {
-            $selectedWorkspaceId = $request->session()->get('selected_workspace_id');
-            $workspaceTables = WorkspaceTable::where('workspace_id', $selectedWorkspaceId)->get();
+            $workspace_id = $request->workspace;
+            $workspace_tables = WorkspaceTable::where('workspace_id', $workspace_id)->get();
             
-            if (!$selectedWorkspaceId) {
+            if (!$workspace_id) {
                 return redirect()->route('workspaces')->with('error', 'Please select a workspace first.');
+            }
+
+            if(!$this->find($workspace_id)) {
+                return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
                         
             return inertia('Workspace/Index', [
-                'workspace_tables' => $workspaceTables,
+                'workspace_tables' => $workspace_tables,
+                'workspace' => (int) $workspace_id
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController: ' . $e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while retrieving your workspace.');
         }
     }
+
+    private function find($workspace_id) {
+        return true;
+    }
     
     public function create(Request $request) {
         try {
-            $selectedWorkspaceId = $request->session()->get('selected_workspace_id');
+            $workspace_id = $request->workspace;
             
-            if (!$selectedWorkspaceId) {
+            if (!$workspace_id) {
                 return redirect()->route('workspaces')->with('error', 'Please select a workspace first.');
             }
             
-            return inertia('Workspace/Create');
+            return inertia('Workspace/Create', [
+                "workspace" => (int) $workspace_id
+            ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController create: ' . $e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
@@ -72,11 +82,11 @@ class WorkspaceTableController extends Controller
         ]);
         
         try {
-            $selectedWorkspaceId = $request->session()->get('selected_workspace_id');
+            $workspace_id = $request->workspace;
             $user = $request->user();
-            $workspace = $user->workspaces()->find($selectedWorkspaceId);
+            $workspace = $user->workspaces()->find($workspace_id);
             
-            if (!$selectedWorkspaceId) { // 3
+            if (!$workspace_id) { // 3
                 return redirect()->route('workspaces')->with('error', 'Please select a workspace first.');
             }
             
@@ -84,14 +94,14 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
-            DB::transaction(function () use ($request, $selectedWorkspaceId) {
+            DB::transaction(function () use ($request, $workspace_id) {
                 WorkspaceTable::create([
                     'name' => strip_tags($request->name),
-                    'workspace_id' => $selectedWorkspaceId,
+                    'workspace_id' => $workspace_id,
                 ]);
             });
 
-            return redirect()->route('workspace-table.index')->with('success', 'Workspace table created successfully!');
+            return redirect()->route('workspace.table.index', ['workspace' => $workspace_id])->with('success', 'Workspace table created successfully!');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController store: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while creating the table.');
@@ -105,11 +115,11 @@ class WorkspaceTableController extends Controller
         
         try {
             $table = WorkspaceTable::findOrFail($id);
-            $selectedWorkspaceId = $request->session()->get('selected_workspace_id');
+            $workspace_id = $request->workspace;
             $user = $request->user();
-            $workspace = $user->workspaces()->find($selectedWorkspaceId);
+            $workspace = $user->workspaces()->find($workspace_id);
 
-            if ($table->workspace_id != $selectedWorkspaceId) {
+            if ($table->workspace_id != $workspace_id) {
                 return redirect()->route('workspaces')->with('error', 'You do not have permission to update this table.');
             }
             
@@ -127,14 +137,15 @@ class WorkspaceTableController extends Controller
         }
     }
     
-    public function destroy(Request $request, $id) {
+    public function destroy(Request $request) {
         try {
-            $table = WorkspaceTable::findOrFail($id);
-            $selectedWorkspaceId = $request->session()->get('selected_workspace_id');
+            $table_id = $request->table;
+            $table = WorkspaceTable::findOrFail($table_id);
+            $workspace_id = $request->workspace;
             $user = $request->user();
-            $workspace = $user->workspaces()->find($selectedWorkspaceId);
+            $workspace = $user->workspaces()->find($workspace_id);
             
-            if ($table->workspace_id != $selectedWorkspaceId) {
+            if ($table->workspace_id != $workspace_id) {
                 return redirect()->route('workspaces')->with('error', 'You do not have permission to delete this table.');
             }            
             

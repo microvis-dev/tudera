@@ -38,7 +38,7 @@ const removeTable = () => {
 }
 
 const go = () => {
-    // router.get(route('workspace-table.show', props.table.id))
+    router.get(route('workspace.table.show', { table: props.table.id }))
 }
 </script>
 

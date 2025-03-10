@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('workspace_columns', function (Blueprint $table) {
             $table->id('column_id');
-            $table->foreignId('table_id')->constrained('workspace_tables')->onDelete('cascade');
+            $table->foreignUuid('table_id')->constrained('workspace_tables')->onDelete('cascade');
             $table->enum('type', ['string', 'integer', 'float', 'datetime', 'status', 'ref'])->notNull();
             $table->string('column_name')->notNull();
             $table->timestamps();

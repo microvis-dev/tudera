@@ -2,12 +2,16 @@
 import { router, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 
+const props = defineProps({
+    workspace: Number
+})
+
 const createTableForm = useForm({
     name: null
 })
 
 const createTable = () => {
-    createTableForm.post(route('workspace-table.store'))
+    createTableForm.post(route('workspace.table.store', { workspace: props.workspace }))
 }
 </script>
 

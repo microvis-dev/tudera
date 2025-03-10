@@ -4,17 +4,23 @@ import { route } from 'ziggy-js';
 import WorkspaceTable from './Components/WorkspaceTable.vue';
 
 const props = defineProps({
-    workspace_tables: Array
+    workspace_tables: Array,
+    workspace: Number
 })
 
-const updateTable = (tableData) => {
-    router.put(route('workspace-table.update', tableData.id), {
-        name: tableData.name
+
+const updateTable = (table) => {
+    router.put(route('table.update', table.id), {
+        name: table.name,
+        workspace: props.workspace
     })
 }
 
 const removeTable = (tableId) => {
-    router.delete(route('workspace-table.destroy', tableId))
+    router.delete(route('table.destroy', {
+        table: tableId,
+        workspace: props.workspace
+    }))
 }
 
 </script>
@@ -23,7 +29,7 @@ const removeTable = (tableId) => {
     <div v-for="table in workspace_tables" :key="table.id">
         <WorkspaceTable :table="table" @update-table="updateTable" @remove-table="removeTable" />
     </div>
-    <Link :href="route('workspace-table.create')"
+    <Link :href="route('workspace.table.create', { workspace: props.workspace })"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
     Create new table
     </Link>

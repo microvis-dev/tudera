@@ -38,7 +38,7 @@ const removeWorkspace = () => {
 }
 
 const go = () => {
-    router.post(route('workspace-table.select'), { workspace_id: props.workspace.workspace_id })
+    router.get(route('workspace.table.index', { workspace: props.workspace.workspace_id }))
 }
 </script>
 
