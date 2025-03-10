@@ -22,7 +22,7 @@ const SUBMIT_ROUTE = 'setup.workspace.store'
 
 <template>
     <div class="flex flex-col h-full w-full items-center p-8">
-        <header>
+        <header class="w-full max-w-screen">
             <section class="mb-5">
                 <p class="ms-0.5 md:ms-0.7 text-sm roboto-font-light text-[#B3B3B3]">2/2</p>
                 <h1 class="text-2xl md:text-3xl roboto-font-bold">Create your workspace</h1>
@@ -43,25 +43,23 @@ const SUBMIT_ROUTE = 'setup.workspace.store'
                 <p class="roboto-font-bold text-[#B3B3B3] text-xs mt-2">*.png, *.jpg files up to 10MB at least 400px by 400px</p>
             </section>
         </header>
-        <main>
+        <main class="w-full max-w-screen mt-5">
             <section>
                 <form>
-                    <div>
-                        <label>Company name</label>
-                        <input type="text" placeholder="Enter your company name...">
+                    <div class="flex flex-col mb-5">
+                        <label class="text-sm text-[#B3B3B3] roboto-font-regular">Company name</label>
+                        <input type="text" class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm" placeholder="Enter your company name...">
+                    </div>
+                    <div class="flex flex-col mb-5">
+                        <label class="text-sm text-[#B3B3B3] roboto-font-regular">Workspace handle</label>
+                        <input type="text" class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm" placeholder="tudera.com/my-workspace">
+                    </div>
+                    <div class="flex flex-col mb-5">
+                        <label class="text-sm text-[#B3B3B3] roboto-font-regular">Tax address</label>
+                        <input type="text" class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm" placeholder="Enter your tax address">
                     </div>
                     <div>
-                        <label>Workspace handle</label>
-                        <input type="text" placeholder="tudera.com/my-workspace">
-                    </div>
-                    <div>
-                        <label>Billing country</label>
-                        <select>
-                            <option>Hungary</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button>Continue</button>
+                        <button type="submit" class="bg-blue-600 roboto-font-regular rounded-lg py-2 w-full">Finish</button>
                     </div>
                 </form>
             </section>
