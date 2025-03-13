@@ -31,6 +31,7 @@ const userForm = useForm({
 const submitForm = () => {
     userForm.post(route('user.store'))
 }
+
 </script>
 
 <template>
@@ -57,6 +58,7 @@ const submitForm = () => {
                 </div>
             </section>
         </header>
+        <!--
         <main class="w-full max-w-screen mt-5">
             <section>
                 <form>
@@ -81,6 +83,80 @@ const submitForm = () => {
                     </div>
                 </form>
             </section>
+            -->
+        <main class="flex flex-col">
+            <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ null }}</h1>
+            <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ null }}</p>
+            <form @submit.prevent="submitForm" class="flex flex-col w-full space-y-5">
+                <div class="flex flex-col space-y-1">
+                    <label for="first-name" class="text-[#B3B3B3] text-sm font-medium">
+                        First name
+                    </label>
+                    <input
+                        id="first-name"
+                        v-model="name.first"
+                        type="text"
+                        placeholder="Enter your first name..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                    />
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label for="last-name" class="text-[#B3B3B3] text-sm font-medium">
+                        Last name
+                    </label>
+                    <input
+                        id="last-name"
+                        type="text"
+                        v-model="name.last"
+                        placeholder="Enter your last name..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                    />
+                    <p v-if="userForm.errors.name">{{ userForm.errors.name }}</p>
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label for="tel" class="text-[#B3B3B3] text-sm font-medium">
+                        Phone
+                    </label>
+                    <input
+                        id="tel"
+                        type="tel"
+                        v-model="userForm.phone"
+                        placeholder="Enter your phone..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                    />
+                    <p v-if="userForm.errors.phone">{{ userForm.errors.phone }}</p>
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label for="password" class="text-[#B3B3B3] text-sm font-medium">
+                        Password
+                    </label>
+                    <input
+                        id="password"
+                        type="password"
+                        v-model="userForm.password"
+                        placeholder="Enter your password"
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                    />
+                    <p v-if="userForm.errors.password">{{ userForm.errors.password }}</p>
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label for="email" class="text-[#B3B3B3] text-sm font-medium">
+                        Email
+                    </label>
+                    <input
+                        id="email"
+                        type="text"
+                        v-model="userForm.email"
+                        disabled
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
+                    />
+                    <p v-if="userForm.errors.email">{{ userForm.errors.email }}</p>
+                </div>
+                <input type="hidden" name="register" value="true">
+                <button type="submit" class="bg-blue-600 rounded-lg px-3 py-2 mt-8 roboto-font-light">
+                    Next
+                </button>
+            </form>
         </main>
     </div>
 </template>

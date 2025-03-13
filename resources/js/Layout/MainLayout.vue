@@ -50,7 +50,7 @@ const user_workspaces = computed(() => {
       <p class="text-gray-600">{{ user.id }}</p>
     </div>
     <div>
-      <Link :href="route('logout')" method="delete" as="button"
+      <Link :href="route('auth.destroy', user.id)" method="delete" as="button"
         class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
       Logout
       </Link>
@@ -59,7 +59,7 @@ const user_workspaces = computed(() => {
       Create your first workspace (setup)
       </Link>
       <br><br>
-      <Link :href="route('workspaces')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+      <Link :href="route('workspaces.index')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
         Workspaces
       </Link>
     </div>
