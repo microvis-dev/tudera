@@ -31,6 +31,7 @@ const userForm = useForm({
 const submitForm = () => {
     userForm.post(route('user.store'))
 }
+
 </script>
 
 <template>
@@ -58,8 +59,8 @@ const submitForm = () => {
             </div>
         </header>
         <main class="flex flex-col">
-            <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
-            <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}</p>
+            <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ null }}</h1>
+            <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ null }}</p>
             <form @submit.prevent="submitForm" class="flex flex-col w-full space-y-5">
                 <div class="flex flex-col space-y-1">
                     <label for="first-name" class="text-[#B3B3B3] text-sm font-medium">
