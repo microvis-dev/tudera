@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
-class Workspace extends Model
+class WorkspaceRow extends Model
 {
     use HasFactory, Notifiable;
 
@@ -18,17 +17,14 @@ class Workspace extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'table_id',
+        'order',
         'name',
     ];
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'users_to_workspace', 'workspace_id', 'user_id');
+    public function workspace_table(): BelongsTo {
+        return $this->belongsTo(WorkspaceTable::class, 'table_id');
     }
-
-    public function tables(): HasMany {
-        return $this->hasMany(WorkspaceTable::class, 'workspace_id', 'id');
-    }    
 
     /**
      * The attributes that should be cast.
@@ -36,6 +32,8 @@ class Workspace extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'table_id' => 'string', // uuid
+        'order' => 'integer',
         'name' => 'string',
     ];
 }

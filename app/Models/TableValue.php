@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
-class Workspace extends Model
+class TableValue extends Model
 {
     use HasFactory, Notifiable;
 
@@ -17,18 +18,19 @@ class Workspace extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
+    protected $fillable = [ // !id
+        'row_id',
+        'column_id',
+        'value'
     ];
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'users_to_workspace', 'workspace_id', 'user_id');
+    public function column(): BelongsTo {
+        return $this->belongsTo(WorkspaceColumn::class, 'column_id');
     }
 
-    public function tables(): HasMany {
-        return $this->hasMany(WorkspaceTable::class, 'workspace_id', 'id');
-    }    
+    public function row(): BelongsTo {
+        return $this->belongsTo(WorkspaceRow::class, 'row_id');
+    }
 
     /**
      * The attributes that should be cast.
@@ -36,6 +38,9 @@ class Workspace extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'name' => 'string',
+        'row_id' => 'integer',
+        'column_id' => 'integer',
+        'value' => 'string|null', 
     ];
+
 }
