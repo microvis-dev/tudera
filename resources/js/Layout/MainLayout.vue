@@ -24,6 +24,7 @@ const user_workspaces = computed(() => {
 </script>
 
 <template>
+  <!--
   <div v-if="flashSucess" class="flash-success p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
     {{ flashSucess }}
   </div>
@@ -57,6 +58,26 @@ const user_workspaces = computed(() => {
 
   </div>
   <slot></slot>
+-->
+
+  <div class="container w-full h-full">
+    <section class="p-8 w-80 h-screen">
+      <aside class="flex flex-col items-center">
+        <div class="w-60 mb-20">
+          <img src="../../assets/tuderaLogoWhite.svg">
+        </div>
+        <select class="border rounded-lg py-3 px-10">
+          <option default>Workspace 1</option>
+        </select>
+        <div class="flex flex-col">
+          <div class="flex flex-row">
+            <p>Logo</p>
+            <h2>Dashboard</h2>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </div>
 </template>
 
 <style scoped></style>
