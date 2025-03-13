@@ -25,7 +25,36 @@ class WorkspaceController extends Controller
         }
     }
 
-    public function delete_workspace(Request $request, $id) {
+    function create(Request $request) {
+        return inertia('Workspaces/Create');
+    }
+
+    public function store(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+
+        DB::transaction(function () use ($request) {
+            $workspace = new Workspace();
+            $workspace->name = $request->input('name');
+            $workspace->save();
+            
+            $users_to_workspace = new UsersToWorkspace();
+
+            $users_to_workspace->workspace_id = $workspace->id;
+            $users_to_workspace->user_id = $request->user()->id;
+            $users_to_workspace->save();
+        });
+
+        return redirect()->back()->with('success', 'Workspace created successfully!');
+    }
+
+    function show() {
+        
+    }
+
+    public function destroy(Request $request, $id) {
         try {
             $user = $request->user();
     
@@ -48,10 +77,11 @@ class WorkspaceController extends Controller
         }
     }
 
-    public function update_workspace(Request $request, $workspace_id) {
+    public function update(Request $request) {
         $request->validate([
             'name' => 'required|string|max:255|regex:/^\S.*$/'
         ]);
+        $workspace_id = $request->workspace_id;
     
         try {
             $user = $request->user();
@@ -65,35 +95,10 @@ class WorkspaceController extends Controller
     
             return redirect()->back()->with('success', 'Workspace name updated successfully.');
         } catch (Exception $e) {
+            dd($e->getMessage());
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while updating the workspace name.');
         }
-    }
-
-    function create_workspace(Request $request) {
-        return inertia('Workspaces/Create');
-    }
-
-    public function store_workspace(Request $request) {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-
-        DB::transaction(function () use ($request) {
-            $workspace = new Workspace();
-            $workspace->name = $request->input('name');
-            $workspace->save();
-            
-            $users_to_workspace = new UsersToWorkspace();
-
-            $users_to_workspace->workspace_id = $workspace->id;
-            $users_to_workspace->user_id = $request->user()->id;
-            $users_to_workspace->save();
-        });
-
-        return redirect()->back()->with('success', 'Workspace created successfully!');
-        // return redirect()->intended('/')->with('success', 'Workspace created successfully!');
     }
     
     
