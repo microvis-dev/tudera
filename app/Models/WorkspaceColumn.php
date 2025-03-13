@@ -35,7 +35,7 @@ class WorkspaceColumn extends Model
      */
     protected $casts = [
         'table_id' => 'string', // uuid
-        'type' => WorkspaceColumnTypeEnum::class,
+        'type' => 'string', // WorkspaceColumnTypeEnum::class
         'name' => 'string',
         'order' => 'integer'
     ];

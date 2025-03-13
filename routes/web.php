@@ -3,9 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkspaceColumnController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceTableController;
-use App\Models\Workspace;
+use App\Models\WorkspaceColumn;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -62,3 +63,6 @@ Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow();
 
 
+//col
+Route::resource('table.columns', WorkspaceColumnController::class)
+    ->only(['index', 'create', 'store']);

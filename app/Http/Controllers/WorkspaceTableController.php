@@ -28,12 +28,10 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
-            
-            
-            
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
-                'table' => $table
+                'workspace_table' => $table,
+                'columns' => $table->columns 
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());
