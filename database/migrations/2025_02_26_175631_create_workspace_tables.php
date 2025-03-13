@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('workspace_tables', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('workspace_id')->unique()->constrained('workspaces')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignId('workspace_id')->constrained()->onDelete('cascade'); 
             $table->string('name');
             $table->timestamps();
         });
