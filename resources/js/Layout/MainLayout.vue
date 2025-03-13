@@ -1,18 +1,24 @@
 <script setup>
+import {ref} from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
-import Select from '../Components/ui/select/Select.vue';
-import SelectContent from '../Components/ui/select/SelectContent.vue';
-import SelectGroup from '../Components/ui/select/SelectGroup.vue';
-import SelectItem from '../Components/ui/select/SelectItem.vue';
-import SelectItemText from '../Components/ui/select/SelectItemText.vue';
-import SelectLabel from '../Components/ui/select/SelectLabel.vue';
-import SelectScrollDownButton from '../Components/ui/select/SelectScrollDownButton.vue';
-import SelectScrollUpButton from '../Components/ui/select/SelectScrollUpButton.vue';
-import SelectSeparator from '../Components/ui/select/SelectSeparator.vue';
-import SelectTrigger from '../Components/ui/select/SelectTrigger.vue';
-import SelectValue from '../Components/ui/select/SelectValue.vue';
+import dashboardIcon from '../../assets/graphUp.svg';
+import lead from '../../assets/lead.svg';
+import schedule from '../../assets/schedule.svg';
+import WorkspaceSelect from './Components/WorkspaceSelect.vue';
+
+const workspaceDropdownOpen = ref(false);
+
+const handleDropdownChange = (isOpen) => {
+  workspaceDropdownOpen.value = isOpen;
+};
+
+const sidebarItems = [
+  { "img": dashboardIcon, "name": "Dashboard" },
+  { "img": lead, "name": "Leads" },
+  { "img": schedule, "name": "Schedule" }
+]
 
 const page = usePage()
 
@@ -71,29 +77,21 @@ const user_workspaces = computed(() => {
   <slot></slot>
 -->
 
-  <div class="container w-full h-full">
+<div class="container w-full h-full">
     <section class="p-8 w-80 h-screen border border-[#2B2C30]">
       <aside class="flex flex-col items-center">
         <div class="w-60 mb-20">
-          <img src="../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
+          <img src="../../assets/tuderaLogoWhite.svg">
         </div>
-        <Select>
-          <SelectTrigger class="w-[180px]">
-            <SelectValue placeholder="Workspace 1" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Workspaces</SelectLabel>
-              <SelectItem value="apple">
-                XD
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <div class="flex flex-col">
-          <div class="flex flex-row">
-            <p>Logo</p>
-            <h2>Dashboard</h2>
+        <WorkspaceSelect @dropdown-change="handleDropdownChange" />
+        <div class="w-full mt-6">
+          <div 
+            class="sidebar-items flex flex-col" 
+            :class="{ 'dropdown-open': workspaceDropdownOpen }">
+            <div v-for="item in sidebarItems" class="flex flex-row items-center p-5">
+              <img class="w-10 h-10 me-3" :src="item.img">
+              <h2 class="roboto-font-bold text-xl">{{ item.name }}</h2>
+            </div>
           </div>
         </div>
       </aside>
@@ -101,4 +99,12 @@ const user_workspaces = computed(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.sidebar-items {
+  transition: transform 0.3s ease;
+}
+
+.dropdown-open {
+  transform: translateY(150px); /* Adjust this value based on your dropdown height */
+}
+</style>

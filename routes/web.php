@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Index/Index');
-})->middleware('auth')->name('index');
+})->name('index');
 
 //auth
 Route::resource('auth', AuthController::class)->only(['index', 'create', 'store', 'destroy']);
