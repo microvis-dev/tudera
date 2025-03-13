@@ -85,7 +85,7 @@ const login = (() => {
             <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
             <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter
                 your details</p>
-            <form class="flex flex-col w-full">
+            <form @submit.prevent="" class="flex flex-col w-full">
                 <div class="relative flex bg-[#5D5E5B] rounded-lg p-1 w-75 h-11 text-center mb-5">
                     <input :disabled="viewState.authMethodDisabled" type="radio" id="sign-in" :value="true"
                         name="toggle" class="hidden peer/signin" checked v-model="viewState.isSignIn">

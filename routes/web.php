@@ -28,9 +28,8 @@ Route::delete('logout', [AuthController::class, 'destroy'])
 // login {login}
 
 // setup
-Route::any('setup/create-user', [SetupController::class, 'createUser'])
-    ->name('setup.user.create');
-
+//Route::any('setup/create-user', [SetupController::class, 'createUser'])
+  //  ->name('setup.user.create');
 // user
 Route::resource('user', UserController::class)
     ->only(['store']);

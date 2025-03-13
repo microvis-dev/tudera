@@ -2,6 +2,17 @@
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
+import Select from '../Components/ui/select/Select.vue';
+import SelectContent from '../Components/ui/select/SelectContent.vue';
+import SelectGroup from '../Components/ui/select/SelectGroup.vue';
+import SelectItem from '../Components/ui/select/SelectItem.vue';
+import SelectItemText from '../Components/ui/select/SelectItemText.vue';
+import SelectLabel from '../Components/ui/select/SelectLabel.vue';
+import SelectScrollDownButton from '../Components/ui/select/SelectScrollDownButton.vue';
+import SelectScrollUpButton from '../Components/ui/select/SelectScrollUpButton.vue';
+import SelectSeparator from '../Components/ui/select/SelectSeparator.vue';
+import SelectTrigger from '../Components/ui/select/SelectTrigger.vue';
+import SelectValue from '../Components/ui/select/SelectValue.vue';
 
 const page = usePage()
 
@@ -66,6 +77,19 @@ const user_workspaces = computed(() => {
         <div class="w-60 mb-20">
           <img src="../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
         </div>
+        <Select>
+          <SelectTrigger class="w-[180px]">
+            <SelectValue placeholder="Workspace 1" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Workspaces</SelectLabel>
+              <SelectItem value="apple">
+                XD
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <div class="flex flex-col">
           <div class="flex flex-row">
             <p>Logo</p>
