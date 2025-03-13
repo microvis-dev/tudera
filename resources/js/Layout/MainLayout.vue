@@ -61,14 +61,11 @@ const user_workspaces = computed(() => {
 -->
 
   <div class="container w-full h-full">
-    <section class="p-8 w-80 h-screen">
+    <section class="p-8 w-80 h-screen border border-[#2B2C30]">
       <aside class="flex flex-col items-center">
         <div class="w-60 mb-20">
-          <img src="../../assets/tuderaLogoWhite.svg">
+          <img src="../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
         </div>
-        <select class="border rounded-lg py-3 px-10">
-          <option default>Workspace 1</option>
-        </select>
         <div class="flex flex-col">
           <div class="flex flex-row">
             <p>Logo</p>
