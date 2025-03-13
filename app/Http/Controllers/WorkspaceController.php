@@ -35,7 +35,7 @@ class WorkspaceController extends Controller
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
             }
             
-            if ($workspace->users()->count() === 0) {
+            if ($workspace->users()->count() == 1) {
                 $workspace->delete();
             } else {
                 $user->workspaces()->detach($workspace->id);
