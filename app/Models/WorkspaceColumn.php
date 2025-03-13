@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\WorkspaceColumnTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +20,8 @@ class WorkspaceColumn extends Model
     protected $fillable = [
         'table_id',
         'type',
-        'column_name',
+        'name',
+        'order'
     ];
 
     public function workspace_table(): BelongsTo {
@@ -32,8 +34,9 @@ class WorkspaceColumn extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'table_id' => 'integer',
-        'type' => 'string',
-        'column_name' => 'string'
+        'table_id' => 'string', // uuid
+        'type' => WorkspaceColumnTypeEnum::class,
+        'name' => 'string',
+        'order' => 'integer'
     ];
 }

@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('workspace_columns', function (Blueprint $table) {
-            $table->id('column_id');
+            $table->id();
             $table->foreignUuid('table_id')->constrained('workspace_tables')->onDelete('cascade');
-            $table->enum('type', ['string', 'integer', 'float', 'datetime', 'status', 'ref'])->notNull();
-            $table->string('column_name')->notNull();
+            $table->enum('type', ['string', 'integer', 'float', 'datetime', 'status', 'ref']);
+            $table->integer('order');
+            $table->string('name');
             $table->timestamps();
         });
     }

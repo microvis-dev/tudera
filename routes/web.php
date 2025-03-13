@@ -42,7 +42,7 @@ Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace']
 Route::post('setup/create-workspace', [WorkspaceController::class, 'store_workspace'])
     ->name('setup.workspace.store');
 
-// r 
+// r + mw
 Route::get('workspaces', [WorkspaceController::class, 'index'])
     ->name('workspaces');
 
@@ -57,8 +57,6 @@ Route::get('workspaces/create-workspace', [WorkspaceController::class, 'create_w
 
 Route::post('workspaces/create-workspace', [WorkspaceController::class, 'store_workspace'])
     ->name('workspace.store');
-
-
 
 Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow();

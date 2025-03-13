@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Workspace;
 use App\Models\WorkspaceTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -13,7 +14,10 @@ class WorkspaceTableController extends Controller
     public function show(Request $request) {
         try {
             $user = $request->user();
-            $workspace_id = $request->input('workspace_id');
+            $table_id = $request->table;
+            $table = WorkspaceTable::find($table_id);
+            
+            $workspace_id = $table->workspace_id;
             $workspace = $user->workspaces()->find($workspace_id);
             
             if (!$workspace_id) {
@@ -25,7 +29,12 @@ class WorkspaceTableController extends Controller
             }
             
             
-            return redirect()->route('workspace-table.index');
+            
+            
+            return inertia('WorkspaceTable/Index', [
+                'workspace' => $workspace,
+                'table' => $table
+            ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while selecting workspace.');

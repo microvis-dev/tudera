@@ -17,12 +17,13 @@ class WorkspaceRow extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'column_id',
-        'value',
+        'table_id',
+        'order',
+        'name',
     ];
 
-    public function column(): BelongsTo {
-        return $this->belongsTo(WorkspaceColumn::class, 'column_id');
+    public function workspace_table(): BelongsTo {
+        return $this->belongsTo(WorkspaceTable::class, 'table_id');
     }
 
     /**
@@ -31,7 +32,8 @@ class WorkspaceRow extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'column_id' => 'integer',
-        'value' => 'string',
+        'table_id' => 'string', // uuid
+        'order' => 'integer',
+        'name' => 'string',
     ];
 }

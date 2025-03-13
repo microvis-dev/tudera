@@ -10,35 +10,35 @@ const props = defineProps({
 const emit = defineEmits(["update-table", "remove-table"])
 
 const editState = reactive({
-    isEditing: false,
-    editedName: props.table.name,
-    nameInputTextField: null
+  isEditing: false,
+  editedName: props.table.name,
+  nameInputTextField: null
 })
 
 const enableEditing = async () => {
-    editState.isEditing = true
-    await nextTick()
-    if (editState.nameInputTextField) {
-        editState.nameInputTextField.focus()
-    }
+  editState.isEditing = true
+  await nextTick()
+  if (editState.nameInputTextField) {
+    editState.nameInputTextField.focus()
+  }
 }
 
 const saveEdit = () => {
-    if (editState.editedName.trim() && editState.editedName !== props.table.name) {
-        emit("update-table", { id: props.table.id, name: editState.editedName })
-    }
+  if (editState.editedName.trim() && editState.editedName !== props.table.name) {
+    emit("update-table", { id: props.table.id, name: editState.editedName })
+  }
 
-    editState.isEditing = false
+  editState.isEditing = false
 }
 
 const removeTable = () => {
-    if (confirm('Are you sure?')) {
-        emit("remove-table", props.table.id)
-    }
+  if (confirm('Are you sure?')) {
+    emit("remove-table", props.table.id)
+  }
 }
 
 const go = () => {
-    router.get(route('workspace.table.show', { table: props.table.id }))
+  router.get(route('table.show', { table: props.table.id }))
 }
 </script>
 
