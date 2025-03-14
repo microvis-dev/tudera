@@ -29,7 +29,7 @@ const createColumn = () => {
             <select required v-model="columnForm.type" id="type"
                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 <option value="string">String</option>
-                <option value="int">Int</option>
+                <option value="integer">Int</option>
                 <option value="float">Float</option>
                 <option value="datetime">Datetime</option>
                 <option value="status">Status</option>

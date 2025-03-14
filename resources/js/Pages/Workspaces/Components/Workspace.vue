@@ -7,6 +7,7 @@ const props = defineProps({
     workspace: Object
 })
 
+// rw
 const emit = defineEmits(["update-name", "remove-workspace"])
 
 const editState = reactive({
@@ -49,13 +50,6 @@ const go = () => {
                 class="border px-2 py-1 rounded" ref="el => editState.nameInputTextField = el" />
             <span v-else>{{ workspace.name }}</span>
         </div>
-        <!--
-        <Link :href="route('workspace-table.index', { workspace_id: workspace.workspace_id })"
-            class="ml-2 px-2 py-1 bg-green-500 text-white rounded">
-        Go
-        </Link>
-        -->
-
         <button @click="go" class="ml-2 px-2 py-1 bg-green-500 text-white rounded">
             Go
         </button>

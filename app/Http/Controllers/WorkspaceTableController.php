@@ -31,7 +31,8 @@ class WorkspaceTableController extends Controller
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
-                'columns' => $table->columns 
+                'columns' => $table->columns,
+                'rows' => $table->rows
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());

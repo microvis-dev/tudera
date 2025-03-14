@@ -5,8 +5,10 @@ use App\Http\Controllers\SetupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceColumnController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use App\Models\WorkspaceColumn;
+use App\Models\WorkspaceRow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,4 +43,8 @@ Route::resource('workspace.table', WorkspaceTableController::class)
 
 //col
 Route::resource('table.columns', WorkspaceColumnController::class)
-    ->only(['index', 'create', 'store']);
+    ->only(['index', 'create', 'store', 'destroy', 'update']);
+
+//row
+Route::resource('table.rows', WorkspaceRowController::class)
+    ->only(['index', 'create', 'store', 'destroy', 'update']);
