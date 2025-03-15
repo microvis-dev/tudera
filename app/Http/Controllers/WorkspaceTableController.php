@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TableValue;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
 use Illuminate\Support\Facades\DB;
@@ -28,11 +29,19 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
+            $row_ids = $table->rows->pluck('id')->toArray();
+            $column_ids = $table->columns->pluck('id')->toArray();
+        
+            $values = TableValue::get()
+                ->whereIn('row_id', $row_ids)
+                ->whereIn('column_id', $column_ids);
+
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
                 'columns' => $table->columns,
-                'rows' => $table->rows
+                'rows' => $table->rows,
+                'values' => $values
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());

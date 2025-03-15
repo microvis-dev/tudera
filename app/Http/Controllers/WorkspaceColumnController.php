@@ -12,8 +12,31 @@ use Illuminate\Support\Facades\Auth;
 class WorkspaceColumnController extends Controller
 {
     public function index(Request $request, $table_id) {
-        $columns = WorkspaceTable::findOrFail($table_id)->columns;
-        return response()->json($columns);
+        
+    }
+
+    function show() {
+        
+    }
+
+    public function create(Request $request, $table_id) {
+        try {
+            $user = $request->user();
+            $table = WorkspaceTable::findOrFail($table_id);
+            $workspace = $table->workspace;
+        
+            if (!$user->workspaces()->find($workspace->id)) {
+                return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
+            }
+            
+            return inertia('WorkspaceTable/CreateColumn', [
+                'table' => $table
+            ]);
+        } catch (Exception $e) {
+            Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
+            dd($e->getMessage());
+            return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
+        }
     }
 
     public function store(Request $request, $table_id) {
@@ -44,26 +67,6 @@ class WorkspaceColumnController extends Controller
             Log::error('Hiba WorkspaceColumnController store: ' . $e->getMessage());
             dd($e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while creating the column.');
-        }
-    }
-
-    public function create(Request $request, $table_id) {
-        try {
-            $user = $request->user();
-            $table = WorkspaceTable::findOrFail($table_id);
-            $workspace = $table->workspace;
-        
-            if (!$user->workspaces()->find($workspace->id)) {
-                return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
-            }
-            
-            return inertia('WorkspaceTable/CreateColumn', [
-                'table' => $table
-            ]);
-        } catch (Exception $e) {
-            Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
-            dd($e->getMessage());
-            return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
         }
     }
 

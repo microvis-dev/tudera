@@ -8,7 +8,7 @@ const props = defineProps({
 const emit = defineEmits(['delete', 'update'])
 
 const deleteColumn = () => {
-    if (confirm("Are u sure?")) {
+    if (props.column.order > 1 && confirm("Are u sure?")) {
         emit('delete', props.column.id)
     }
 }
@@ -20,19 +20,17 @@ const editState = reactive({
 })
 
 const enableEditing = async () => {
-    editState.isEditing = true
-    await nextTick()
-    if (editState.nameInputTextField) {
-        editState.nameInputTextField.focus()
+    if (props.column.order > 1) {
+        editState.isEditing = true
+        await nextTick()
+        if (editState.nameInputTextField) {
+            editState.nameInputTextField.focus()
+        }
     }
 }
 
 const saveEdit = () => {
     if (editState.editedName.trim() && editState.editedName !== props.column.name) {
-        const new_column = {
-            name: editState.editedName
-        }
-        
         emit("update", editState.editedName, props.column)
     }
 

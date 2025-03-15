@@ -5,29 +5,15 @@ import { route } from 'ziggy-js';
 import axios from 'axios';
 import Column from './Components/Column.vue';
 import Row from './Components/Row.vue';
+import Value from './Components/Value.vue';
 
 const props = defineProps({
     workspace: Object,
     workspace_table: Object,
     columns: Array,
-    rows: Array
+    rows: Array,
+    values: Object
 })
-/*
-const getColumns = async () => {
-    await axios.get(route('table.columns.index', { table: props.workspace_table.id }))
-        .then((response) => {
-            return response.data
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-}
-
-const colums = computed(() => {
-    return getColumns()
-})
-console.log()
-*/
 
 //col
 const deleteColumn = (column_id) => {
@@ -45,6 +31,45 @@ const deleteRow = (row_id) => {
 
 const updateRow = (newRowName, row) => {
     router.put(route('table.rows.destroy', { table: props.workspace_table, row: row, name: newRowName }))
+}
+
+//value
+const findValue = (row, column) => {
+    return Object.values(props.values).find(v => v.row_id == row.id && v.column_id == column.id)
+}
+
+const getValue = (row, column) => {
+    const value = findValue(row, column)
+    return value ? value : null
+}
+
+const getValueValue = (row, column) => {
+    const value = findValue(row, column)
+    return value ? value.value : null
+}
+
+const updateValue = (newValue, value) => {
+    if (newValue.length == 0) {
+        router.delete(route('table.values.destroy', { table: props.workspace_table }))
+    } else {
+        router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: newValue }))
+    }
+}
+
+const updateValueDeleteIfEmpty = (newValue, valueObj) => {
+    if (newValue == "" && valueObj && valueObj.id) {
+        router.delete(route('table.values.destroy', { table: props.workspace_table.id, value: valueObj.id }))
+    }
+    else if (valueObj && valueObj.id) {
+        router.put(route('table.values.update', { table: props.workspace_table.id, value: valueObj.id }), {
+            value: newValue
+        })
+    }
+}
+
+const deleteValue = (value) => {
+    console.log(value)
+    router.delete(route('table.values.destroy', { table: props.workspace_table, value: value }))
 }
 
 </script>
@@ -80,8 +105,12 @@ const updateRow = (newRowName, row) => {
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="row in rows" :key="row.id">
-                                    <Row :row="row" @delete="deleteRow" @update="updateRow" />
+                                <tr v-for="(row, rIndex) in rows" :key="row.id">
+                                    <td v-for="(column, cIndex) in columns" :key="column.id">
+                                        <Row v-if="cIndex == 0" :row="row" @delete="deleteRow" @update="updateRow" />
+                                        <Value v-else :table="workspace_table" :row="row" :column="column" :x="cIndex"
+                                            :y="rIndex" :value="getValue(row, column)" @update="updateValue" @delete="deleteValue" />
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

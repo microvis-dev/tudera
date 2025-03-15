@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\TableValueController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceColumnController;
 use App\Http\Controllers\WorkspaceController;
@@ -48,3 +49,6 @@ Route::resource('table.columns', WorkspaceColumnController::class)
 //row
 Route::resource('table.rows', WorkspaceRowController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
+
+Route::resource('table.values', TableValueController::class)
+    ->only(['create', 'store', 'update', 'destroy']);
