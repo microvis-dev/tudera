@@ -40,7 +40,7 @@ class TableValue extends Model
     protected $casts = [
         'row_id' => 'integer',
         'column_id' => 'integer',
-        'value' => 'string|null', 
+        'value' => 'string', 
     ];
 
 }
