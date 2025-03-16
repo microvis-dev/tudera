@@ -1,24 +1,8 @@
 <script setup>
-import {ref} from "vue"
+import { ref } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
-import dashboardIcon from '../../assets/graphUp.svg';
-import lead from '../../assets/lead.svg';
-import schedule from '../../assets/schedule.svg';
-import WorkspaceSelect from './Components/WorkspaceSelect.vue';
-
-const workspaceDropdownOpen = ref(false);
-
-const handleDropdownChange = (isOpen) => {
-  workspaceDropdownOpen.value = isOpen;
-};
-
-const sidebarItems = [
-  { "img": dashboardIcon, "name": "Dashboard" },
-  { "img": lead, "name": "Leads" },
-  { "img": schedule, "name": "Schedule" }
-]
 
 const page = usePage()
 
@@ -37,7 +21,6 @@ const user = computed(() => {
 const user_workspaces = computed(() => {
   return null
 })
-
 </script>
 
 <template>
@@ -73,38 +56,34 @@ const user_workspaces = computed(() => {
   <div v-if="user_workspaces">
     <span>Workspaces</span>
 
-  </div>
+        <WorkspaceSelect @dropdown-change="handleDropdownChange" @height-change="updateDropdownHeight" />
   <slot></slot>
--->
-
-<div class="container w-full h-full">
-    <section class="p-8 w-80 h-screen border border-[#2B2C30]">
-      <aside class="flex flex-col items-center">
-        <div class="w-60 mb-20">
-          <img src="../../assets/tuderaLogoWhite.svg">
-        </div>
-        <WorkspaceSelect @dropdown-change="handleDropdownChange" />
-        <div class="w-full mt-6">
-          <div 
-            class="sidebar-items flex flex-col" 
-            :class="{ 'dropdown-open': workspaceDropdownOpen }">
-            <div v-for="item in sidebarItems" class="flex flex-row items-center p-5">
-              <img class="w-10 h-10 me-3" :src="item.img">
-              <h2 class="roboto-font-bold text-xl">{{ item.name }}</h2>
-            </div>
-          </div>
-        </div>
-      </aside>
+  -->
+  <div class="w-screen h-screen flex flex-row">
+    <section class="w-2/12">
+      <div class="h-screen bg-yellow">sidebar</div>
+    </section>
+    <section class="w-10/12 flex flex-col">
+      <div class="flex flex-row h-fit">
+        <div class="w-4/5 bg-blue">search</div>
+        <div class="w-1/5 bg-green">profile</div>
+      </div>
+      <div class="flex flex-row h-full">
+        <section class="w-8/12">
+          <div class="bg-red h-75">Main</div>
+          <section class="flex flex-row">
+            <div class="bg-red-600 h-48 w-1/2">stat1</div>
+            <div class="bg-pink-600 w-1/2">stat2</div>
+          </section>
+        </section>
+        <section class="w-4/12">
+          <div class="w-full h-1/2 bg-purple">todoList</div>
+          <div class="w-full h-1/2 bg-pink-400">stat3</div>
+        </section>
+      </div>
     </section>
   </div>
 </template>
 
 <style scoped>
-.sidebar-items {
-  transition: transform 0.3s ease;
-}
-
-.dropdown-open {
-  transform: translateY(150px); /* Adjust this value based on your dropdown height */
-}
 </style>
