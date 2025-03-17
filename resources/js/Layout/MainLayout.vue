@@ -59,7 +59,7 @@ const user_workspaces = computed(() => {
         <WorkspaceSelect @dropdown-change="handleDropdownChange" @height-change="updateDropdownHeight" />
   <slot></slot>
   -->
-  <div class="w-screen h-screen flex flex-row">
+  <div class="w-screen h-screen flex flex-row overflow-hidden">
     <section class="w-2/12">
       <div class="h-screen bg-yellow">sidebar</div>
     </section>
