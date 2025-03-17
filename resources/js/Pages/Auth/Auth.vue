@@ -1,12 +1,16 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
 import { computed, defineOptions, reactive } from "vue";
-import { useForm, router } from "@inertiajs/vue3";
+import { useForm, router, useRemember } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 
 defineOptions({
     layout: AuthLayout
+})
+
+const remember = useRemember({
+    email: null
 })
 
 const viewState = reactive({
@@ -60,9 +64,8 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
-            router.post(route('setup.user.create'), {
-                email: authForm.email
-            });
+            router.get(route('signup.create'))
+            remember.email = authForm.email
         } else {
             alert("letezo email")
         }

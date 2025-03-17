@@ -18,9 +18,6 @@ const user = computed(() => {
   return page.props.user
 })
 
-const user_workspaces = computed(() => {
-  return null
-})
 </script>
 
 <template>
@@ -61,16 +58,22 @@ const user_workspaces = computed(() => {
   -->
   <div class="w-screen h-screen flex flex-row overflow-hidden">
     <section class="w-2/12">
-      <div class="h-screen bg-yellow">sidebar</div>
+      <div class="h-screen bg-yellow">
+        sidebar
+      </div>
     </section>
     <section class="w-10/12 flex flex-col">
       <div class="flex flex-row h-fit">
         <div class="w-4/5 bg-blue">search</div>
-        <div class="w-1/5 bg-green">profile</div>
+        <div class="w-1/5 bg-green">
+          profile
+          {{ user.email }}
+        </div>
       </div>
       <div class="flex flex-row h-full">
         <section class="w-8/12">
           <div class="bg-red h-75">Main</div>
+          <slot></slot>
           <section class="flex flex-row">
             <div class="bg-red-600 h-48 w-1/2">stat1</div>
             <div class="bg-pink-600 w-1/2">stat2</div>
@@ -85,5 +88,4 @@ const user_workspaces = computed(() => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

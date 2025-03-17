@@ -26,7 +26,13 @@ class WorkspaceController extends Controller
     }
 
     function create(Request $request) {
-        return inertia('Workspaces/Create');
+        $user = $request->user();
+        $workspaces = $user->workspaces;
+        
+        if (!empty($workspaces)) {
+            return inertia('Workspaces/Create');
+        }
+        return inertia('Setup/CreateWorkspace');
     }
 
     public function store(Request $request) {

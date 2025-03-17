@@ -1,6 +1,6 @@
 <?php
-
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\TableValueController;
 use App\Http\Controllers\UserController;
@@ -8,30 +8,25 @@ use App\Http\Controllers\WorkspaceColumnController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
-use App\Models\WorkspaceColumn;
-use App\Models\WorkspaceRow;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return inertia('Index/Index');
-})->name('index');
+// index
+Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
 
 //auth
 Route::resource('auth', AuthController::class)->only(['index', 'create', 'store', 'destroy']);
 Route::get('auth/check_email', [AuthController::class, 'check_email'])->name('auth.check_email');
 
-// setup
-//Route::any('setup/create-user', [SetupController::class, 'createUser'])
-  //  ->name('setup.user.create');
 // user
 Route::resource('user', UserController::class)
     ->only(['store']);
 
-Route::get('setup/create-workspace', [SetupController::class, 'createWorkspace'])
-    ->name('setup.workspace.create');
+// setup
+Route::resource('setup.create.workspace', WorkspaceController::class)
+    ->only(['create', 'store']);
 
-Route::post('setup/create-workspace', [WorkspaceController::class, 'store'])
-    ->name('setup.workspace.store');
+Route::resource('signup', SetupController::class)
+    ->only(['create']);
 
 // r + mw
 Route::resource('workspaces', WorkspaceController::class)
