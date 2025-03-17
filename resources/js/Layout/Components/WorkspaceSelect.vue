@@ -50,7 +50,7 @@ const selectWorkspace = (workspace) => {
     <div class="relative w-48">
           <!-- Dropdown Button -->
           <button @click="dropdownOpen = !dropdownOpen"
-            class="w-full flex items-center justify-between bg-[#1C1D21] text-white px-4 py-2" :class="[dropdownOpen ? 'rounded-tl-lg rounded-tr-lg border-gray-600 border-t border-l border-r' : 'rounded-lg border border-gray-600']">
+            class="w-full flex items-center justify-between bg-[#2B2C30] text-white px-4 py-2 border border-gray-600" :class="[dropdownOpen ? 'rounded-tl-lg rounded-tr-lg border-b-0' : 'rounded-lg']">
             <span>{{ selectedWorkspace.name }}</span>
             <span class="w-5 h-5 right-0"><img src="../../../assets/openArrow.svg"></span>
           </button>
@@ -60,7 +60,7 @@ const selectWorkspace = (workspace) => {
             <div 
               v-if="dropdownOpen" 
               ref="dropdownElement"
-              class="absolute w-full bg-[#1C1D21] border-b border-l border-r border-gray-600 text-white rounded-br-lg rounded-bl-lg shadow-lg p-2">
+              class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2">
 
               <!-- Workspaces List -->
               <div>
@@ -81,3 +81,22 @@ const selectWorkspace = (workspace) => {
           </transition>
         </div>
 </template>
+<style scoped>
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.2s ease;
+  transform-origin: top;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+</style>
