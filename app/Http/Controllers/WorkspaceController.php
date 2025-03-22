@@ -26,6 +26,12 @@ class WorkspaceController extends Controller
     }
 
     function create(Request $request) {
+        $user = $request->user();
+        $workspaces = $user->workspaces;
+        
+        if (empty($workspaces)) {
+            return inertia('Setup/CreateWorkspace');
+        }
         return inertia('Workspaces/Create');
     }
 
@@ -47,7 +53,7 @@ class WorkspaceController extends Controller
             $users_to_workspace->save();
         });
 
-        return redirect()->back()->with('success', 'Workspace created successfully!');
+        return redirect()->route('index')->with('success', 'Workspace created successfully!');
     }
 
     function show() {

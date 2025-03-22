@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class SetupController extends Controller
 {
-    public function createUser(Request $request) {
+    public function create(Request $request) {
         return inertia('Setup/CreateUser', [
-            'email' => '',
+            'email' => $request->email,
         ]);
     }
 

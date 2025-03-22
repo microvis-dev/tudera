@@ -5,6 +5,11 @@ import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import CreateWorkspaceForm from '../../Components/CreateWorkspaceForm.vue';
 
+defineOptions({
+    layout: AuthLayout
+})
+
+const SUBMIT_ROUTE = 'setup.workspace.store'
 
 let workspaceHandle = ref("");
 
@@ -17,19 +22,14 @@ const getWorkspaceUrl = computed(() => {
 
 })
 
-defineOptions({
-    layout: AuthLayout
-})
-
 const createWorkspaceForm = useForm({
     name: null
 })
 
 const createWorkspace = (() => {
-    createWorkspaceForm.post(route('setup.workspace.store'))
+    createWorkspaceForm.post(route(SUBMIT_ROUTE))
 })
 
-const SUBMIT_ROUTE = 'setup.workspace.store'
 
 </script>
 
