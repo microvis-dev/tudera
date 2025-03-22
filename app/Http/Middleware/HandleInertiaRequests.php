@@ -34,18 +34,19 @@ class HandleInertiaRequests extends Middleware
      * @return array<string, mixed>
      */
     public function share(Request $request): array
-    {
-        return array_merge(parent::share($request), [
-            'flash' => [
-                'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error')
-            ],
-            'user' => $request->user() ? [
-                'id' => $request->user()->id,
-                'name' => $request->user()->name,
-                'email' => $request->user()->email,
-                'phone_number' => $request->user()->phone_number
-            ] : null
-        ]);
+{
+    $user = $request->user();
+
+    if ($user) {
+        $user->load('workspaces.tables');
     }
+    
+    return array_merge(parent::share($request), [
+        'flash' => [
+            'success' => $request->session()->get('success'),
+            'error' => $request->session()->get('error')
+        ],
+        'user' => $user
+    ]);
+}
 }

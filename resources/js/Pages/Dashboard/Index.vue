@@ -1,14 +1,14 @@
 <script setup>
-import { nextTick, ref } from "vue"
+import { ref } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
-import StatComponent from "./Components/MainLayoutComponents/StatComponent.vue";
-import Sidebar from "./Components/MainLayoutComponents/Sidebar.vue";
-import Search from "./Components/MainLayoutComponents/Search.vue";
-import Profile from "./Components/MainLayoutComponents/Profile.vue";
-import MainComponent from "./Components/MainLayoutComponents/MainComponent.vue";
-import TodoList from "./Components/MainLayoutComponents/TodoList.vue";
+import StatComponent from "../../Layout/Components/MainLayoutComponents/StatComponent.vue";
+import Sidebar from "../../Layout/Components/MainLayoutComponents/Sidebar.vue";
+import Search from "../../Layout/Components/MainLayoutComponents/Search.vue";
+import Profile from "../../Layout/Components/MainLayoutComponents/Profile.vue";
+import MainComponent from "../../Layout/Components/MainLayoutComponents/MainComponent.vue";
+import TodoList from "../../Layout/Components/MainLayoutComponents/TodoList.vue";
 
 const page = usePage()
 
@@ -24,10 +24,9 @@ const user = computed(() => {
   return page.props.user
 })
 
-const workspaces = computed(() => {
-  return user.value?.workspaces || []
+const user_workspaces = computed(() => {
+  return null
 })
-
 </script>
 
 <template>
@@ -67,26 +66,26 @@ const workspaces = computed(() => {
   <slot></slot>
   -->
   <div class="w-screen h-screen flex flex-row overflow-hidden">
-    <section class="w-2/12">
-      <div class="h-screen">
-        <Sidebar :workspaces="workspaces" />
-      </div>
-    </section>
     <section class="w-10/12 flex flex-col">
-      <div class="flex flex-row h-fit">
-        <div class="w-4/5">
-          <Search />
-        </div>
-        <span class="h-10 w-0.5 bg-[#2B2C30] mt-1.5"></span>
-        <div class="w-1/5">
-          <Profile :name="user.name" :email="user.email"/>
-        </div>
-      </div>
       <div class="flex flex-row h-full">
-        <section class="w-full">
-          <div class="w-full h-full">
-            <slot></slot>
+        <section class="w-8/12">
+          <div class="w-full h-4/6">
+            <MainComponent />
           </div>
+          <section class="flex flex-row">
+            <div class="h-fit w-1/2 p-5">
+              <StatComponent :title="'New Projects'" :value="84" :previous-value="65" :color="'#63D4B7'" />
+            </div>
+            <div class="h-fit w-1/2 p-5">
+              <StatComponent :title="'New Tasks'" :value="262" :previous-value="180" :color="'#4469DE'" />
+            </div>
+          </section>
+        </section>
+        <section class="w-4/12">
+          <div class="w-full h-1/2">
+            <TodoList />
+          </div>
+          <div class="w-full h-1/2 bg-pink-400">stat3</div>
         </section>
       </div>
     </section>

@@ -9,10 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class SetupController extends Controller
 {
-    public function create(Request $request) {
-        return inertia('Setup/CreateUser', [
-            'email' => $request->email,
-        ]);
+    public function create() {
+        return inertia('Setup/CreateUser');
     }
 
     public function createWorkspace(Request $request) {
