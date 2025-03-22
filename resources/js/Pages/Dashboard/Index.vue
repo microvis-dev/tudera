@@ -66,21 +66,7 @@ const user_workspaces = computed(() => {
   <slot></slot>
   -->
   <div class="w-screen h-screen flex flex-row overflow-hidden">
-    <section class="w-2/12">
-      <div class="h-screen">
-        <Sidebar />
-      </div>
-    </section>
     <section class="w-10/12 flex flex-col">
-      <div class="flex flex-row h-fit">
-        <div class="w-4/5">
-          <Search />
-        </div>
-        <span class="h-10 w-0.5 bg-[#2B2C30] mt-1.5"></span>
-        <div class="w-1/5">
-          <Profile />
-        </div>
-      </div>
       <div class="flex flex-row h-full">
         <section class="w-8/12">
           <div class="w-full h-4/6 border-2 border-[#2B2C30]">
