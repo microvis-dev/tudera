@@ -1,7 +1,7 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
 import { computed, defineOptions, reactive } from "vue";
-import { useForm, router, useRemember } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 
@@ -9,9 +9,6 @@ defineOptions({
     layout: AuthLayout
 })
 
-const remember = useRemember({
-    email: null
-})
 
 const viewState = reactive({
     isSignIn: true,
@@ -64,8 +61,8 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
+            localStorage.setItem('userEmail', authForm.email)
             router.get(route('signup.create'))
-            remember.email = authForm.email
         } else {
             alert("letezo email")
         }
@@ -106,15 +103,18 @@ const login = (() => {
                         Sign Up
                     </label>
                 </div>
-              <div class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
-                <input type="text" id="email" v-model="authForm.email"
-                       class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-                       placeholder=" " :class="{'border outline-none ring-red-600 border-red-600': viewState.errorField !== ''}" />
-                <img class="absolute right-3 top-1/2 transform -translate-y-1/2" v-if="viewState.errorField !== ''" src="../../../assets/exclamation.svg" alt="Exclamation mark">
-                <label for="email"
-                       class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light" :class="{'text-red-500': viewState.errorField !== ''}">Email
-                  address</label>
-                    <span class="text-sm text-red-500 block" v-if="viewState.errorField">{{viewState.errorField}}</span>
+                <div class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
+                    <input type="text" id="email" v-model="authForm.email"
+                        class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                        placeholder=" "
+                        :class="{ 'border outline-none ring-red-600 border-red-600': viewState.errorField !== '' }" />
+                    <img class="absolute right-3 top-1/2 transform -translate-y-1/2" v-if="viewState.errorField !== ''"
+                        src="../../../assets/exclamation.svg" alt="Exclamation mark">
+                    <label for="email"
+                        class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light"
+                        :class="{ 'text-red-500': viewState.errorField !== '' }">Email
+                        address</label>
+                    <span class="text-sm text-red-500 block" v-if="viewState.errorField">{{ viewState.errorField }}</span>
                 </div>
                 <div v-if="viewState.passwordField" class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
                     <input v-model="authForm.password" type="password" id="password"

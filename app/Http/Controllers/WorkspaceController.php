@@ -29,10 +29,10 @@ class WorkspaceController extends Controller
         $user = $request->user();
         $workspaces = $user->workspaces;
         
-        if (!empty($workspaces)) {
-            return inertia('Workspaces/Create');
+        if (empty($workspaces)) {
+            return inertia('Setup/CreateWorkspace');
         }
-        return inertia('Setup/CreateWorkspace');
+        return inertia('Workspaces/Create');
     }
 
     public function store(Request $request) {
@@ -53,7 +53,7 @@ class WorkspaceController extends Controller
             $users_to_workspace->save();
         });
 
-        return redirect()->back()->with('success', 'Workspace created successfully!');
+        return redirect()->route('index')->with('success', 'Workspace created successfully!');
     }
 
     function show() {

@@ -1,14 +1,12 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { ref, watchEffect, defineOptions, computed, reactive } from "vue";
-import { useForm, useRemember, router } from "@inertiajs/vue3";
+import { ref, watchEffect, defineOptions, computed, reactive, onMounted } from "vue";
+import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 defineOptions({
     layout: AuthLayout
 })
-
-
 
 const name = reactive({
     first: '',
@@ -21,9 +19,18 @@ const name = reactive({
 const userForm = useForm({
     name: computed(() => name.getFullName()),
     phone: '',
-    email: remember.email,
+    email: '',
     password: '',
     redirectTo: 'setup.workspace.create'
+})
+
+onMounted(() => {
+    const savedEmail = localStorage.getItem('userEmail');
+    if (savedEmail) {
+        userForm.email = savedEmail;
+    } else {
+        // ...
+    }
 })
 
 const submitForm = () => {

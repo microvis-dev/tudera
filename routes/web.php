@@ -22,11 +22,14 @@ Route::resource('user', UserController::class)
     ->only(['store']);
 
 // setup
-Route::resource('setup.create.workspace', WorkspaceController::class)
-    ->only(['create', 'store']);
+// Route::resource('setup.workspace', WorkspaceController::class)->only(['create', 'store']);
+Route::get('setup/workspace/create', [WorkspaceController::class, 'create'])
+     ->name('setup.workspace.create');
+     
+Route::post('setup/workspace', [WorkspaceController::class, 'store'])
+     ->name('setup.workspace.store');
 
-Route::resource('signup', SetupController::class)
-    ->only(['create']);
+// Route::resource('signup', SetupController::class)->only(['create']);
 
 // r + mw
 Route::resource('workspaces', WorkspaceController::class)
