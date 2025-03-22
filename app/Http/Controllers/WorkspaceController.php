@@ -57,7 +57,7 @@ class WorkspaceController extends Controller
             $users_to_workspace->save();
 
             // create leads
-            //$this->createDefaultLeadsTable($workspace);
+            $this->createDefaultLeadsTable($workspace);
 
         });
 
@@ -115,96 +115,21 @@ class WorkspaceController extends Controller
         }
     }
 
-    private function createDefaultLeadsTable($workspace) {
-        try {
-            // Create leads table
-            $leadsTable = new WorkspaceTable();
-            $leadsTable->workspace_id = $workspace->id;
-            $leadsTable->name = 'Leads';
-            $leadsTable->save();
-            
-            // Import the enum if needed
-            // use App\WorkspaceColumnTypeEnum;
-            
-            // Create columns with appropriate types
-            $columnDefinitions = [
-                'Lead' => 'TEXT',
-                'Status' => 'TEXT',
-                'Create a contact' => 'TEXT',
-                'Company' => 'TEXT',
-                'Title' => 'TEXT',
-                'Email' => 'TEXT',
-                'Phone' => 'TEXT',
-                'Last interaction' => 'TEXT',
-                'Active sequences' => 'TEXT'
-            ];
-            
-            $columns = [];
-            $index = 0;
-            foreach ($columnDefinitions as $name => $type) {
-                $column = new WorkspaceColumn();
-                $column->table_id = $leadsTable->id;
-                $column->name = $name;
-                $column->type = $type; // Use the appropriate type value
-                $column->order = $index++;
-                $column->save();
-                $columns[$name] = $column;
-            }
-            
-            // Rest of your code remains the same
-            // Create rows with data
-            $rowData = [
-                'Robert Thomson' => [
-                    'Create a contact' => 'Move to Contacts',
-                    'Company' => 'Apple',
-                    'Title' => 'COO',
-                    'Email' => 'robert@apple.com',
-                    'Phone' => '+1 202 795 3213',
-                    'Last interaction' => 'Feb 28'
-                ],
-                'Steven Scott' => [
-                    'Create a contact' => 'Move to Contacts',
-                    'Company' => 'Microsoft',
-                    'Title' => 'Team leader',
-                    'Email' => 'steven@microsoft.com',
-                    'Phone' => '+1 202 795 3265',
-                    'Last interaction' => 'Dec 16, 2024'
-                ]
-            ];
-        
-            $rowOrder = 0;
-            foreach ($rowData as $rowName => $values) {
-                // Create row
-                $row = new WorkspaceRow();
-                $row->table_id = $leadsTable->id;
-                $row->name = $rowName;
-                $row->order = $rowOrder++;
-                $row->save();
-                
-                // Add lead name as a value for the "Lead" column
-                if (isset($columns['Lead'])) {
-                    $leadValue = new TableValue();
-                    $leadValue->row_id = $row->id;
-                    $leadValue->column_id = $columns['Lead']->id;
-                    $leadValue->value = $rowName;
-                    $leadValue->save();
-                }
-                
-                // Add all other values
-                foreach ($values as $columnName => $value) {
-                    if (isset($columns[$columnName])) {
-                        $tableValue = new TableValue();
-                        $tableValue->row_id = $row->id;
-                        $tableValue->column_id = $columns[$columnName]->id;
-                        $tableValue->value = $value;
-                        $tableValue->save();
-                    }
-                }
-            }
-            
-            return true;
-        } catch (Exception $e) {
-            dd($e->getMessage());
-        }
+
+    private function createDefaultLeadsTable(Workspace $workspace)
+{
+    try {
+        // Create the "Leads" table
+        $leadsTable = new WorkspaceTable();
+        $leadsTable->workspace_id = $workspace->id;
+        $leadsTable->name = 'Leads';
+        $leadsTable->save();
+
+    } catch (Exception $e) {
+        Log::error('Error creating default Leads table: ' . $e->getMessage());
+        throw $e; // Re-throw so DB transaction can roll back
     }
+}
+
+    
 }
