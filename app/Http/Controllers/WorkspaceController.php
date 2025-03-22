@@ -32,8 +32,8 @@ class WorkspaceController extends Controller
     function create(Request $request) {
         $user = $request->user();
         $workspaces = $user->workspaces;
-        
-        if (empty($workspaces)) {
+
+        if ($workspaces->count() == 0) {
             return inertia('Setup/CreateWorkspace');
         }
         return inertia('Workspaces/Create');
@@ -115,77 +115,21 @@ class WorkspaceController extends Controller
         }
     }
 
+
     private function createDefaultLeadsTable(Workspace $workspace)
-    {
-        // Create leads table
+{
+    try {
+        // Create the "Leads" table
         $leadsTable = new WorkspaceTable();
         $leadsTable->workspace_id = $workspace->id;
         $leadsTable->name = 'Leads';
         $leadsTable->save();
-        
-        // Create columns
-        $columnNames = [
-            'Lead', 'Status', 'Create a contact', 'Company', 
-            'Title', 'Email', 'Phone', 'Last interaction', 'Active sequences'
-        ];
-        
-        $columns = [];
-        foreach ($columnNames as $index => $name) {
-            $column = new WorkspaceColumn();
-            $column->table_id = $leadsTable->id;
-            $column->name = $name;
-            $column->type = 'text'; // Default type
-            $column->order = $index;
-            $column->save();
-            $columns[$name] = $column;
-        }
-        
-        // Create rows with data
-        $rowData = [
-            'Robert Thomson' => [
-                'Create a contact' => 'Move to Contacts',
-                'Company' => 'Apple',
-                'Title' => 'COO',
-                'Email' => 'robert@apple.com',
-                'Phone' => '+1 202 795 3213',
-                'Last interaction' => 'Feb 28'
-            ],
-            'Steven Scott' => [
-                'Create a contact' => 'Move to Contacts',
-                'Company' => 'Microsoft',
-                'Title' => 'Team leader',
-                'Email' => 'steven@microsoft.com',
-                'Phone' => '+1 202 795 3265',
-                'Last interaction' => 'Dec 16, 2024'
-            ]
-        ];
-        
-        $rowOrder = 0;
-        foreach ($rowData as $rowName => $values) {
-            // Create row
-            $row = new WorkspaceRow();
-            $row->table_id = $leadsTable->id;
-            $row->name = $rowName;
-            $row->order = $rowOrder++;
-            $row->save();
-            
-            // Add lead name as a value for the "Lead" column
-            $leadValue = new TableValue();
-            $leadValue->row_id = $row->id;
-            $leadValue->column_id = $columns['Lead']->id;
-            $leadValue->value = $rowName;
-            $leadValue->save();
-            
-            // Add all other values
-            foreach ($values as $columnName => $value) {
-                $tableValue = new TableValue();
-                $tableValue->row_id = $row->id;
-                $tableValue->column_id = $columns[$columnName]->id;
-                $tableValue->value = $value;
-                $tableValue->save();
-            }
-        }
+
+    } catch (Exception $e) {
+        Log::error('Error creating default Leads table: ' . $e->getMessage());
+        throw $e; // Re-throw so DB transaction can roll back
     }
-    
+}
+
     
 }
