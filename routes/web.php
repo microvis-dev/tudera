@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SetupController;
 
 // index
 Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
@@ -30,7 +31,7 @@ Route::get('setup/workspace/create', [WorkspaceController::class, 'create'])
 Route::post('setup/workspace', [WorkspaceController::class, 'store'])
     ->name('setup.workspace.store');
 
-// Route::resource('signup', SetupController::class)->only(['create']);
+Route::resource('signup', SetupController::class)->only(['create']);
 
 // r + mw
 Route::resource('workspaces', WorkspaceController::class)
