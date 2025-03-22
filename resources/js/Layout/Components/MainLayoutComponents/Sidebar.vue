@@ -16,7 +16,6 @@ const tables = ref([])
 const sidebarItems = computed(() => {
   const defaultItems =  [
     { img: dashboardIcon, name: "Dashboard", url: { name: "dashboard.index", params: null } },
-    { img: lead, name: "Leads", url: { name: "leads.index", params: null } },
     { img: schedule, name: "Schedule", url: { name: "calendar.index", params: null } }
   ]
   return [...defaultItems, ...tables.value]

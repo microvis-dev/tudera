@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 const dropdownOpen = ref(false);
 
 const props = defineProps({
@@ -10,6 +12,10 @@ const props = defineProps({
 const openDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value
 }
+
+const logout = () => {
+  router.delete(route('auth.destroy', { auth: true }))
+}
 </script>
 <template>
   <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5" @click="openDropdown">
@@ -19,34 +25,35 @@ const openDropdown = () => {
     </div>
     <div>
       <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
-      <p class="text-sm roboto-font-regular text-[#757575]">{{props.email}}</p>
+      <p class="text-sm roboto-font-regular text-[#757575]">{{ props.email }}</p>
     </div>
     <img v-if="!dropdownOpen" src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5">
-    <img v-else src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5 rotate-180"
-  </section>
-  <div class="relative flex justify-center">
-    <transition name="slide-down">
-      <div v-if="dropdownOpen"
-        class="absolute min-w-full flex flex-col items-center bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2 mt-2">
-        <div class="flex flex-col w-[200px] justify-center rounded-[5px] items">
-          <button class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">
-            <img src="../../../../assets/settings.svg" class="w-8 h-8">
-            <span class="text-lg text-center roboto-font-medium ms-2">Settings</span>
-          </button>
-          <button class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">
-            <img src="../../../../assets/logout.svg" class="w-8 h-8">
-            <span class="text-lg text-center roboto-font-medium ms-2">Log out</span>
-          </button>
+    <img v-else src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5 rotate-180" </section>
+    <div class="relative flex justify-center">
+      <transition name="slide-down">
+        <div v-if="dropdownOpen"
+          class="absolute min-w-full flex flex-col items-center bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2 mt-2">
+          <div class="flex flex-col w-[200px] justify-center rounded-[5px] items">
+            <button
+              class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">
+              <img src="../../../../assets/settings.svg" class="w-8 h-8">
+              <span class="text-lg text-center roboto-font-medium ms-2">Settings</span>
+            </button>
+            <button @click="logout"
+              class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">
+              <img src="../../../../assets/logout.svg" class="w-8 h-8">
+              <span class="text-lg text-center roboto-font-medium ms-2">Log out</span>
+            </button>
+          </div>
+          <div class="relative flex rounded-xl p-1 h-9 item-center mb-5">
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
-        <div class="relative flex rounded-xl p-1 h-9 item-center mb-5">
-          <label class="switch">
-            <input type="checkbox">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-    </transition>
-  </div>
+      </transition>
+    </div>
 </template>
 <style scoped>
 .slide-down-enter-active,
