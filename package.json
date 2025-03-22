@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.0.3",
+        "circle-progress.vue": "^3.3.0",
         "ziggy-js": "^2.5.2"
     }
 }

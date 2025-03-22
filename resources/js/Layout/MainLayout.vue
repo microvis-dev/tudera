@@ -87,11 +87,11 @@ const user_workspaces = computed(() => {
             <MainComponent />
           </div>
           <section class="flex flex-row">
-            <div class="h-fit w-1/2">
+            <div class="h-fit w-1/2 p-5">
               <StatComponent :title="'New Projects'" :value="84" :previous-value="65" :color="'#63D4B7'" />
             </div>
             <span class="h-screen w-0.5 bg-[#2B2C30] ms-4"></span>
-            <div class="h-fit w-1/2">
+            <div class="h-fit w-1/2 p-5">
               <StatComponent :title="'New Tasks'" :value="262" :previous-value="180" :color="'#4469DE'" />
             </div>
           </section>

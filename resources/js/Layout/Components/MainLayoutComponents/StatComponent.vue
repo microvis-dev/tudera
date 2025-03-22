@@ -1,36 +1,12 @@
 <script setup>
 import { ref, computed } from "vue";
+import { CircleProgressBar } from 'circle-progress.vue';
 const valueProgress = ref(34)
 const props = defineProps({
     title: String,
     value: Number,
     previousValue: Number,
     color: String
-})
-import { useDisplay } from 'vuetify'
-
-const { name } = useDisplay()
-
-const height = computed(() => {
-    switch (name.value) {
-        case 'xs': return 150
-        case 'sm': return 150
-        case 'md': return 120
-        case 'lg': return 120
-        case 'xl': return 120
-        default: return 120
-    }
-})
-
-const width = computed(() => {
-    switch (name.value) {
-        case 'xs': return 20
-        case 'sm': return 20
-        case 'md': return 18
-        case 'lg': return 18
-        case 'xl': return 18
-        default: return 18
-    }
 })
 </script>
 <template>
@@ -41,11 +17,17 @@ const width = computed(() => {
             <p class="text-[#B3B3B3] px-2 py-3 md:p-3 roboto-font-bold text-md">Last month: {{ previousValue }}</p>
         </div>
         <div class="flex items-center ms-5">
-            <v-progress-circular :color="color" :model-value="valueProgress" :size="height" :width="width">
-                <template v-slot:default>
-                    <span class="roboto-font-bold text-3xl md:text-xl">+ {{ valueProgress }}%</span>
-                </template>
-            </v-progress-circular>
+            <CircleProgressBar
+                :color-unfilled="color"
+                color-back="#1A1A1A"
+                :size="150"
+                :stroke-width="12"
+                :value="3.4"
+                :max="10"
+                rounded
+            >
+                <span :style="{ color }" class="text-2xl roboto-font-bold">+37%</span>
+            </CircleProgressBar>
         </div>
     </section>
 </template>
