@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 const dropdownOpen = ref(false);
+const profileRef = ref(null);
 
 const props = defineProps({
   "name": String,
@@ -8,21 +9,36 @@ const props = defineProps({
 })
 
 const openDropdown = () => {
-  dropdownOpen.value = !dropdownOpen.value
-}
+  dropdownOpen.value = !dropdownOpen.value;
+};
+const handleClickOutside = (event) => {
+  if (profileRef.value && !profileRef.value.contains(event.target)) {
+    dropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 <template>
-  <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5" @click="openDropdown">
-    <div>
-      <img src="https://placehold.co/600x400/blue/blue" alt="Company Logo" title="Company Logo"
-        class="w-10 h-10 me-2 object-cover rounded-full" />
-    </div>
-    <div>
-      <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
-      <p class="text-sm roboto-font-regular text-[#757575]">{{ props.email }}</p>
-    </div>
-    <img v-if="!dropdownOpen" src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5">
-    <img v-else src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5 rotate-180" </section>
+  <div ref="profileRef">
+    <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5" @click.stop="openDropdown">
+      <div>
+        <img src="https://placehold.co/600x400/blue/blue" alt="Company Logo" title="Company Logo"
+          class="w-10 h-10 me-2 object-cover rounded-full" />
+      </div>
+      <div>
+        <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
+        <p class="text-sm roboto-font-regular text-[#757575]">{{ props.email }}</p>
+      </div>
+      <img v-if="!dropdownOpen" src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5">
+      <img v-else src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5 rotate-180">
+    </section>
     <div class="relative flex justify-center">
       <transition name="slide-down">
         <div v-if="dropdownOpen"
@@ -65,6 +81,7 @@ const openDropdown = () => {
         </div>
       </transition>
     </div>
+  </div>
 </template>
 <style scoped>
 .slide-down-enter-active,
