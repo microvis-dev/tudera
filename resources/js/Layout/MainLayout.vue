@@ -24,9 +24,6 @@ const user = computed(() => {
   return page.props.user
 })
 
-const user_workspaces = computed(() => {
-  return null
-})
 </script>
 
 <template>

@@ -1,15 +1,11 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import {ref, watchEffect, defineOptions, computed, reactive} from "vue";
-import {useForm} from "@inertiajs/vue3";
-import {route} from "ziggy-js";
+import { ref, watchEffect, defineOptions, computed, reactive, onMounted } from "vue";
+import { useForm, router } from "@inertiajs/vue3";
+import { route } from "ziggy-js";
 
 defineOptions({
     layout: AuthLayout
-})
-
-const props = defineProps({
-    email: String
 })
 
 const name = reactive({
@@ -23,9 +19,18 @@ const name = reactive({
 const userForm = useForm({
     name: computed(() => name.getFullName()),
     phone: '',
-    email: props.email,
+    email: '',
     password: '',
     redirectTo: 'setup.workspace.create'
+})
+
+onMounted(() => {
+    const savedEmail = localStorage.getItem('userEmail');
+    if (savedEmail) {
+        userForm.email = savedEmail;
+    } else {
+        // ...
+    }
 })
 
 const submitForm = () => {
@@ -50,11 +55,17 @@ const submitForm = () => {
                     <div class="flex flex-col">
                         <h2 class="text-lg roboto-font-bold py-2">Profile picture</h2>
                         <div class="flex flex-row">
-                            <button class="flex flex-row border border-gray-600 roboto-font-medium rounded-md px-4 py-2 items-center hover:ring-2 hover:ring-gray-500 focus:outline-none"><img src="../../../assets/upload.svg" class="mt-1 me-1"><span class="">Upload image</span></button>
-                            <button class="border border-gray-600 rounded-md px-4 py-2 roboto-font-medium items-center ms-5 disabled:text-gray-500" disabled>Remove</button>
+                            <button
+                                class="flex flex-row border border-gray-600 roboto-font-medium rounded-md px-4 py-2 items-center hover:ring-2 hover:ring-gray-500 focus:outline-none"><img
+                                    src="../../../assets/upload.svg" class="mt-1 me-1"><span class="">Upload
+                                    image</span></button>
+                            <button
+                                class="border border-gray-600 rounded-md px-4 py-2 roboto-font-medium items-center ms-5 disabled:text-gray-500"
+                                disabled>Remove</button>
                         </div>
                     </div>
-                    <p class="roboto-font-bold text-[#B3B3B3] text-xs mt-2 block">*.png, *.jpg files up to 10MB at least 400px by 400px</p>
+                    <p class="roboto-font-bold text-[#B3B3B3] text-xs mt-2 block">*.png, *.jpg files up to 10MB at least
+                        400px by 400px</p>
                 </div>
             </section>
         </header>
@@ -92,64 +103,39 @@ const submitForm = () => {
                     <label for="first-name" class="text-[#B3B3B3] text-sm font-medium">
                         First name
                     </label>
-                    <input
-                        id="first-name"
-                        v-model="name.first"
-                        type="text"
-                        placeholder="Enter your first name..."
-                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
-                    />
+                    <input id="first-name" v-model="name.first" type="text" placeholder="Enter your first name..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500" />
                 </div>
                 <div class="flex flex-col space-y-1">
                     <label for="last-name" class="text-[#B3B3B3] text-sm font-medium">
                         Last name
                     </label>
-                    <input
-                        id="last-name"
-                        type="text"
-                        v-model="name.last"
-                        placeholder="Enter your last name..."
-                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
-                    />
+                    <input id="last-name" type="text" v-model="name.last" placeholder="Enter your last name..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500" />
                     <p v-if="userForm.errors.name">{{ userForm.errors.name }}</p>
                 </div>
                 <div class="flex flex-col space-y-1">
                     <label for="tel" class="text-[#B3B3B3] text-sm font-medium">
                         Phone
                     </label>
-                    <input
-                        id="tel"
-                        type="tel"
-                        v-model="userForm.phone"
-                        placeholder="Enter your phone..."
-                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
-                    />
+                    <input id="tel" type="tel" v-model="userForm.phone" placeholder="Enter your phone..."
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500" />
                     <p v-if="userForm.errors.phone">{{ userForm.errors.phone }}</p>
                 </div>
                 <div class="flex flex-col space-y-1">
                     <label for="password" class="text-[#B3B3B3] text-sm font-medium">
                         Password
                     </label>
-                    <input
-                        id="password"
-                        type="password"
-                        v-model="userForm.password"
-                        placeholder="Enter your password"
-                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
-                    />
+                    <input id="password" type="password" v-model="userForm.password" placeholder="Enter your password"
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500" />
                     <p v-if="userForm.errors.password">{{ userForm.errors.password }}</p>
                 </div>
                 <div class="flex flex-col space-y-1">
                     <label for="email" class="text-[#B3B3B3] text-sm font-medium">
                         Email
                     </label>
-                    <input
-                        id="email"
-                        type="text"
-                        v-model="userForm.email"
-                        disabled
-                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500"
-                    />
+                    <input id="email" type="text" v-model="userForm.email" disabled
+                        class="w-full px-3 py-2 bg-[#1C1D21] text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500" />
                     <p v-if="userForm.errors.email">{{ userForm.errors.email }}</p>
                 </div>
                 <input type="hidden" name="register" value="true">
@@ -161,5 +147,4 @@ const submitForm = () => {
     </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
