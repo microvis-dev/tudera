@@ -11,6 +11,7 @@ use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\TodoListController;
 
 // index
 Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
@@ -59,3 +60,7 @@ Route::resource('calendar', CalendarController::class)
 //calendar
 Route::resource('dashboard', DashboardController::class)
     ->only(['index']);
+
+// ToDo list
+Route::resource('todolist', TodoListController::class)
+    ->only(['show', 'store', 'update', 'destroy']);
