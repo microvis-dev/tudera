@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\TableValueController;
 use App\Http\Controllers\UserController;
@@ -51,3 +52,8 @@ Route::resource('table.rows', WorkspaceRowController::class)
 
 Route::resource('table.values', TableValueController::class)
     ->only(['create', 'store', 'update', 'destroy']);
+
+
+//calendar
+Route::resource('calendar', CalendarController::class)
+    ->only(['index']);

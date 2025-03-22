@@ -3,12 +3,12 @@ import { ref } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
-import StatComponent from "./Components/MainLayoutComponents/StatComponent.vue";
-import Sidebar from "./Components/MainLayoutComponents/Sidebar.vue";
-import Search from "./Components/MainLayoutComponents/Search.vue";
-import Profile from "./Components/MainLayoutComponents/Profile.vue";
-import MainComponent from "./Components/MainLayoutComponents/MainComponent.vue";
-import TodoList from "./Components/MainLayoutComponents/TodoList.vue";
+import StatComponent from "../../Layout/Components/MainLayoutComponents/StatComponent.vue";
+import Sidebar from "../../Layout/Components/MainLayoutComponents/Sidebar.vue";
+import Search from "../../Layout/Components/MainLayoutComponents/Search.vue";
+import Profile from "../../Layout/Components/MainLayoutComponents/Profile.vue";
+import MainComponent from "../../Layout/Components/MainLayoutComponents/MainComponent.vue";
+import TodoList from "../../Layout/Components/MainLayoutComponents/TodoList.vue";
 
 const page = usePage()
 
@@ -82,10 +82,25 @@ const user_workspaces = computed(() => {
         </div>
       </div>
       <div class="flex flex-row h-full">
-        <section class="w-full">
-          <div class="w-full h-full border-2 border-[#2B2C30]">
-            <slot></slot>
+        <section class="w-8/12">
+          <div class="w-full h-4/6 border-2 border-[#2B2C30]">
+            <MainComponent />
           </div>
+          <section class="flex flex-row">
+            <div class="h-fit w-1/2 p-5">
+              <StatComponent :title="'New Projects'" :value="84" :previous-value="65" :color="'#63D4B7'" />
+            </div>
+            <span class="h-screen w-0.5 bg-[#2B2C30] ms-4"></span>
+            <div class="h-fit w-1/2 p-5">
+              <StatComponent :title="'New Tasks'" :value="262" :previous-value="180" :color="'#4469DE'" />
+            </div>
+          </section>
+        </section>
+        <section class="w-4/12">
+          <div class="w-full h-1/2">
+            <TodoList />
+          </div>
+          <div class="w-full h-1/2 bg-pink-400">stat3</div>
         </section>
       </div>
     </section>
