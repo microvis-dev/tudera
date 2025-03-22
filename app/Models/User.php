@@ -29,6 +29,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Workspace::class, 'users_to_workspace', 'user_id', 'workspace_id');
     }
     
+    public function tables() {
+        return $this->hasMany(WorkspaceTable::class)->whereIn('workspace_id', $this->workspaces()->pluck('id'));
+    }
 
     /**
      * The attributes that should be hidden for serialization.

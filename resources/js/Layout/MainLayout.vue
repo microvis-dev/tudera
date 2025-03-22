@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { nextTick, ref } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
@@ -22,6 +22,10 @@ const flashErrors = computed(() => {
 
 const user = computed(() => {
   return page.props.user
+})
+
+const workspaces = computed(() => {
+  return user.value?.workspaces || []
 })
 
 </script>
@@ -65,7 +69,7 @@ const user = computed(() => {
   <div class="w-screen h-screen flex flex-row overflow-hidden">
     <section class="w-2/12">
       <div class="h-screen">
-        <Sidebar />
+        <Sidebar :workspaces="workspaces" />
       </div>
     </section>
     <section class="w-10/12 flex flex-col">
