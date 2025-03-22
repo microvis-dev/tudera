@@ -1,11 +1,13 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, nextTick } from 'vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import axios from 'axios';
 import Column from './Components/Column.vue';
 import Row from './Components/Row.vue';
 import Value from './Components/Value.vue';
+import MainLayout from '../../Layout/MainLayout.vue';
+import AuthLayout from '../../Layout/AuthLayout.vue';
 
 const props = defineProps({
     workspace: Object,
@@ -109,7 +111,8 @@ const deleteValue = (value) => {
                                     <td v-for="(column, cIndex) in columns" :key="column.id">
                                         <Row v-if="cIndex == 0" :row="row" @delete="deleteRow" @update="updateRow" />
                                         <Value v-else :table="workspace_table" :row="row" :column="column" :x="cIndex"
-                                            :y="rIndex" :value="getValue(row, column)" @update="updateValue" @delete="deleteValue" />
+                                            :y="rIndex" :value="getValue(row, column)" @update="updateValue"
+                                            @delete="deleteValue" />
                                     </td>
                                 </tr>
                             </tbody>

@@ -8,7 +8,6 @@ const props = defineProps({
     workspaces: Array
 })
 
-console.log(props.workspaces)
 </script>
 <template>
     <p>{{ user.name }}</p>   
