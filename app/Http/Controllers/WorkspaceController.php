@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
+use App\Models\WorkspaceTable;
+use App\Models\WorkspaceColumn;
+use App\Models\WorkspaceRow;
+use App\Models\TableValue;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
@@ -28,8 +32,8 @@ class WorkspaceController extends Controller
     function create(Request $request) {
         $user = $request->user();
         $workspaces = $user->workspaces;
-        
-        if (empty($workspaces)) {
+
+        if ($workspaces->count() == 0) {
             return inertia('Setup/CreateWorkspace');
         }
         return inertia('Workspaces/Create');
@@ -51,6 +55,10 @@ class WorkspaceController extends Controller
             $users_to_workspace->workspace_id = $workspace->id;
             $users_to_workspace->user_id = $request->user()->id;
             $users_to_workspace->save();
+
+            // create leads
+            $this->createDefaultLeadsTable($workspace);
+
         });
 
         return redirect()->route('index')->with('success', 'Workspace created successfully!');
@@ -106,6 +114,22 @@ class WorkspaceController extends Controller
             return redirect()->back()->with('error', 'An error occurred while updating the workspace name.');
         }
     }
-    
+
+
+    private function createDefaultLeadsTable(Workspace $workspace)
+{
+    try {
+        $leadsTable = new WorkspaceTable();
+        $leadsTable->workspace_id = $workspace->id;
+        $leadsTable->name = 'Leads';
+        $leadsTable->save();        
+        // todo fill
+    } catch (Exception $e) {
+        Log::error('Error creating default Leads table: ' . $e->getMessage());
+        dd($e->getMessage());
+        throw $e;
+    }
+}
+
     
 }

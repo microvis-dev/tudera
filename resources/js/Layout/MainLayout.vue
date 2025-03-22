@@ -79,12 +79,12 @@ const workspaces = computed(() => {
         </div>
         <span class="h-10 w-0.5 bg-[#2B2C30] mt-1.5"></span>
         <div class="w-1/5">
-          <Profile />
+          <Profile :name="user.name" :email="user.email"/>
         </div>
       </div>
       <div class="flex flex-row h-full">
         <section class="w-full">
-          <div class="w-full h-full border-2 border-[#2B2C30]">
+          <div class="w-full h-full">
             <slot></slot>
           </div>
         </section>
