@@ -25,7 +25,8 @@ const user = computed(() => {
 })
 
 const workspaces = computed(() => {
-  return user.value?.workspaces || []
+  // return user.value?.workspaces || []
+  return user.value.workspaces
 })
 
 </script>
