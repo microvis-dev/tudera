@@ -8,7 +8,7 @@ export default function useSelectedWorkspace() {
   }
 
   return {
-    selectedWorkspace: readonly(selectedWorkspace.value),
+    selectedWorkspace: readonly(selectedWorkspace),
     setWorkspace
   }
 }
