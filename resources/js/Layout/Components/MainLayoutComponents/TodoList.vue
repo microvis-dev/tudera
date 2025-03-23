@@ -1,7 +1,8 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onUnmounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import getDate from '@/resources/js/Utils/getDate';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 
 const props = defineProps({
@@ -20,15 +21,35 @@ const hideAddTodoModal = () => {
     viewState.addTodoModal = false
 }
 
+const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours() - 1).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+const currentTime = ref(new Date());
+const timer = setInterval(() => {
+    currentTime.value = new Date();
+}, 1000);
+
+onUnmounted(() => {
+    clearInterval(timer);
+});
+
 const lateToDate = (todo) => {
-    const currentDate = new Date();
-    const deadline = new Date(todo.end_date);
-    return deadline < currentDate;
+        const deadline = getDate(todo.end_date);
+        return deadline <= currentTime.value;
 }
 
 const updateIsDone = (todo) => {
     setTimeout(() => {
-        router.delete(route('todolist.destroy', todo.id));
+        if (todo.is_done) {
+            router.delete(route('todolist.destroy', todo.id));
+        }
     }, 5000);
 }
 
@@ -64,7 +85,7 @@ const updateIsDone = (todo) => {
                 </div>
                 <div class="w-7/12 text-center rounded-xl p-1"
                     :class="{ 'text-gray-500 line-through': todo.is_done, 'bg-red-500': lateToDate(todo) }">
-                    <p>{{ todo.end_date }}</p>
+                    <p>{{ formatDate(todo.end_date) }}</p>
                 </div>
             </div>
         </fieldset>
