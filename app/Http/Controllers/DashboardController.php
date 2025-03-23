@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     public function index(Request $request){
-        return inertia('Dashboard/Index');    
+        $user = $request->user();
+        
+        return inertia('Dashboard/Index', [
+            'todos' => $user->todos
+        ]);    
     }
 }

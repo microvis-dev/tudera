@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue"
+import { ref, inject } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
@@ -7,9 +7,15 @@ import StatComponent from "../../Layout/Components/MainLayoutComponents/StatComp
 import Sidebar from "../../Layout/Components/MainLayoutComponents/Sidebar.vue";
 import Search from "../../Layout/Components/MainLayoutComponents/Search.vue";
 import Profile from "../../Layout/Components/MainLayoutComponents/Profile.vue";
-import MainComponent from "../../Layout/Components/MainLayoutComponents/MainComponent.vue";
+//import MainComponent from "../../Layout/Components/MainLayoutComponents/MainComponent.vue";
+import MainComponent from "./Components/MainComponent.vue";
 import TodoList from "../../Layout/Components/MainLayoutComponents/TodoList.vue";
 
+const props = defineProps({
+  todos: Array
+})
+
+/*
 const page = usePage()
 
 const flashSucess = computed(() => {
@@ -27,6 +33,8 @@ const user = computed(() => {
 const user_workspaces = computed(() => {
   return null
 })
+  */
+
 </script>
 
 <template>
@@ -83,7 +91,7 @@ const user_workspaces = computed(() => {
         </section>
         <section class="w-4/12">
           <div class="w-full h-1/2">
-            <TodoList />
+            <TodoList :todos="todos" />
           </div>
           <div class="w-full h-1/2 bg-pink-400">stat3</div>
         </section>

@@ -1,7 +1,10 @@
 <script setup>
-import { ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick, provide, reactive } from "vue";
 import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
+import useSelectedWorkspace from "../../Composable/useSelectedWorkspace";
+
+const { selectedWorkspace: sharedWorkspace, setWorkspace } = useSelectedWorkspace()
 
 const props = defineProps({
   modelValue: {
@@ -14,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
 
 const selectedWorkspace = ref(props.workspaces[0]);
+setWorkspace(selectedWorkspace.value)
 emit('select-workspace', selectedWorkspace.value)
 const dropdownOpen = ref(false);
 const dropdownElement = ref(null); // Reference to the dropdown element
@@ -40,6 +44,7 @@ const updateDropdownHeight = () => {
 const selectWorkspace = (workspace) => {
   selectedWorkspace.value = workspace;
   dropdownOpen.value = false;
+  setWorkspace(selectedWorkspace.value)
   emit('select-workspace', selectedWorkspace.value)
 };
 
