@@ -21,7 +21,7 @@ const props = defineProps({
                 :color-unfilled="color"
                 color-back="#1A1A1A"
                 :size="150"
-                :stroke-width="12"
+                stroke-width="12"
                 :value="3.4"
                 :max="10"
                 rounded
