@@ -8,11 +8,7 @@ class IndexController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
-        $worksapces = $user->workspaces;
-
-        return inertia('Index/Index', [
-            "user" => $user,
-            "workspaces" => $worksapces
-        ]);
+        $workspaces = $user->workspaces;
+        return inertia('Dashboard/Index');
     }
 }
