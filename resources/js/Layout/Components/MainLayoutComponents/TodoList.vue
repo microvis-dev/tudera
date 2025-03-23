@@ -1,15 +1,12 @@
 <script setup>
 import { ref, reactive } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
-const checked = ref(false);
-const todoList = ref([
-    {
-        'name': "DÁP regisztráció", "endDate": "2025/02/03 9:00", "completed": false
-    },
-    {
-        'name': "Lorem Ipsum", "endDate": "2025/04/22 15:00", "completed": false
-    },
-])
+
+const props = defineProps({
+    todos: Array
+})
 
 const viewState = reactive({
     addTodoModal: false
@@ -22,22 +19,31 @@ const showAddTodoModal = () => {
 const hideAddTodoModal = () => {
     viewState.addTodoModal = false
 }
+
 const lateToDate = (todo) => {
     const currentDate = new Date();
-    const deadline = new Date(todo.endDate);
+    const deadline = new Date(todo.end_date);
     return deadline < currentDate;
 }
+
+const updateIsDone = (todo) => {
+    setTimeout(() => {
+        router.delete(route('todolist.destroy', todo.id));
+    }, 5000);
+}
+
+// todo: datum formazas
 </script>
 <template>
     <section class="flex flex-col p-5">
         <h1 class="text-2xl roboto-font-bold mb-2">Todo List</h1>
         <p class="text-sm roboto-font-medium mb-5 text-[#B3B3B3]">Track your todos in a simple sidebar</p>
         <fieldset>
-            <div v-for="(todo, index) in todoList" class="flex flex-row py-2 w-full items-center gap-4">
+            <div v-for="(todo, index) in todos" class="flex flex-row py-2 w-full items-center gap-4">
                 <div class="w-1/12">
                     <div class="inline-flex items-center">
                         <label class="flex items-center cursor-pointer relative">
-                            <input type="checkbox" v-model="todo.completed"
+                            <input type="checkbox" v-model="todo.is_done" @click="updateIsDone(todo)"
                                 class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
                                 :id="`check-${index}`" />
                             <span
@@ -53,11 +59,13 @@ const lateToDate = (todo) => {
                     </div>
                 </div>
                 <div class="w-6/12">
-                    <h2 class="roboto-font-bold text-md" :class="{'text-gray-500 line-through': todo.completed}">{{ todo.name }}</h2>
+                    <h2 class="roboto-font-bold text-md" :class="{ 'text-gray-500 line-through': todo.is_done }">{{
+                        todo.title }}</h2>
                 </div>
-                <div class="w-7/12 text-center rounded-xl p-1" :class="{ 'text-gray-500 line-through': todo.completed, 'bg-red-500': lateToDate(todo) }">
-                    <p>{{ todo.endDate }}</p>
-                </div>  
+                <div class="w-7/12 text-center rounded-xl p-1"
+                    :class="{ 'text-gray-500 line-through': todo.is_done, 'bg-red-500': lateToDate(todo) }">
+                    <p>{{ todo.end_date }}</p>
+                </div>
             </div>
         </fieldset>
         <div class="flex justify-center mt-5">

@@ -33,6 +33,10 @@ class User extends Authenticatable
         return $this->hasMany(WorkspaceTable::class)->whereIn('workspace_id', $this->workspaces()->pluck('id'));
     }
 
+    public function todos() {
+        return $this->hasMany(TodoList::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
