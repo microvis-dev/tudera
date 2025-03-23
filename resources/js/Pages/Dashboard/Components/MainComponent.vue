@@ -7,7 +7,7 @@ import useSelectedWorkspace from '@/resources/js/Composable/useSelectedWorkspace
 const { selectedWorkspace } = useSelectedWorkspace();
 
 const addNewTable = () => {
-    router.get(route('workspace.table.create', {workspace: selectedWorkspace}))
+    router.get(route('workspace.table.create', {workspace: selectedWorkspace.value}))
 }
 
 </script>
