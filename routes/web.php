@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\TodoListController;
 
@@ -22,7 +23,7 @@ Route::get('auth/check_email', [AuthController::class, 'check_email'])->name('au
 
 // user
 Route::resource('user', UserController::class)
-    ->only(['store']);
+    ->only(['store', 'update', 'destroy']);
 
 // setup
 // Route::resource('setup.workspace', WorkspaceController::class)->only(['create', 'store']);
@@ -64,3 +65,7 @@ Route::resource('dashboard', DashboardController::class)
 // ToDo list
 Route::resource('todolist', TodoListController::class)
     ->only(['show', 'store', 'update', 'destroy']);
+
+// settings
+Route::resource('settings', SettingsController::class)
+    ->only(['index'])->middleware('auth');

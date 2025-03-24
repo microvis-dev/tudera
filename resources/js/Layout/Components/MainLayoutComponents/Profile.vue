@@ -32,6 +32,10 @@ onBeforeUnmount(() => {
 const logout = () => {
   router.delete(route('auth.destroy', { auth: true }))
 }
+
+const redirectToSettings = () => {
+  router.get(route('settings.index'))
+}
 </script>
 <template>
   <div ref="profileRef">
@@ -51,7 +55,7 @@ const logout = () => {
           <div v-if="dropdownOpen" ref="dropdownRef"
             class="absolute min-w-full flex flex-col items-center bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2 mt-2">
             <div class="flex flex-col w-[200px] justify-center rounded-[5px] items">
-              <button
+              <button @click="redirectToSettings"
                 class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">
                 <img src="../../../../assets/settings.svg" class="w-8 h-8">
                 <span class="text-lg text-center roboto-font-medium ms-2">Settings</span>
