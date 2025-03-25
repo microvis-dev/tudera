@@ -100,11 +100,30 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'password' => 'required|string'
+            ]);
+
+            if (!Auth::guard('web')->validate([
+                'email' => $user->email,
+                'password' => $validated['password'],
+            ])) {
+                return back()->withErrors(['password' => 'The provided password is incorrect.']);
+            }
+
+            $user->delete();
+            
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('auth.index')->with('success', 'Your account has been deleted successfully.');
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return back()->withErrors(['error' => 'Failed to delete account.']);
+        }
     }
 }

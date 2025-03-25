@@ -35,34 +35,34 @@ Route::post('setup/workspace', [WorkspaceController::class, 'store'])
 
 Route::resource('signup', SetupController::class)->only(['create']);
 
-// r + mw
+// workspaces
 Route::resource('workspaces', WorkspaceController::class)
     ->middleware('auth');
 
+// workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow();
 
-
-//col
+// table column
 Route::resource('table.columns', WorkspaceColumnController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
 
-//row
+// table row
 Route::resource('table.rows', WorkspaceRowController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
 
 Route::resource('table.values', TableValueController::class)
     ->only(['create', 'store', 'update', 'destroy']);
 
-//calendar
+// calendar
 Route::resource('calendar', CalendarController::class)
     ->only(['index']);
-//dashboard
-//calendar
+
+// dashboard
 Route::resource('dashboard', DashboardController::class)
     ->only(['index']);
 
-// ToDo list
+// todo list
 Route::resource('todolist', TodoListController::class)
     ->only(['show', 'store', 'update', 'destroy']);
 
