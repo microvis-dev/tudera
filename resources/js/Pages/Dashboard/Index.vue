@@ -10,6 +10,7 @@ import Profile from "../../Layout/Components/MainLayoutComponents/Profile.vue";
 //import MainComponent from "../../Layout/Components/MainLayoutComponents/MainComponent.vue";
 import MainComponent from "./Components/MainComponent.vue";
 import TodoList from "../../Layout/Components/MainLayoutComponents/TodoList.vue";
+import Meetings from "../../Layout/Components/MainLayoutComponents/Meetings.vue";
 
 const props = defineProps({
   todos: Array
@@ -90,10 +91,12 @@ const user_workspaces = computed(() => {
           </section>
         </section>
         <section class="w-4/12">
-          <div class="w-full h-1/2">
+          <div class="w-full h-1/2 overflow-y-auto">
             <TodoList :todos="todos" />
           </div>
-          <div class="w-full h-1/2 bg-pink-400">stat3</div>
+          <div class="w-full h-1/2 overflow-y-auto">
+            <Meetings />
+          </div>
         </section>
       </div>
     </section>

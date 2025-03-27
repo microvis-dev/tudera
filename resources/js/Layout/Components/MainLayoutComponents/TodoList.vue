@@ -58,7 +58,7 @@ const updateIsDone = (todo) => {
 <template>
     <section class="flex flex-col p-5">
         <h1 class="text-2xl roboto-font-bold mb-2">Todo List</h1>
-        <p class="text-sm roboto-font-medium mb-5 text-[#B3B3B3]">Track your todos in a simple sidebar</p>
+        <p class="text-sm roboto-font-medium mb-5 text-[#B3B3B3]">Track your todos in a simple sidebar.</p>
         <fieldset>
             <div v-for="(todo, index) in todos" class="flex flex-row py-2 w-full items-center gap-4">
                 <div class="w-1/12">
