@@ -5,7 +5,7 @@ import { route } from 'ziggy-js';
 
 
 const addNewTable = () => {
-  router(route('workspace.table.create', { workspace: props.workspace }))
+  router.get(route('workspace.table.create', { workspace: props.workspace }))
 }
 
 </script>
