@@ -11,8 +11,9 @@ const props = defineProps({
     workspace: Object,
     workspace_table: Object,
     columns: Array,
-    values: Object
+    table_values: Array
 })
+console.log(props.table_values)
 
 //col
 const deleteColumn = (column_id) => {
@@ -25,7 +26,7 @@ const updateColumn = (newColumnName, column) => {
 
 //value
 const findValue = (row, column) => {
-    return Object.values(props.values).find(v => v.row_id == row.id && v.column_id == column.id)
+    return Object.values(props.table_values).find(v => v.row_id == row.id && v.column_id == column.id)
 }
 
 const getValue = (row, column) => {
@@ -68,7 +69,7 @@ const sortedTable = computed(() => {
 
     props.columns.forEach((col, index) => {
         let columnValues = []
-        props.values.forEach((value) => {
+        props.table_values.forEach((value) => {
             if (value.column_id == col.id) {
                 columnValues.push(value)
             }
@@ -82,11 +83,18 @@ const sortedTable = computed(() => {
     return returnValue
 })
 
+const maxRows = computed(() => {
+    return Math.max(...sortedTable.value.map(col => col.length), 0);
+});
+
 // add value, todo: put this in component
 const showAddValueForm = ref(false)
-const toggleAddValueForm = (() => {
+const toggleAddValueForm = ((column) => {
+    selectedColumn.value = column
     showAddValueForm.value = !showAddValueForm.value
 })
+
+const selectedColumn = ref(null)
 
 </script>
 
@@ -102,43 +110,57 @@ const toggleAddValueForm = (() => {
                 </div>
             </div>
                 <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500">
+
+
                     <table class="min-w-full table-auto">
-                        <thead class=" flex justify-start">
+                        <thead>
                             <tr>
                                 <th v-for="column in columns" :key="column.id" scope="col"
-                                    class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider">
+                                    class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
                                     <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
                                 </th>
-                                <th>
+                                <th class="min-w-[80px]">
                                     <Link :href="route('table.columns.create', { table: workspace_table })"
-                                        class=" hover:bg-blue-700 text-white font-bold px-6 py-3 text-left rounded">
+                                        class="hover:bg-blue-700 text-white font-bold px-6 py-3 text-left rounded">
                                     +
                                     </Link>
                                 </th>
                             </tr>
                         </thead>
+                        
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="row in sortedTable[0]?.map((_, index) => index)" :key="row">
-                                <td v-for="(col, colIndex) in sortedTable" :key="colIndex"
-                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div v-if="col[row]" class="flex items-center">
-                                        <Value :value="col[row]" @update="updateValue" @delete="deleteValue" />
-                                    </div>
-                                    <div v-else class="flex items-center justify-center">
-                                        <button @click="toggleAddValueForm"
-                                            class="bg-blue-500 text-white w-20 h-20 flex items-center justify-center hover:bg-blue-700">
-                                            +
-                                        </button>
-                                        <AddValueModal v-if="showAddValueForm" @close="toggleAddValueForm"
-                                            :table="workspace_table" :column="columns[colIndex]" />
-                                    </div>
+                            <tr v-for="rowIndex in maxRows" :key="rowIndex">
+                                <td v-for="(column, colIndex) in columns" :key="column.id" class="text-center p-2 border-r">
+                                    <Value 
+                                        v-if="sortedTable[colIndex] && sortedTable[colIndex][rowIndex-1]" 
+                                        :value="sortedTable[colIndex][rowIndex-1]" 
+                                        @update="updateValue" 
+                                        @delete="deleteValue" 
+                                    />
+                                    <button 
+                                        v-else 
+                                        @click="toggleAddValueForm(column)" 
+                                        class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center hover:bg-blue-700 rounded-full mx-auto">
+                                        +
+                                    </button>
                                 </td>
+                                <td></td>
+                            </tr>
+                            <tr class="bg-gray-50">
+                                <td v-for="column in columns" class="text-center p-2 border-r">
+                                    <button 
+                                        @click="toggleAddValueForm(column)" 
+                                        class="bg-green-500 text-white w-10 h-10 flex items-center justify-center hover:bg-green-700 rounded-full mx-auto">
+                                        +
+                                    </button>
+                                </td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
+                        <AddValueModal v-if="showAddValueForm" @close="showAddValueForm = false" :table="workspace_table" :column="selectedColumn" />
                 </div>
             </div>
         </div>
 </template>
-
 <style scoped></style>
