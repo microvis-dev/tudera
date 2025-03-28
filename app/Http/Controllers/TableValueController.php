@@ -17,6 +17,7 @@ class TableValueController extends Controller
     }
 
     public function create(Request $request, $table_id) { 
+        return;
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
@@ -37,9 +38,6 @@ class TableValueController extends Controller
     }
 
     public function store(Request $request, $table_id) {
-        // dd($request->column); ha useForm obj
-        // dd($request->input('row'), $request->input('column'), $request->input('table')); ha param
-
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
@@ -50,32 +48,31 @@ class TableValueController extends Controller
             }
             
             $request->validate([
-                'value' => 'required'
+                'value' => 'required',
+                'column_id' => 'required',
             ]);
             
-            $row_id = $request->row_id;
             $column_id = $request->column_id;
-            
-            $row = $table->rows()->find($row_id);
             $column = $table->columns()->find($column_id);
             
-            if (!$row || !$column) {
-                return redirect()->back()->with('error', 'Invalid row or column.');
+            if (!$column) {
+                return redirect()->back()->with('error', 'Invalid column.');
             }
             
-            $tableValue = TableValue::firstOrNew([ // !
-                'row_id' => $row_id,
-                'column_id' => $column_id
+            $existingValues = TableValue::where('column_id', $column_id)->get();
+            
+            $newOrder = $existingValues->max('order') + 1 ?? 1;
+            
+            TableValue::create([
+                'column_id' => $column_id,
+                'value' => $request->value,
+                'order' => $newOrder,
             ]);
             
-            $tableValue->value = $request->value;
-            $tableValue->save();
-            
-            return redirect()->back()->with('success', 'Value saved successfully.');
+            return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
             Log::error('Hiba TableValueController store: ' . $e->getMessage());
-            dd($e->getMessage());
-            return redirect()->route('workspaces')->with('error', 'An error occurred while saving.');
+            return redirect()->route('workspaces')->with('error', 'An error occurred while saving: ' . $e->getMessage());
         }
     }
 
@@ -94,10 +91,9 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $row = $table->rows()->find($value->row_id);
             $column = $table->columns()->find($value->column_id);
             
-            if (!$row || !$column) {
+            if (!$column) {
                 return redirect()->back()->with('error', 'Invalid value - not associated with this table.');
             }
             
@@ -123,10 +119,9 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $row = $table->rows()->find($value->row_id);
             $column = $table->columns()->find($value->column_id);
             
-            if (!$row || !$column) {
+            if (!$column) {
                 return redirect()->back()->with('error', 'Invalid value - not associated with this table.');
             }
             

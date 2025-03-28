@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref, inject } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import dashboardIcon from '../../../../assets/graphUp.svg';
 import lead from '../../../../assets/lead.svg';
@@ -8,8 +8,12 @@ import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
 const tableIcon = lead // import svg!
 
-const props = defineProps({
-  workspaces: Array
+const page = usePage()
+const user = computed(() => {
+  return page.props.user
+})
+const workspaces = computed(() => {
+  return user.value.workspaces
 })
 
 const tables = ref([])
@@ -71,7 +75,7 @@ const updateDropdownHeight = (height) => {
       <div @click="redirectToHome" class="w-40 mb-20">
         <img src="../../../../assets/tuderaLogoWhite.svg">
       </div>
-      <WorkspaceSelect :workspaces="workspaces" @dropdown-change="handleDropdownChange"
+      <WorkspaceSelect @dropdown-change="handleDropdownChange"
         @height-change="updateDropdownHeight" @select-workspace="updateTables" />
       <div class="w-full">
         <div class="sidebar-items flex flex-col" :class="{ 'dropdown-open': workspaceDropdownOpen }">

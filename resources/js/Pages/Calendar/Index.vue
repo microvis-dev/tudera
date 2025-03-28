@@ -43,10 +43,10 @@ const syncEventsFromTodos = () => {
 }
 
 const todoEvents = syncEventsFromTodos()
-console.log(todoEvents)
+const currendDate = new Date().toISOString().slice(0, 10)
 
 const calendarApp = createCalendar({
-  selectedDate: '2025-03-22',
+  selectedDate: currendDate,
   views: [
     createViewDay(),
     createViewWeek(),

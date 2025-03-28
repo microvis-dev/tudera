@@ -1,6 +1,6 @@
 <script setup>
-import { ref, watch, nextTick, provide, reactive } from "vue";
-import { router } from "@inertiajs/vue3";
+import { ref, watch, nextTick, provide, reactive, computed, watchEffect } from "vue";
+import { router, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import useSelectedWorkspace from "../../Composable/useSelectedWorkspace";
 
@@ -11,12 +11,24 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  workspaces: Array
-});
+})
+
+const page = usePage()
+const user = computed(() => {
+  return page.props.user
+})
+const workspaces = computed(() => {
+  return user.value.workspaces
+})
+
+watch(workspaces, () => { // lehetne jobb
+  let updatedWorkspace = workspaces.value.find(workspace => workspace.id === selectedWorkspace.value.id);
+  emit('select-workspace', updatedWorkspace)
+}, { deep: true });
 
 const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
 
-const selectedWorkspace = ref(props.workspaces[0]);
+const selectedWorkspace = ref(workspaces.value[0]);
 setWorkspace(selectedWorkspace.value)
 emit('select-workspace', selectedWorkspace.value)
 const dropdownOpen = ref(false);
