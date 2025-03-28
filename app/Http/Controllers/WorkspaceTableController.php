@@ -118,7 +118,7 @@ class WorkspaceTableController extends Controller
                 ]);
             });
 
-            return redirect()->route('workspace.table.index', ['workspace' => $workspace_id])->with('success', 'Workspace table created successfully!');
+            return redirect()->route('dashboard.index')->with('success', 'Workspace table created successfully!');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController store: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while creating the table.');

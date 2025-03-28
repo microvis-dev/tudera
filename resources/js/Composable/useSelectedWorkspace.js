@@ -2,13 +2,20 @@ import { ref, readonly } from 'vue'
 
 const selectedWorkspace = ref(null)
 
+
 export default function useSelectedWorkspace() {
+
   const setWorkspace = (workspace) => {
     selectedWorkspace.value = workspace
   }
 
+  const getWorkspace = () => {
+    return readonly(selectedWorkspace.value)
+  }
+  
   return {
     selectedWorkspace: selectedWorkspace.value ? readonly(selectedWorkspace) : null,
-    setWorkspace
+    setWorkspace,
+    getWorkspace
   }
 }

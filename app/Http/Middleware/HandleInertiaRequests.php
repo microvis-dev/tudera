@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
 
     if ($user) {
         $user->load('workspaces.tables');
+        $user->load('todos');
     }
     
     return array_merge(parent::share($request), [
