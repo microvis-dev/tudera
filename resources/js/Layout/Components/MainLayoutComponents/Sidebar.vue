@@ -6,6 +6,7 @@ import dashboardIcon from '../../../../assets/graphUp.svg';
 import lead from '../../../../assets/lead.svg';
 import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
+import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 const tableIcon = lead // import svg!
 
 const page = usePage()
@@ -31,6 +32,8 @@ const handleRedirect = (url) => {
   } else {
     router.get(route(url.name));
   }
+  console.log(url)
+  console.log(url.name == 'calendar.index')
 }
 
 const updateTables = ((workspace) => {
@@ -56,6 +59,18 @@ const redirectToHome = () => { // click cursor
 }
 
 // attilamunkaja.html
+const viewState = reactive({
+    addTodoModal: false
+})
+
+const showAddTodoModal = () => {
+    viewState.addTodoModal = true
+}
+
+const hideAddTodoModal = () => {
+    viewState.addTodoModal = false
+}
+
 const workspaceDropdownOpen = ref(false);
 
 const handleDropdownChange = (isOpen) => {
@@ -85,6 +100,8 @@ const updateDropdownHeight = (height) => {
             <img class="w-7 h-7 me-3" :src="item.img">
             <h2 class="roboto-font-bold text-lg">{{ item.name }}</h2>
           </div>
+            <button @click="showAddTodoModal" v-if="route().current('calendar.index')" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add event</button>
+            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal"/>
         </div>
       </div>
     </aside>

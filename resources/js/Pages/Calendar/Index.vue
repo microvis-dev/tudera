@@ -1,5 +1,9 @@
 <script setup>
 import { ScheduleXCalendar } from '@schedule-x/vue'
+import { createEventsServicePlugin } from '@schedule-x/events-service'
+import { usePage } from '@inertiajs/vue3';
+const eventsServicePlugin = createEventsServicePlugin();
+
 import {
   createCalendar,
   createViewDay,
@@ -8,57 +12,68 @@ import {
   createViewWeek,
 } from '@schedule-x/calendar'
 import '@schedule-x/theme-default/dist/index.css'
-import { usePage } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { computed } from 'vue';
  
-// Do not use a ref here, as the calendar instance is not reactive, and doing so might cause issues
-// For updating events, use the events service plugin
-
-const page = usePage()
-const user = computed(() => {
-  return page.props.user
-})
-
-const todos = computed(() => {
-  return user.value.todos
-})
-
-const syncEventsFromTodos = () => {
-  let todoEvents = []
-
-  todos.value.forEach((todo, index) => {
-    let start = new Date(todo.start_date).toISOString().slice(0, 16).replace('T', ' ')
-    let end = new Date(todo.end_date).toISOString().slice(0, 16).replace('T', ' ')
-
-    let newTodoObj = {
-        id: todo.id,
-        title: todo.title,
-        start: start,
-        end: end
-    }
-    todoEvents.push(newTodoObj)
-  })
-
-  return todoEvents
-}
-
-const todoEvents = syncEventsFromTodos()
-const currendDate = new Date().toISOString().slice(0, 10)
-
 const calendarApp = createCalendar({
-  selectedDate: currendDate,
+  isDark: true,
+  selectedDate: new Date().toISOString().split('T')[0],
   views: [
     createViewDay(),
     createViewWeek(),
     createViewMonthGrid(),
     createViewMonthAgenda(),
   ],
-  events: todoEvents,
+  calendars: {
+    personal: {
+      colorName: 'personal',
+      lightColors: {
+        main: '#f9d71c',
+        container: '#fff5aa',
+        onContainer: '#594800',
+      },
+      darkColors: {
+        main: '#fff5c0',
+        onContainer: '#fff5de',
+        container: '#a29742',
+      },
+    },
+    work: {
+      colorName: 'work',
+      lightColors: {
+        main: '#f91c45',
+        container: '#ffd2dc',
+        onContainer: '#59000d',
+      },
+      darkColors: {
+        main: '#ffc0cc',
+        onContainer: '#ffdee6',
+        container: '#a24258',
+      },
+    },
+  },
+}, [eventsServicePlugin])
+//Adatbázis connection
+const page = usePage();
+const todos = computed();
+calendarApp.eventsService.add({
+  title: 'Event 3',
+  start: '2025-03-28',
+  end: '2025-03-29',
+  id: 1,
+  calendarId: "work"
 })
 </script>
  
 <template>
   <div>
-    <ScheduleXCalendar :calendar-app="calendarApp" class="overflow-y-auto"/>
+    <ScheduleXCalendar :calendar-app="calendarApp" />
   </div>
 </template>
+<style scoped>
+.sx-vue-calendar-wrapper {
+  width: 1200px;
+  max-width: 100vw;
+  height: 800px;
+  max-height: 90vh;
+}
+</style>
