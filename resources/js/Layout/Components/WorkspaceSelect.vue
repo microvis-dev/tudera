@@ -3,8 +3,10 @@ import { ref, watch, nextTick, provide, reactive, computed, watchEffect } from "
 import { router, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import useSelectedWorkspace from "../../Composable/useSelectedWorkspace";
+import { useWorkspaceStore } from "../../state/state";
 
 const { selectedWorkspace: sharedWorkspace, setWorkspace } = useSelectedWorkspace()
+const workspaceState = useWorkspaceStore()
 
 const props = defineProps({
   modelValue: {

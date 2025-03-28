@@ -7,14 +7,15 @@ import lead from '../../../../assets/lead.svg';
 import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
+import { useWorkspaceStore } from '@/resources/js/state/state';
+
+const workspaceState = useWorkspaceStore()
+
 const tableIcon = lead // import svg!
 
 const page = usePage()
 const user = computed(() => {
   return page.props.user
-})
-const workspaces = computed(() => {
-  return user.value.workspaces
 })
 
 const tables = ref([])
