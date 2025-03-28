@@ -80,7 +80,7 @@ const workspaces = computed(() => {
         </div>
         <span class="h-10 w-0.5 bg-[#2B2C30] mt-1.5"></span>
         <div class="w-1/5">
-          <Profile :name="user.name" :email="user.email"/>
+          <Profile :name='user.name' :email="user.email"/>
         </div>
       </div>
       <div class="flex flex-row h-full">
