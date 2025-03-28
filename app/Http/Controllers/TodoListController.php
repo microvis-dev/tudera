@@ -32,7 +32,7 @@ class TodoListController extends Controller
                 'end_date' => $request->input('end_date'),
             ]);
 
-            return redirect()->route('dashboard.index')->with('success', 'ToDo item created successfully!');
+            return redirect()->back()->with('success', 'ToDo item created successfully!');
         } catch (Exception $e) {
             dd($e->getMessage());
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());

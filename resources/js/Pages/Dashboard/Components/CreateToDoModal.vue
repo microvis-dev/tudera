@@ -12,7 +12,7 @@ const todoForm = useForm({
 
 const createTodo = () => {
     todoForm.post(route('todolist.store'), {
-        onSuccess: () => emit('exit')
+        onSuccess: () => emit('exit'),
     })
 }
 

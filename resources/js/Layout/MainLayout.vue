@@ -32,45 +32,10 @@ const workspaces = computed(() => {
 </script>
 
 <template>
-  <!--
-  <div v-if="flashSucess" class="flash-success p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-    {{ flashSucess }}
-  </div>
-  <div v-if="flashErrors" class="flash-error p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
-    {{ flashErrors }}
-  </div>
-  <div v-if="user" class="p-4 bg-white rounded shadow-md">
-    <div class="mb-4">
-      <p class="text-lg font-semibold">{{ user.name }}</p>
-      <p class="text-gray-600">{{ user.email }}</p>
-      <p class="text-gray-600">{{ user.phone_number }}</p>
-      <p class="text-gray-600">{{ user.id }}</p>
-    </div>
-    <div>
-      <Link :href="route('auth.destroy', user.id)" method="delete" as="button"
-        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-      Logout
-      </Link>
-      <br><br>
-      <Link :href="route('setup.workspace.create')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-      Create your first workspace (setup)
-      </Link>
-      <br><br>
-      <Link :href="route('workspaces.index')" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-        Workspaces
-      </Link>
-    </div>
-  </div>
-  <div v-if="user_workspaces">
-    <span>Workspaces</span>
-
-        <WorkspaceSelect @dropdown-change="handleDropdownChange" @height-change="updateDropdownHeight" />
-  <slot></slot>
-  -->
   <div class="w-screen h-screen flex flex-row overflow-hidden">
     <section class="w-2/12">
       <div class="h-screen">
-        <Sidebar :workspaces="workspaces" />
+        <Sidebar />
       </div>
     </section>
     <section class="w-10/12 flex flex-col">
