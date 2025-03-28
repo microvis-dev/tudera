@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TableValue;
-use App\Models\Workspace;
 use App\Models\WorkspaceTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -31,15 +30,13 @@ class WorkspaceTableController extends Controller
             
             $column_ids = $table->columns->pluck('id')->toArray();
         
-            $values = TableValue::get()
-                ->whereIn('column_id', $column_ids);
-
+            $values = TableValue::whereIn('column_id', $column_ids)->get()->toArray();
 
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
                 'columns' => $table->columns,
-                'values' => $values
+                'table_values' => $values
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());
