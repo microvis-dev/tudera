@@ -54,7 +54,6 @@ const calendarApp = createCalendar({
 }, [eventsServicePlugin])
 //Adatbázis connection
 const page = usePage();
-const todos = computed();
 calendarApp.eventsService.add({
   title: 'Event 3',
   start: '2025-03-28',
