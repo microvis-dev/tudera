@@ -4,7 +4,6 @@ import { route } from 'ziggy-js'
 
 const props = defineProps({
     table: Object,
-    row: Object,
     column: Object
 })
 
@@ -16,8 +15,7 @@ const closeModal = () => {
 
 const valueForm = useForm({
     value: null,
-    row_id: props.row.id,
-    column_id: props.column.id
+    column_id: props.column.column_id
 })
 
 const save = () => {
@@ -35,7 +33,6 @@ const save = () => {
     <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
         <div class="bg-white p-6 rounded shadow-md">
             <h2 class="text-xl font-bold mb-4">Add Value</h2>
-            <p>Row: {{ row.name }}</p>
             <p>Column: {{ column.name }}</p>
             <input v-model="valueForm.value" required class="mt-5 border p-2 rounded w-full" placeholder="Enter value" />
             <button @click="closeModal"

@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('table_values', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('row_id');
             $table->unsignedBigInteger('column_id');
+            $table->integer('order');
             $table->text('value')->nullable();
             $table->timestamps();
-
-            $table->foreign('row_id')->references('id')->on('workspace_rows')->onDelete('cascade');
+            
             $table->foreign('column_id')->references('id')->on('workspace_columns')->onDelete('cascade');
         });
     }

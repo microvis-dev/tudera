@@ -4,16 +4,13 @@ import { Link, useForm, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import axios from 'axios';
 import Column from './Components/Column.vue';
-import Row from './Components/Row.vue';
 import Value from './Components/Value.vue';
-import MainLayout from '../../Layout/MainLayout.vue';
-import AuthLayout from '../../Layout/AuthLayout.vue';
+import AddValueModal from './Components/AddValueModal.vue';
 
 const props = defineProps({
     workspace: Object,
     workspace_table: Object,
     columns: Array,
-    rows: Array,
     values: Object
 })
 
@@ -24,15 +21,6 @@ const deleteColumn = (column_id) => {
 
 const updateColumn = (newColumnName, column) => {
     router.put(route('table.columns.update', { table: props.workspace_table, column: column.id, name: newColumnName }))
-}
-
-//row
-const deleteRow = (row_id) => {
-    router.delete(route('table.rows.destroy', { table: props.workspace_table, row: row_id }))
-}
-
-const updateRow = (newRowName, row) => {
-    router.put(route('table.rows.destroy', { table: props.workspace_table, row: row, name: newRowName }))
 }
 
 //value
@@ -74,6 +62,32 @@ const deleteValue = (value) => {
     router.delete(route('table.values.destroy', { table: props.workspace_table, value: value }))
 }
 
+const sortedTable = computed(() => {
+    // [col][values]
+    let returnValue = Array(props.columns.length).fill().map(() => [])
+    
+    props.columns.forEach((col, index) => {
+        let columnValues = []
+        props.values.forEach((value) => {
+            if (value.column_id == col.id) {
+                columnValues.push(value)
+            }
+        })
+        
+        columnValues.sort((a, b) => a.order - b.order)
+        
+        returnValue[index] = columnValues
+    })
+
+    return returnValue
+})
+
+// add value, todo: put this in component
+const showAddValueForm = ref(false)
+const toggleAddValueForm = (() => {
+    showAddValueForm.value = !showAddValueForm.value
+})
+ 
 </script>
 
 <template>
@@ -92,31 +106,24 @@ const deleteValue = (value) => {
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Add new column
                     </Link><br><br>
-                    <Link :href="route('table.rows.create', { table: workspace_table })"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Add new row
-                    </Link>
                     <div class="bg-gray-50 border border-gray-200 rounded-md p-8 text-center text-gray-500">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th v-for="column in columns" :key="column.id"
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="(row, rIndex) in rows" :key="row.id">
-                                    <td v-for="(column, cIndex) in columns" :key="column.id">
-                                        <Row v-if="cIndex == 0" :row="row" @delete="deleteRow" @update="updateRow" />
-                                        <Value v-else :table="workspace_table" :row="row" :column="column" :x="cIndex"
-                                            :y="rIndex" :value="getValue(row, column)" @update="updateValue"
-                                            @delete="deleteValue" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="grid grid-cols-{{ columns.length }} gap-4">
+                            <div v-for="column in columns" :key="column.id" class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-{{ columns.length }} gap-4 mt-4">
+                            <div v-for="col in sortedTable" class="flex flex-col">
+                                <div v-for="value in col" class="p-2 border border-gray-200 rounded">
+                                    <Value :value="value" @update="updateValue" @delete="deleteValue" />
+                                    <button v-if="col.length == value.order" @click="toggleAddValueForm"
+                                        class="mt-2 bg-blue-500 text-white w-10 h-10 flex items-center justify-center hover:bg-blue-700">
+                                        +
+                                    </button>
+                                    <AddValueModal v-if="showAddValueForm" @close="toggleAddValueForm" :table="workspace_table" :column="col.at(0)" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
