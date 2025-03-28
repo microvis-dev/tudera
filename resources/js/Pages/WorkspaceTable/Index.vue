@@ -65,7 +65,7 @@ const deleteValue = (value) => {
 const sortedTable = computed(() => {
     // [col][values]
     let returnValue = Array(props.columns.length).fill().map(() => [])
-    
+
     props.columns.forEach((col, index) => {
         let columnValues = []
         props.values.forEach((value) => {
@@ -73,9 +73,9 @@ const sortedTable = computed(() => {
                 columnValues.push(value)
             }
         })
-        
+
         columnValues.sort((a, b) => a.order - b.order)
-        
+
         returnValue[index] = columnValues
     })
 
@@ -87,48 +87,58 @@ const showAddValueForm = ref(false)
 const toggleAddValueForm = (() => {
     showAddValueForm.value = !showAddValueForm.value
 })
- 
+
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-100 p-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200">
-                    <h1 class="text-2xl font-bold text-gray-800">{{ workspace_table.name }}</h1>
+    <div class="max-h-screen p-6 overflow-hidden">
+        <div class="max-w-7xl">
+            <div class="rounded-lg shadow-md">
+                <div class="px-6 py-4">
+                    <h1 class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
                     <p class="text-sm text-gray-600 mt-1">
                         Workspace: <span class="font-medium">{{ workspace.name }}</span>
                     </p>
                 </div>
-
-                <div class="p-6">
-                    <Link :href="route('table.columns.create', { table: workspace_table })"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Add new column
-                    </Link><br><br>
-                    <div class="bg-gray-50 border border-gray-200 rounded-md p-8 text-center text-gray-500">
-                        <div class="grid grid-cols-{{ columns.length }} gap-4">
-                            <div v-for="column in columns" :key="column.id" class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-{{ columns.length }} gap-4 mt-4">
-                            <div v-for="col in sortedTable" class="flex flex-col">
-                                <div v-for="value in col" class="p-2 border border-gray-200 rounded">
-                                    <Value :value="value" @update="updateValue" @delete="deleteValue" />
-                                    <button v-if="col.length == value.order" @click="toggleAddValueForm"
-                                        class="mt-2 bg-blue-500 text-white w-10 h-10 flex items-center justify-center hover:bg-blue-700">
-                                        +
-                                    </button>
-                                    <AddValueModal v-if="showAddValueForm" @close="toggleAddValueForm" :table="workspace_table" :column="col.at(0)" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+                <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500">
+                    <table class="min-w-full table-auto">
+                        <thead class=" flex justify-start">
+                            <tr>
+                                <th v-for="column in columns" :key="column.id" scope="col"
+                                    class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider">
+                                    <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
+                                </th>
+                                <th>
+                                    <Link :href="route('table.columns.create', { table: workspace_table })"
+                                        class=" hover:bg-blue-700 text-white font-bold px-6 py-3 text-left rounded">
+                                    +
+                                    </Link>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="row in sortedTable[0]?.map((_, index) => index)" :key="row">
+                                <td v-for="(col, colIndex) in sortedTable" :key="colIndex"
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div v-if="col[row]" class="flex items-center">
+                                        <Value :value="col[row]" @update="updateValue" @delete="deleteValue" />
+                                    </div>
+                                    <div v-else class="flex items-center justify-center">
+                                        <button @click="toggleAddValueForm"
+                                            class="bg-blue-500 text-white w-20 h-20 flex items-center justify-center hover:bg-blue-700">
+                                            +
+                                        </button>
+                                        <AddValueModal v-if="showAddValueForm" @close="toggleAddValueForm"
+                                            :table="workspace_table" :column="columns[colIndex]" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
 </template>
 
 <style scoped></style>
