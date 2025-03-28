@@ -29,18 +29,16 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
-            $row_ids = $table->rows->pluck('id')->toArray();
             $column_ids = $table->columns->pluck('id')->toArray();
         
             $values = TableValue::get()
-                ->whereIn('row_id', $row_ids)
                 ->whereIn('column_id', $column_ids);
+
 
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
                 'columns' => $table->columns,
-                'rows' => $table->rows,
                 'values' => $values
             ]);
         } catch (Exception $e) {
@@ -104,11 +102,11 @@ class WorkspaceTableController extends Controller
             $workspace = $user->workspaces()->find($workspace_id);
             
             if (!$workspace_id) { // 3
-                return redirect()->route('workspaces')->with('error', 'Please select a workspace first.');
+                return redirect()->route('dashboard.index')->with('error', 'Please select a workspace first.');
             }
             
             if (!$workspace) {
-                return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
+                return redirect()->route('dashboard.index')->with('error', 'You do not have access to this workspace.');
             }
             
             DB::transaction(function () use ($request, $workspace_id) {

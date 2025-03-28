@@ -19,17 +19,13 @@ class TableValue extends Model
      * @var list<string>
      */
     protected $fillable = [ // !id
-        'row_id',
         'column_id',
+        'order',
         'value'
     ];
 
     public function column(): BelongsTo {
         return $this->belongsTo(WorkspaceColumn::class, 'column_id');
-    }
-
-    public function row(): BelongsTo {
-        return $this->belongsTo(WorkspaceRow::class, 'row_id');
     }
 
     /**
@@ -38,9 +34,8 @@ class TableValue extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'row_id' => 'integer',
         'column_id' => 'integer',
+        'order' => 'integer',
         'value' => 'string', 
     ];
-
 }

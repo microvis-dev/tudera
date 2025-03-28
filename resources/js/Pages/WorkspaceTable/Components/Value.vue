@@ -1,29 +1,11 @@
 <script setup>
 import { reactive, nextTick, ref } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
-import AddValueModal from './AddValueModal.vue';
 
 const emit = defineEmits(['add', 'update', 'delete'])
 
 const props = defineProps({
     value: Object,
-    row: Object,
-    column: Object,
-    table: Object,
-    x: Number,
-    y: Number
 })
-
-// modal
-const showModal = ref(false);
-const addValue = () => {
-    showModal.value = true
-}
-
-const closeModal = () => {
-    showModal.value = false
-}
 
 // edit
 const editState = reactive({
@@ -72,12 +54,7 @@ const deleteValue = () => {
 
 <template>
     <div class="flex flex-col items-center justify-center">
-        <button v-if="!value?.value" @click="addValue"
-            class="mt-2 bg-blue-500 text-white w-10 h-10 flex items-center justify-center hover:bg-blue-700">
-            +
-        </button>
-        <div v-else
-            class="flex items-center justify-center py-2 px-3 transition-colors duration-150 hover:bg-gray-50 rounded-md w-full">
+        <div class="flex items-center justify-center py-2 px-3 transition-colors duration-150 hover:bg-gray-50 rounded-md w-full">
             <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
                 <input v-if="editState.isEditing" v-model="editState.editedValue" @blur="saveEdit"
                     @keyup.enter="saveEdit"
@@ -97,10 +74,5 @@ const deleteValue = () => {
                 </svg>
             </button>
         </div>
-        <span class="text-xs text-gray-400 text-center mt-1">
-            x:{{ x }} - y:{{ y }}
-        </span>
-
-        <AddValueModal v-if="showModal" @close="closeModal" :table="table" :row="row" :column="column" />
     </div>
 </template>
