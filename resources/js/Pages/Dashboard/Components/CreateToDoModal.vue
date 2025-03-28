@@ -1,11 +1,21 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 
+const props = defineProps({
+    isPersonal: Boolean
+})
+
 const emit = defineEmits(['exit'])
 
 const todoForm = useForm({
     title: null,
     description: null,
+    start_date: null,
+    end_date: null
+})
+
+const calendarForm = useForm({
+    title: null,
     start_date: null,
     end_date: null
 })

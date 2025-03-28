@@ -32,8 +32,6 @@ const handleRedirect = (url) => {
   } else {
     router.get(route(url.name));
   }
-  console.log(url)
-  console.log(url.name == 'calendar.index')
 }
 
 const updateTables = ((workspace) => {
@@ -101,7 +99,7 @@ const updateDropdownHeight = (height) => {
             <h2 class="roboto-font-bold text-lg">{{ item.name }}</h2>
           </div>
             <button @click="showAddTodoModal" v-if="route().current('calendar.index')" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add event</button>
-            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal"/>
+            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :isPersonal="false"/>
         </div>
       </div>
     </aside>

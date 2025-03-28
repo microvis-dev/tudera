@@ -49,7 +49,7 @@ Route::resource('table.values', TableValueController::class)
 
 // calendar
 Route::resource('calendar', CalendarController::class)
-    ->only(['index']);
+    ->only(['index', 'create', 'update', 'store', 'destroy']);
 
 // dashboard
 Route::resource('dashboard', DashboardController::class)
