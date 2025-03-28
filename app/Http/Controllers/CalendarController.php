@@ -32,21 +32,21 @@ class CalendarController extends Controller
     {
         try {
             $user = $request->user();
+            $workspace_id = $request->workspace['id'];
 
             $validated = $request->validate([
-                'workspace_id' => 'required|exists:workspaces,id',
                 'title' => 'required|string|max:255',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date|after_or_equal:start_date',
             ]);
             
-            $workspace = $user->workspaces()->find($validated['workspace_id']);
+            $workspace = $user->workspaces->find($workspace_id);
             if (!$workspace) {
                 return redirect()->back()->with('error', 'You do not have access to this workspace.');
             }
             
             Calendar::create([
-                'workspace_id' => $validated['workspace_id'],
+                'workspace_id' => $workspace_id,
                 'user_id' => $user->id,
                 'title' => $validated['title'],
                 'start_date' => $validated['start_date'],
@@ -55,6 +55,7 @@ class CalendarController extends Controller
             
             return redirect()->back()->with('success', 'Event created successfully.');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             Log::error('Error creating calendar event: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to create event: ' . $e->getMessage());
         }

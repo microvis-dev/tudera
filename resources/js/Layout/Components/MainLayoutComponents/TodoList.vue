@@ -92,7 +92,7 @@ const updateIsDone = (todo) => {
         <div class="flex justify-center mt-5">
             <button @click="showAddTodoModal" class="w-fit p-2 px-10 rounded-xl bg-blue-600">Add new todo</button>
         </div>
-        <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal"/>
+        <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :is-personal="true"/>
     </section>
 </template>
 <style scoped></style>

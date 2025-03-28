@@ -1,34 +1,38 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import useSelectedWorkspace from '@/resources/js/Composable/useSelectedWorkspace';
 
 const props = defineProps({
     isPersonal: Boolean
-})
+});
 
-const emit = defineEmits(['exit'])
+const emit = defineEmits(['exit']);
 
-const todoForm = useForm({
-    title: null,
-    description: null,
-    start_date: null,
-    end_date: null
-})
+const { selectedWorkspace } = useSelectedWorkspace()
 
-const calendarForm = useForm({
+const eventForm = useForm({
     title: null,
     start_date: null,
     end_date: null
-})
+});
 
 const createTodo = () => {
-    todoForm.post(route('todolist.store'), {
-        onSuccess: () => emit('exit'),
-    })
-}
+    if (props.isPersonal) {
+        eventForm.post(route('todolist.store'), {
+            onSuccess: () => emit('exit'),
+        });
+    } else {
+        eventForm.post(route('calendar.store', { workspace: selectedWorkspace.value }), {
+            onSuccess: () => emit('exit')
+        })
+    }
+
+
+};
 
 const close = () => {
-    emit('exit')
-}
+    emit('exit');
+};
 </script>
 
 <template>
@@ -42,20 +46,20 @@ const close = () => {
 
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Title</label>
-                    <input type="text" v-model="todoForm.title"
+                    <input type="text" v-model="eventForm.title"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm">
                 </div>
 
                 <div class="flex flex-wrap gap-4">
                     <div class="w-full sm:w-[calc(50%-0.5rem)]">
                         <label for="start_date" class="text-[#B3B3B3] roboto-font-regular">Start Date</label>
-                        <input v-model="todoForm.start_date" id="start_date" type="datetime-local"
+                        <input v-model="eventForm.start_date" id="start_date" type="datetime-local"
                             class="px-3 py-2 bg-[#1C1D21] h-fit border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm" />
                     </div>
 
                     <div class="w-full sm:w-[calc(50%-0.5rem)]">
-                        <label for="start_date" class="text-[#B3B3B3] roboto-font-regular">End Date</label>
-                        <input v-model="todoForm.end_date" id="end_date" type="datetime-local"
+                        <label for="end_date" class="text-[#B3B3B3] roboto-font-regular">End Date</label>
+                        <input v-model="eventForm.end_date" id="end_date" type="datetime-local"
                             class="px-3 py-2 bg-[#1C1D21] h-fit border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm" />
                     </div>
                 </div>
