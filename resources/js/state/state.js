@@ -89,7 +89,14 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return readonly(calendar.value)
     }
 
-    // flash
+    function getFlashSuccess() {
+        return readonly(flashSucess.value)
+    }
+
+    function getFlashError() {
+        return readonly(flashErrors.value)
+    }
+
     return {
         getUser,
         getWorkspaces,
@@ -98,7 +105,9 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getTodos,
         getWorkspaceEvents,
         getTables,
-        getTransformedTables
+        getTransformedTables,
+        getFlashSuccess,
+        getFlashError
     }
 
 })
