@@ -7,6 +7,7 @@ import {useForm} from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { router } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
+import getDate from '../../Utils/getDate';
 import {
   createCalendar,
   createViewDay,
@@ -36,8 +37,8 @@ const getEvents = () => {
   let calendarEvents = [];
 
   todos.value.forEach(todo => {
-    let start = new Date(todo.start_date).toISOString().slice(0, 16).replace('T', ' ');
-    let end = new Date(todo.end_date).toISOString().slice(0, 16).replace('T', ' ');
+    let start = getDate(todo.start_date).toISOString().slice(0, 16).replace('T', ' ');
+    let end = getDate(todo.end_date).toISOString().slice(0, 16).replace('T', ' ');
 
     calendarEvents.push({
       id: todo.id,
@@ -49,8 +50,8 @@ const getEvents = () => {
   });
 
   workspaceEvents.value.forEach(event => {
-    let start = new Date(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
-    let end = new Date(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
+    let start = getDate(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
+    let end = getDate(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
 
     calendarEvents.push({
       id: event.id,
@@ -101,15 +102,18 @@ const calendarApp = createCalendar(
     },
     callbacks: {
       onEventUpdate(updatedEvent){
-        let calendar = ({
+        let calendar = useForm({
           id: updatedEvent.id,
           title: updatedEvent.title,
           start_date: updatedEvent.start,
           end_date: updatedEvent.end,
-          calendarId: updatedEvent.calendarId,
-          workspace_id: selectedWorkspace.id,
         })
-        router.put(route("calendar.update", {calendar: calendar, workspace: selectedWorkspace.value}))
+        console.log(calendar.start_date) // a megjelenes -1 ora
+        
+        calendar.put(route("calendar.update", {
+          calendar: updatedEvent.id,
+          workspace: selectedWorkspace.value.id
+        }))
       }
     }
   },
