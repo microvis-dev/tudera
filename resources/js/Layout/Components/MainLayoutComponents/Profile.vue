@@ -49,7 +49,7 @@ const logout = () => {
       <div class="relative flex justify-center">
         <transition name="slide-down">
           <div v-if="dropdownOpen" ref="dropdownRef"
-            class="absolute min-w-full flex flex-col items-center bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2 mt-2">
+            class="absolute min-w-full flex flex-col items-center bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2 mt-2 z-10">
             <div class="flex flex-col w-[200px] justify-center rounded-[5px] items">
               <button
                 class="bg-transparent border-0 p-[10px] text-white flex relative gap-[5px] cursor-pointer rounded-[4px] mb-2 items-center hover:bg-[#21262C] hover:rounded-[10px] focus:bg-[#1A1F24] focus:outline-none">

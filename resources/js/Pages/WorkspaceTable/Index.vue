@@ -6,13 +6,12 @@ import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 
-const props = defineProps({
+const props = defineProps({ // use state
     workspace: Object,
     workspace_table: Object,
     columns: Array,
     table_values: Array
 })
-// state
 
 //col
 const deleteColumn = (column_id) => {
