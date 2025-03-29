@@ -2,6 +2,10 @@
 import { watch, computed } from 'vue';
 import { ScheduleXCalendar } from '@schedule-x/vue';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
+import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
+import {useForm} from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
+import { router } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
 import {
   createCalendar,
@@ -94,9 +98,22 @@ const calendarApp = createCalendar(
           container: '#a24258'
         }
       }
+    },
+    callbacks: {
+      onEventUpdate(updatedEvent){
+        let calendar = ({
+          id: updatedEvent.id,
+          title: updatedEvent.title,
+          start_date: updatedEvent.start,
+          end_date: updatedEvent.end,
+          calendarId: updatedEvent.calendarId,
+          workspace_id: selectedWorkspace.id,
+        })
+        router.put(route("calendar.update", {calendar: calendar, workspace: selectedWorkspace.value}))
+      }
     }
   },
-  [eventsServicePlugin]
+  [eventsServicePlugin, createDragAndDropPlugin()]
 );
 
 // Add initial events

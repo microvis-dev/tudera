@@ -36,7 +36,7 @@ class CalendarController extends Controller
 
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'start_date' => 'required|date',
+                'start_date' => 'required|date|before_or_equal:end_date',
                 'end_date' => 'required|date|after_or_equal:start_date',
             ]);
             
@@ -61,8 +61,42 @@ class CalendarController extends Controller
         }
     }
 
-    public function update() {
-        
+    public function update(Request $request) {
+        try {
+            $user = $request->user();
+            $workspace_id = $request->workspace;
+            $calendar_id = $request->calendar;
+
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+            ]);
+            
+            $workspace = $user->workspaces->find($workspace_id);
+            if (!$workspace) {
+                return redirect()->back()->with('error', 'You do not have access to this workspace.');
+            }
+            
+            $calendar = Calendar::where('id', $calendar_id)
+                ->first();
+
+            if (!$calendar) {
+                return redirect()->back()->with('error', 'Event not found or you do not have access to it.');
+            }
+
+            $calendar->update([
+                'title' => $validated['title'],
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+            ]);
+            
+            return redirect()->back()->with('success', 'Event created successfully.');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            Log::error('Error creating calendar event: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to create event: ' . $e->getMessage());
+        }
     }
 
     public function destroy() {
