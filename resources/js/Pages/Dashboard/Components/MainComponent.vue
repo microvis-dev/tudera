@@ -1,8 +1,11 @@
 <script setup>
-import { inject, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import { useTuderaStore } from '@/resources/js/state/state';
 
+const { getSelectedWorkspace } = useTuderaStore()
+const selectedWorkspace = computed(() => getSelectedWorkspace())
 
 const addNewTable = () => {
   router.get(route('workspace.table.create', { workspace: props.workspace }))
