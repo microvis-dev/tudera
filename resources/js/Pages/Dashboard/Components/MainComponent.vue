@@ -8,7 +8,7 @@ const { getSelectedWorkspace } = useTuderaStore()
 const selectedWorkspace = computed(() => getSelectedWorkspace())
 
 const addNewTable = () => {
-  router.get(route('workspace.table.create', { workspace: props.workspace }))
+  router.get(route('workspace.table.create', { workspace: selectedWorkspace.value }))
 }
 
 </script>

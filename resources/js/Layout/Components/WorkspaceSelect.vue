@@ -58,6 +58,7 @@ const selectWorkspace = (workspace) => {
   dropdownOpen.value = false;
 
   emit('select-workspace', selectedWorkspace.value)
+  router.get(route('dashboard.index'))
 };
 
 const checkSelectedWorkspace = (workspace) => {
