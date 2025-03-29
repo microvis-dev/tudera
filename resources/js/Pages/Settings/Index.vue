@@ -17,17 +17,19 @@ const flash = computed(() => {
 
 const viewState = reactive({
     formChanged: false,
-    showAccountSettingsForm: false,
-    showDeleteUserForm: false,
-    showChangePasswordForm: false,
+    showAccountSettings: false,
+    showDeleteUser: false,
+    showChangePassword: false,
+    showAppearanceSettings: false, 
     toggleForm(formName) {
-        this.showAccountSettingsForm = false;
-        this.showDeleteUserForm = false;
-        this.showChangePasswordForm = !showChangePasswordForm;
+        this.showAccountSettings = false;
+        this.showDeleteUser = false;
+        this.showAppearanceSettings = false;
+        this.showChangePassword = false;
 
         this[formName] = !this[formName];
     }
-})
+});
 
 const accountSettingsForm = useForm({
     name: user.value.name,
@@ -137,15 +139,15 @@ const deleteUser = () => {
                 <h1 class="text-2xl roboto-font-bold">Settings</h1>
             </div>
             <div class="flex flex-col h-screen justify-start border-r border-slate-500 items-center">
-                <h2 class="my-5 text-2xl roboto-font-bold" @click="showAccount">Account</h2>
-                <h2 class="my-5 text-2xl roboto-font-bold" @click="showApperance">Apperance</h2>
+                <h2 class="my-5 text-2xl roboto-font-bold" @click="viewState.toggleForm('showAccountSettings')">Account</h2>
+                <h2 class="my-5 text-2xl roboto-font-bold" @click="viewState.toggleForm('showAppearanceSettings')">Apperance</h2>
                 <h2 class="my-5 text-2xl roboto-font-bold">Notifactions</h2>
                 <h2 class="my-5 text-2xl roboto-font-bold">Workspace Settings</h2>
             </div>
         </section>
         <section class="h-screen w-2/3 py-6">
-            <Account />
-            <Appearance />
+            <Account v-if="viewState.showAccountSettings" />
+            <Appearance v-if="viewState.showAppearanceSettings" />
         </section>
     </div>
 </template>
