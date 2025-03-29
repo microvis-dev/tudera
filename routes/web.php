@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\TodoListController;
 
@@ -22,7 +23,7 @@ Route::get('auth/check_email', [AuthController::class, 'check_email'])->name('au
 
 // user
 Route::resource('user', UserController::class)
-    ->only(['store']);
+    ->only(['store', 'update', 'destroy']);
 
 // setup
 Route::get('setup/workspace/create', [WorkspaceController::class, 'create'])
@@ -33,9 +34,12 @@ Route::post('setup/workspace', [WorkspaceController::class, 'store'])
 
 Route::resource('signup', SetupController::class)->only(['create']);
 
+
+// workspaces
 Route::resource('workspaces', WorkspaceController::class)
     ->middleware('auth');
 
+// workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow()->middleware('auth');
 
@@ -43,7 +47,6 @@ Route::resource('workspace.table', WorkspaceTableController::class)
 // col
 Route::resource('table.columns', WorkspaceColumnController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
-
 Route::resource('table.values', TableValueController::class)
     ->only(['create', 'store', 'update', 'destroy']);
 
@@ -55,6 +58,10 @@ Route::resource('calendar', CalendarController::class)
 Route::resource('dashboard', DashboardController::class)
     ->only(['index']);
 
-// ToDo list
+// todo list
 Route::resource('todolist', TodoListController::class)
     ->only(['show', 'store', 'update', 'destroy']);
+
+// settings
+Route::resource('settings', SettingsController::class)
+    ->only(['index'])->middleware('auth');

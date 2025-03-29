@@ -2,6 +2,14 @@
 import { watch, computed } from 'vue';
 import { ScheduleXCalendar } from '@schedule-x/vue';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
+import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
+import { createEventModalPlugin } from '@schedule-x/event-modal'
+import { createCurrentTimePlugin } from '@schedule-x/current-time'
+import {useForm} from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
+import { router } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
+import getDate from '../../Utils/getDate';
 import {
   createCalendar,
   createViewDay,
@@ -28,8 +36,8 @@ const getEvents = () => {
   let calendarEvents = [];
 
   todos.value.forEach(todo => {
-    let start = new Date(todo.start_date).toISOString().slice(0, 16).replace('T', ' ');
-    let end = new Date(todo.end_date).toISOString().slice(0, 16).replace('T', ' ');
+    let start = getDate(todo.start_date).toISOString().slice(0, 16).replace('T', ' ');
+    let end = getDate(todo.end_date).toISOString().slice(0, 16).replace('T', ' ');
 
     calendarEvents.push({
       id: todo.id,
@@ -41,8 +49,8 @@ const getEvents = () => {
   });
 
   workspaceEvents.value.forEach(event => {
-    let start = new Date(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
-    let end = new Date(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
+    let start = getDate(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
+    let end = getDate(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
 
     calendarEvents.push({
       id: event.id,
@@ -57,6 +65,7 @@ const getEvents = () => {
 };
 
 const calendarEvents = computed(() => getEvents());
+const eventModal = createEventModalPlugin()
 
 const calendarApp = createCalendar(
   {
@@ -90,9 +99,24 @@ const calendarApp = createCalendar(
           container: '#a24258'
         }
       }
+    },
+    callbacks: {
+      onEventUpdate(updatedEvent){
+        let calendar = useForm({
+          id: updatedEvent.id,
+          title: updatedEvent.title,
+          start_date: updatedEvent.start,
+          end_date: updatedEvent.end,
+        })
+        
+        calendar.put(route("calendar.update", {
+          calendar: updatedEvent.id,
+          workspace: selectedWorkspace.value.id
+        }))
+      }
     }
   },
-  [eventsServicePlugin]
+  [eventsServicePlugin, createDragAndDropPlugin(), eventModal, createCurrentTimePlugin()]
 );
 
 // Add initial events
@@ -136,5 +160,7 @@ watch(calendarEvents, (newEvents) => {
   max-width: 100vw;
   height: 800px;
   max-height: 90vh;
+  position: relative; /* Ensure proper stacking context */
+  z-index: 1; /* Lower than your dropdown's z-index */
 }
 </style>

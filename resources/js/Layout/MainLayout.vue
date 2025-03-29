@@ -15,7 +15,6 @@ const page = usePage()
 
 const tuderaState = useTuderaStore()
 const user = computed(() => tuderaState.getUser())
-
 const workspaces = computed(() => tuderaState.getWorkspaces())
 
 </script>

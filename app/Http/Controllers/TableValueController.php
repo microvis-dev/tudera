@@ -38,6 +38,13 @@ class TableValueController extends Controller
     }
 
     public function store(Request $request, $table_id) {
+        $validated = $request->validate([
+            'value' => 'required',
+            'column_id' => 'required|integer|exists:workspace_columns,id',
+            'order' => 'nullable|integer|min:0'
+        ]);
+
+    
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
@@ -47,33 +54,24 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $request->validate([
-                'value' => 'required',
-                'column_id' => 'required',
-            ]);
-            
-            $column_id = $request->column_id;
-            $column = $table->columns()->find($column_id);
-            
+            $column = $table->columns()->find($validated['column_id']);
             if (!$column) {
-                return redirect()->back()->with('error', 'Invalid column.');
+                return redirect()->back()->with('error', 'The column does not belong to this table.');
             }
-            
-            $existingValues = TableValue::where('column_id', $column_id)->get();
-            
-            $newOrder = $existingValues->max('order') + 1 ?? 1;
+
+            $maxOrder = TableValue::where('column_id', $validated['column_id'])->max('order') ?? 0;
             
             TableValue::create([
-                'column_id' => $column_id,
-                'value' => $request->value,
-                'order' => $newOrder,
+                'column_id' => $validated['column_id'],
+                'value' => $validated['value'],
+                'order' => (isset($validated['order']) ? $validated['order'] : $maxOrder + 1)
             ]);
-            
+
             return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
-            Log::error('Hiba TableValueController store: ' . $e->getMessage());
             dd($e->getMessage());
-            return redirect()->route('workspaces')->with('error', 'An error occurred while saving: ' . $e->getMessage());
+            Log::error('Error in TableValueController store: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while saving the value.');
         }
     }
 
