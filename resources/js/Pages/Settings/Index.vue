@@ -2,6 +2,8 @@
 import { computed, reactive, watchEffect } from 'vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import Account from './Components/Account.vue';
+import Appearance from './Components/Appearance.vue';
 
 const page = usePage()
 
@@ -17,12 +19,12 @@ const viewState = reactive({
     formChanged: false,
     showAccountSettingsForm: false,
     showDeleteUserForm: false,
-    showChangePassowrdForm: false,
+    showChangePasswordForm: false,
     toggleForm(formName) {
         this.showAccountSettingsForm = false;
         this.showDeleteUserForm = false;
-        this.showChangePassowrdForm = false;
-        
+        this.showChangePasswordForm = !showChangePasswordForm;
+
         this[formName] = !this[formName];
     }
 })
@@ -60,7 +62,7 @@ const deleteUser = () => {
 </script>
 
 <template>
-    <h1>Settings</h1>
+    <!-- <h1>Settings</h1>
     <button class="px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
         Manage account access
     </button>
@@ -86,10 +88,10 @@ const deleteUser = () => {
         </button>
         </div>
     </form>
-    <button @click="viewState.toggleForm('showChangePassowrdForm')" class="px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+    <button @click="viewState.toggleForm('showChangePasswordForm')" class="px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
         Change password
     </button>
-    <form v-if="viewState.showChangePassowrdForm" @submit.prevent="saveUserChanges" class="space-y-4">
+    <form v-if="viewState.showChangePasswordForm" @submit.prevent="saveUserChanges" class="space-y-4">
         <div class="flex flex-col">
             <label for="old-password" class="mb-2 text-sm font-medium text-gray-700">Old Password:</label>
             <input type="password" id="old-password" v-model="accountSettingsForm.old_password"
@@ -128,7 +130,24 @@ const deleteUser = () => {
                 Delete
             </button>
         </div>
-    </form>
+    </form> -->
+    <div class="flex flex-row">
+        <section class="h-screen w-1/3 py-6 ps-6">
+            <div class="py-6 ps-6 flex flex-row justify-around border-b border-r border-slate-500">
+                <h1 class="text-2xl roboto-font-bold">Settings</h1>
+            </div>
+            <div class="flex flex-col h-screen justify-start border-r border-slate-500 items-center">
+                <h2 class="my-5 text-2xl roboto-font-bold" @click="showAccount">Account</h2>
+                <h2 class="my-5 text-2xl roboto-font-bold" @click="showApperance">Apperance</h2>
+                <h2 class="my-5 text-2xl roboto-font-bold">Notifactions</h2>
+                <h2 class="my-5 text-2xl roboto-font-bold">Workspace Settings</h2>
+            </div>
+        </section>
+        <section class="h-screen w-2/3 py-6">
+            <Account />
+            <Appearance />
+        </section>
+    </div>
 </template>
 
 <style scoped></style>
