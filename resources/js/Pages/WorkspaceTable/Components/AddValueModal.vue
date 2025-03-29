@@ -20,9 +20,17 @@ const valueForm = useForm({
 })
 
 const save = () => {
+    // First ensure column_id is valid
+    if (!props.column || !props.column.id) {
+        console.error('Column ID is missing')
+        return
+    }
+    
+    // Set column_id explicitly
+    valueForm.column_id = props.column.id
+    
     if (valueForm.value) {
         valueForm.post(route('table.values.store', { table: props.table }))
-        //valueForm.post(route('table.values.store', { table: props.table, row: props.row, column: props.column }))
         emit('close')
     }
 }
