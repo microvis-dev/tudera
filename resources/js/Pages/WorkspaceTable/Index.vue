@@ -6,6 +6,7 @@ import axios from 'axios';
 import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import AddValueModal from './Components/AddValueModal.vue';
+import EmptyValue from './Components/EmptyValue.vue';
 
 const props = defineProps({
     workspace: Object,
@@ -89,13 +90,20 @@ const maxRows = computed(() => {
 
 // add value, todo: put this in component
 const showAddValueForm = ref(false)
-const toggleAddValueForm = ((column) => {
-    selectedColumn.value = column
-    showAddValueForm.value = !showAddValueForm.value
-})
+const toggleAddValueForm = (column) => {
+    columns.forEach(col => col.showInput = false);
+    column.showInput = true;
+    selectedColumn.value = column;
+}
 
-const selectedColumn = ref(null)
+const selectedColumn = ref(null);
 
+
+const saveValue = (value, column) => {
+    console.log(value, column)
+    router.post(route('table.values.store', { table: column.table_id, value: value, column: column, column_id: column.id}))
+
+}
 </script>
 
 <template>
@@ -109,58 +117,58 @@ const selectedColumn = ref(null)
                     </p>
                 </div>
             </div>
-                <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500">
+            <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500">
 
 
-                    <table class="min-w-full table-auto">
-                        <thead>
-                            <tr>
-                                <th v-for="column in columns" :key="column.id" scope="col"
-                                    class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
-                                    <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
-                                </th>
-                                <th class="min-w-[80px]">
-                                    <Link :href="route('table.columns.create', { table: workspace_table })"
-                                        class="hover:bg-blue-700 text-white font-bold px-6 py-3 text-left rounded">
-                                    +
-                                    </Link>
-                                </th>
-                            </tr>
-                        </thead>
-                        
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="rowIndex in maxRows" :key="rowIndex">
-                                <td v-for="(column, colIndex) in columns" :key="column.id" class="text-center p-2 border-r">
-                                    <Value 
-                                        v-if="sortedTable[colIndex] && sortedTable[colIndex][rowIndex-1]" 
-                                        :value="sortedTable[colIndex][rowIndex-1]" 
-                                        @update="updateValue" 
-                                        @delete="deleteValue" 
-                                    />
-                                    <button 
-                                        v-else 
-                                        @click="toggleAddValueForm(column)" 
-                                        class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center hover:bg-blue-700 rounded-full mx-auto">
-                                        +
-                                    </button>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr class="bg-gray-50">
-                                <td v-for="column in columns" class="text-center p-2 border-r">
-                                    <button 
-                                        @click="toggleAddValueForm(column)" 
-                                        class="bg-green-500 text-white w-10 h-10 flex items-center justify-center hover:bg-green-700 rounded-full mx-auto">
-                                        +
-                                    </button>
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                        <AddValueModal v-if="showAddValueForm" @close="showAddValueForm = false" :table="workspace_table" :column="selectedColumn" />
-                </div>
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr>
+                            <th v-for="column in columns" :key="column.id" scope="col"
+                                class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
+                                <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
+                                <input v-if="column.showInput" type="text"
+                                    class="w-full p-1 border border-gray-300 rounded" @blur="column.showInput = false"
+                                    @keyup.enter="column.showInput = false" placeholder="Enter value" />
+                            </th>
+                            <th class="min-w-[80px] border-b border-slate-500">
+                                <Link :href="route('table.columns.create', { table: workspace_table })"
+                                    class="hover:bg-blue-700 text-white font-bold px-6 py-3 text-left">
+                                +
+                                </Link>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="">
+                        <tr v-for="rowIndex in maxRows" :key="rowIndex">
+                            <td v-for="(column, colIndex) in columns" :key="column.id"
+                                class="text-center p-2 border-slate-500 border-r border-t border-b">
+                                <Value v-if="sortedTable[colIndex] && sortedTable[colIndex][rowIndex - 1]"
+                                    :value="sortedTable[colIndex][rowIndex - 1]" @update="updateValue"
+                                    @delete="deleteValue" />
+                                <div v-else class="relative group">
+                                    <EmptyValue :column="column" @save="saveValue" />
+                                </div>
+                            </td>
+                            <td class="border-b border-slate-500"></td>
+                        </tr>
+                        <tr class="">
+                            <td class="text-center p-2 border-t border-slate-500">
+                                <button v-if="columns && columns.length > 0" @click="toggleAddValueForm(selectedColumn)"
+                                    class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
+                                    + Add task
+                                </button>
+                            </td>
+                            <td v-for="column in columns" class="text-center p-2 border-t border-slate-500">
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <AddValueModal v-if="showAddValueForm" @close="showAddValueForm = false" :table="workspace_table"
+                    :column="selectedColumn" />
             </div>
         </div>
+    </div>
 </template>
 <style scoped></style>

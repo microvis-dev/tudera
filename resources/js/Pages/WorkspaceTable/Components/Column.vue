@@ -45,7 +45,7 @@ const saveEdit = () => {
             <input v-if="editState.isEditing" v-model="editState.editedName" @blur="saveEdit" @keyup.enter="saveEdit"
                 class="w-full border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-sm"
                 ref="el => editState.nameInputTextField = el" />
-            <div v-else class="flex items-center">
+            <div v-else class="flex justify-center">
                 <span class="font-medium text-sm truncate">{{ column.name }}</span>
             </div>
         </div>
