@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TableValue;
-use App\Models\Workspace;
 use App\Models\WorkspaceTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -29,19 +28,15 @@ class WorkspaceTableController extends Controller
                 return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
             }
             
-            $row_ids = $table->rows->pluck('id')->toArray();
             $column_ids = $table->columns->pluck('id')->toArray();
         
-            $values = TableValue::get()
-                ->whereIn('row_id', $row_ids)
-                ->whereIn('column_id', $column_ids);
+            $values = TableValue::whereIn('column_id', $column_ids)->get()->toArray();
 
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
                 'columns' => $table->columns,
-                'rows' => $table->rows,
-                'values' => $values
+                'table_values' => $values
             ]);
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());
@@ -104,22 +99,30 @@ class WorkspaceTableController extends Controller
             $workspace = $user->workspaces()->find($workspace_id);
             
             if (!$workspace_id) { // 3
-                return redirect()->route('workspaces')->with('error', 'Please select a workspace first.');
+                return redirect()->route('dashboard.index')->with('error', 'Please select a workspace first.');
             }
             
             if (!$workspace) {
-                return redirect()->route('workspaces')->with('error', 'You do not have access to this workspace.');
+                return redirect()->route('dashboard.index')->with('error', 'You do not have access to this workspace.');
             }
             
             DB::transaction(function () use ($request, $workspace_id) {
-                WorkspaceTable::create([
+                $table = WorkspaceTable::create([
                     'name' => strip_tags($request->name),
                     'workspace_id' => $workspace_id,
                 ]);
+                
+                $table->columns()->create([
+                    'table_id' => $table->id,
+                    'type' => 'string',
+                    'name' => strip_tags($request->name),
+                    'order' => 1,
+                ]);
             });
 
-            return redirect()->route('workspace.table.index', ['workspace' => $workspace_id])->with('success', 'Workspace table created successfully!');
+            return redirect()->route('dashboard.index')->with('success', 'Workspace table created successfully!');
         } catch (Exception $e) {
+            dd($e->getMessage());
             Log::error('Hiba WorkspaceTableController store: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while creating the table.');
         }

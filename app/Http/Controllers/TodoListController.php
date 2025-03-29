@@ -16,7 +16,6 @@ class TodoListController extends Controller
     public function store(Request $request) {
         $request->validate([
             'title' => 'string|max:30',
-            'description' => 'nullable|string|max:500',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date'
         ]);
@@ -26,13 +25,12 @@ class TodoListController extends Controller
             TodoList::create([
                 'user_id' => $user->id,
                 'title' => $request->input('title'),
-                'description' => $request->input('description'),
                 'is_done' => false,
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),
             ]);
 
-            return redirect()->route('dashboard.index')->with('success', 'ToDo item created successfully!');
+            return redirect()->back()->with('success', 'ToDo item created successfully!');
         } catch (Exception $e) {
             dd($e->getMessage());
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
@@ -43,7 +41,6 @@ class TodoListController extends Controller
     public function update(Request $request, $id) {
         $request->validate([
             'title' => 'string|max:30',
-            'description' => 'nullable|string|max:500',
             'is_done' => 'boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date'
@@ -55,7 +52,6 @@ class TodoListController extends Controller
 
             $todo->update([
                 'title' => $request->input('title'),
-                'description' => $request->input('description'),
                 'is_done' => $request->input('is_done'),
                 'start_date' => $request->input('start_date'),
                 'end_date' => $request->input('end_date'),

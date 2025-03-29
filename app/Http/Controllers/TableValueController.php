@@ -17,6 +17,7 @@ class TableValueController extends Controller
     }
 
     public function create(Request $request, $table_id) { 
+        return;
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
@@ -37,9 +38,13 @@ class TableValueController extends Controller
     }
 
     public function store(Request $request, $table_id) {
-        // dd($request->column); ha useForm obj
-        // dd($request->input('row'), $request->input('column'), $request->input('table')); ha param
+        $validated = $request->validate([
+            'value' => 'required',
+            'column_id' => 'required|integer|exists:workspace_columns,id',
+            'order' => 'nullable|integer|min:0'
+        ]);
 
+    
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
@@ -49,33 +54,24 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $request->validate([
-                'value' => 'required'
-            ]);
-            
-            $row_id = $request->row_id;
-            $column_id = $request->column_id;
-            
-            $row = $table->rows()->find($row_id);
-            $column = $table->columns()->find($column_id);
-            
-            if (!$row || !$column) {
-                return redirect()->back()->with('error', 'Invalid row or column.');
+            $column = $table->columns()->find($validated['column_id']);
+            if (!$column) {
+                return redirect()->back()->with('error', 'The column does not belong to this table.');
             }
+
+            $maxOrder = TableValue::where('column_id', $validated['column_id'])->max('order') ?? 0;
             
-            $tableValue = TableValue::firstOrNew([ // !
-                'row_id' => $row_id,
-                'column_id' => $column_id
+            TableValue::create([
+                'column_id' => $validated['column_id'],
+                'value' => $validated['value'],
+                'order' => (isset($validated['order']) ? $validated['order'] : $maxOrder + 1)
             ]);
-            
-            $tableValue->value = $request->value;
-            $tableValue->save();
-            
-            return redirect()->back()->with('success', 'Value saved successfully.');
+
+            return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
-            Log::error('Hiba TableValueController store: ' . $e->getMessage());
             dd($e->getMessage());
-            return redirect()->route('workspaces')->with('error', 'An error occurred while saving.');
+            Log::error('Error in TableValueController store: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while saving the value.');
         }
     }
 
@@ -94,10 +90,9 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $row = $table->rows()->find($value->row_id);
             $column = $table->columns()->find($value->column_id);
             
-            if (!$row || !$column) {
+            if (!$column) {
                 return redirect()->back()->with('error', 'Invalid value - not associated with this table.');
             }
             
@@ -123,10 +118,9 @@ class TableValueController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
             
-            $row = $table->rows()->find($value->row_id);
             $column = $table->columns()->find($value->column_id);
             
-            if (!$row || !$column) {
+            if (!$column) {
                 return redirect()->back()->with('error', 'Invalid value - not associated with this table.');
             }
             

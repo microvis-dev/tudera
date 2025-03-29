@@ -4,9 +4,9 @@ import { route } from 'ziggy-js'
 
 const props = defineProps({
     table: Object,
-    row: Object,
     column: Object
 })
+console.log(props.column)
 
 const emit = defineEmits(['close'])
 
@@ -16,15 +16,21 @@ const closeModal = () => {
 
 const valueForm = useForm({
     value: null,
-    row_id: props.row.id,
     column_id: props.column.id
 })
 
 const save = () => {
+    // First ensure column_id is valid
+    if (!props.column || !props.column.id) {
+        console.error('Column ID is missing')
+        return
+    }
+    
+    // Set column_id explicitly
+    valueForm.column_id = props.column.id
+    
     if (valueForm.value) {
-        console.log(props.table)
         valueForm.post(route('table.values.store', { table: props.table }))
-        //valueForm.post(route('table.values.store', { table: props.table, row: props.row, column: props.column }))
         emit('close')
     }
 }
@@ -35,7 +41,6 @@ const save = () => {
     <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
         <div class="bg-white p-6 rounded shadow-md">
             <h2 class="text-xl font-bold mb-4">Add Value</h2>
-            <p>Row: {{ row.name }}</p>
             <p>Column: {{ column.name }}</p>
             <input v-model="valueForm.value" required class="mt-5 border p-2 rounded w-full" placeholder="Enter value" />
             <button @click="closeModal"

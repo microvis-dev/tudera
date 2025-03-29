@@ -26,7 +26,6 @@ Route::resource('user', UserController::class)
     ->only(['store', 'update', 'destroy']);
 
 // setup
-// Route::resource('setup.workspace', WorkspaceController::class)->only(['create', 'store']);
 Route::get('setup/workspace/create', [WorkspaceController::class, 'create'])
     ->name('setup.workspace.create');
 
@@ -35,28 +34,25 @@ Route::post('setup/workspace', [WorkspaceController::class, 'store'])
 
 Route::resource('signup', SetupController::class)->only(['create']);
 
+
 // workspaces
 Route::resource('workspaces', WorkspaceController::class)
     ->middleware('auth');
 
 // workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)
-    ->shallow();
+    ->shallow()->middleware('auth');
 
-// table column
+
+// col
 Route::resource('table.columns', WorkspaceColumnController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
-
-// table row
-Route::resource('table.rows', WorkspaceRowController::class)
-    ->only(['index', 'create', 'store', 'destroy', 'update']);
-
 Route::resource('table.values', TableValueController::class)
     ->only(['create', 'store', 'update', 'destroy']);
 
 // calendar
 Route::resource('calendar', CalendarController::class)
-    ->only(['index']);
+    ->only(['index', 'create', 'update', 'store', 'destroy']);
 
 // dashboard
 Route::resource('dashboard', DashboardController::class)

@@ -30,6 +30,10 @@ class Workspace extends Model
         return $this->hasMany(WorkspaceTable::class, 'workspace_id', 'id');
     }    
 
+    public function calendar_events() : HasMany {
+        return $this->hasMany(Calendar::class, 'workspace_id', 'id');
+    }
+
     /**
      * The attributes that should be cast.
      *

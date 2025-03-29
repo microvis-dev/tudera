@@ -113,19 +113,19 @@ class WorkspaceController extends Controller
 
 
     private function createDefaultLeadsTable(Workspace $workspace)
-{
-    try {
-        $leadsTable = new WorkspaceTable();
-        $leadsTable->workspace_id = $workspace->id;
-        $leadsTable->name = 'Leads';
-        $leadsTable->save();        
-        // todo fill
-    } catch (Exception $e) {
-        Log::error('Error creating default Leads table: ' . $e->getMessage());
-        dd($e->getMessage());
-        throw $e;
+    {
+        try {
+            $leadsTable = new WorkspaceTable();
+            $leadsTable->workspace_id = $workspace->id;
+            $leadsTable->name = 'Leads';
+            $leadsTable->save();        
+            // todo fill
+        } catch (Exception $e) {
+            Log::error('Error creating default Leads table: ' . $e->getMessage());
+            dd($e->getMessage());
+            throw $e;
+        }
     }
-}
 
     
 }

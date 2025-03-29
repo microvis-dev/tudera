@@ -1,13 +1,13 @@
 <script setup>
-import { ref, reactive, onUnmounted } from 'vue';
+import { ref, reactive, onUnmounted, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import getDate from '@/resources/js/Utils/getDate';
+import getDate from '@/resources/js/Utils/getDate.js';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
+import { useTuderaStore } from '@/resources/js/state/state';
 
-const props = defineProps({
-    todos: Array
-})
+const tuderaState = useTuderaStore()
+const todos = computed(() => tuderaState.getTodos())
 
 const viewState = reactive({
     addTodoModal: false
@@ -28,7 +28,7 @@ const formatDate = (date) => {
     const day = String(d.getDate()).padStart(2, '0');
     const hours = String(d.getHours() - 1).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 const currentTime = ref(new Date());
@@ -58,7 +58,7 @@ const updateIsDone = (todo) => {
 <template>
     <section class="flex flex-col p-5">
         <h1 class="text-2xl roboto-font-bold mb-2">Todo List</h1>
-        <p class="text-sm roboto-font-medium mb-5 text-[#B3B3B3]">Track your todos in a simple sidebar</p>
+        <p class="text-sm roboto-font-medium mb-5 text-[#B3B3B3]">Track your todos in a simple sidebar.</p>
         <fieldset>
             <div v-for="(todo, index) in todos" class="flex flex-row py-2 w-full items-center gap-4">
                 <div class="w-1/12">
@@ -92,7 +92,7 @@ const updateIsDone = (todo) => {
         <div class="flex justify-center mt-5">
             <button @click="showAddTodoModal" class="w-fit p-2 px-10 rounded-xl bg-blue-600">Add new todo</button>
         </div>
-        <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" />
+        <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :is-personal="true"/>
     </section>
 </template>
 <style scoped></style>

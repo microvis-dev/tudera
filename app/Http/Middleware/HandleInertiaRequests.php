@@ -38,15 +38,19 @@ class HandleInertiaRequests extends Middleware
     $user = $request->user();
 
     if ($user) {
-        $user->load('workspaces.tables');
+        $user->load([
+            'workspaces.tables',
+            'workspaces.calendar_events',
+            'todos',
+        ]);
     }
     
     return array_merge(parent::share($request), [
         'flash' => [
             'success' => $request->session()->get('success'),
-            'error' => $request->session()->get('error')
+            'error' => $request->session()->get('error'),
         ],
-        'user' => $user
+        'user' => $user,
     ]);
 }
 }

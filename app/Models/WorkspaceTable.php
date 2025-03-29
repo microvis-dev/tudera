@@ -59,11 +59,6 @@ class WorkspaceTable extends Model
         return $this->hasMany(WorkspaceColumn::class, 'table_id');
     }
 
-    
-    public function rows(): HasMany {
-        return $this->hasMany(WorkspaceRow::class, 'table_id');
-    }
-
     /**
      * The attributes that should be cast.
      *
