@@ -22,6 +22,7 @@
         "@schedule-x/theme-default": "^2.23.0",
         "@schedule-x/vue": "^2.21.0",
         "circle-progress.vue": "^3.3.0",
+        "pinia": "^3.0.1",
         "ziggy-js": "^2.5.2"
     }
 }
