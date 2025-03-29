@@ -7,8 +7,8 @@ import StatComponent from "./Components/MainLayoutComponents/StatComponent.vue";
 import Sidebar from "./Components/MainLayoutComponents/Sidebar.vue";
 import Search from "./Components/MainLayoutComponents/Search.vue";
 import Profile from "./Components/MainLayoutComponents/Profile.vue";
-import MainComponent from "./Components/MainLayoutComponents/MainComponent.vue";
-import TodoList from "./Components/MainLayoutComponents/TodoList.vue";
+import MainComponent from "../Pages/Dashboard/Components/MainComponent.vue";
+import TodoList from "../Pages/Dashboard/Components/TodoList.vue";
 import { useTuderaStore } from "../state/state";
 
 const page = usePage()
