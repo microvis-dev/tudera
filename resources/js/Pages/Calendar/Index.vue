@@ -3,6 +3,8 @@ import { watch, computed } from 'vue';
 import { ScheduleXCalendar } from '@schedule-x/vue';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
+import { createEventModalPlugin } from '@schedule-x/event-modal'
+import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import {useForm} from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { router } from '@inertiajs/vue3';
@@ -66,6 +68,7 @@ const getEvents = () => {
 };
 
 const calendarEvents = computed(() => getEvents());
+const eventModal = createEventModalPlugin()
 
 const calendarApp = createCalendar(
   {
@@ -108,7 +111,6 @@ const calendarApp = createCalendar(
           start_date: updatedEvent.start,
           end_date: updatedEvent.end,
         })
-        console.log(calendar.start_date) // a megjelenes -1 ora
         
         calendar.put(route("calendar.update", {
           calendar: updatedEvent.id,
@@ -117,7 +119,7 @@ const calendarApp = createCalendar(
       }
     }
   },
-  [eventsServicePlugin, createDragAndDropPlugin()]
+  [eventsServicePlugin, createDragAndDropPlugin(), eventModal, createCurrentTimePlugin()]
 );
 
 // Add initial events
@@ -161,5 +163,7 @@ watch(calendarEvents, (newEvents) => {
   max-width: 100vw;
   height: 800px;
   max-height: 90vh;
+  position: relative; /* Ensure proper stacking context */
+  z-index: 1; /* Lower than your dropdown's z-index */
 }
 </style>
