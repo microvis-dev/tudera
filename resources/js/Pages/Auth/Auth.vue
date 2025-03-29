@@ -9,6 +9,7 @@ defineOptions({
     layout: AuthLayout
 })
 
+
 const viewState = reactive({
     isSignIn: true,
     authMethodDisabled: false,
@@ -36,14 +37,13 @@ const isEmailExists = async (email) => {
     try {
         const response = await axios.get(route('auth.check_email', { email: email }));
 
-        if (response.data.status == 'error') {
+        if (response.data.status === 'error') {
             viewState.errorField = response.data.message
             return false
         }
 
         return response.data.exists;
     } catch (error) {
-        console.error("Error checking email:", error);
         return false;
     }
 };
@@ -61,9 +61,8 @@ const continueAuth = async () => {
         }
     } else {
         if (!isExists) {
-            router.post(route('setup.user.create'), {
-                email: authForm.email
-            });
+            localStorage.setItem('userEmail', authForm.email)
+            router.get(route('signup.create'))
         } else {
             alert("letezo email")
         }
@@ -86,7 +85,7 @@ const login = (() => {
             <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
             <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter
                 your details</p>
-            <form class="flex flex-col w-full">
+            <form @submit.prevent="" class="flex flex-col w-full">
                 <div class="relative flex bg-[#5D5E5B] rounded-lg p-1 w-75 h-11 text-center mb-5">
                     <input :disabled="viewState.authMethodDisabled" type="radio" id="sign-in" :value="true"
                         name="toggle" class="hidden peer/signin" checked v-model="viewState.isSignIn">
@@ -105,13 +104,17 @@ const login = (() => {
                     </label>
                 </div>
                 <div class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
-                    <input type="text" id="name" v-model="authForm.email"
-                        class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
-                        placeholder=" " />
-                    <label for="name"
-                        class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light">Email
+                    <input type="text" id="email" v-model="authForm.email"
+                        class="bg-[#5D5E5B] peer w-full rounded-md px-3 pt-6 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                        placeholder=" "
+                        :class="{ 'border outline-none ring-red-600 border-red-600': viewState.errorField !== '' }" />
+                    <img class="absolute right-3 top-1/2 transform -translate-y-1/2" v-if="viewState.errorField !== ''"
+                        src="../../../assets/exclamation.svg" alt="Exclamation mark">
+                    <label for="email"
+                        class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light"
+                        :class="{ 'text-red-500': viewState.errorField !== '' }">Email
                         address</label>
-                    <p v-if="authForm.errors.email">{{ authForm.errors.email }}</p>
+                    <span class="text-sm text-red-500 block" v-if="viewState.errorField">{{ viewState.errorField }}</span>
                 </div>
                 <div v-if="viewState.passwordField" class="relative w-full bg-[#5D5E5B] rounded-md mb-5 h-12">
                     <input v-model="authForm.password" type="password" id="password"
@@ -139,7 +142,6 @@ const login = (() => {
                         Remember me
                     </label>
                 </div>
-                <p v-if="viewState.errorField">Errors: {{ viewState.errorField }}</p>
                 <button type="submit" class="bg-blue-600 rounded-md h-12 roboto-font-light"
                     @click.prevent="viewState.passwordField ? login() : continueAuth()">
                     Continue

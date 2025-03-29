@@ -1,10 +1,13 @@
 <script setup>
+import { router, Link } from "@inertiajs/vue3";
 import { nextTick, defineEmits, reactive } from "vue";
+import { route } from "ziggy-js";
 
 const props = defineProps({
     workspace: Object
 })
 
+// rw
 const emit = defineEmits(["update-name", "remove-workspace"])
 
 const editState = reactive({
@@ -34,6 +37,10 @@ const removeWorkspace = () => {
         emit("remove-workspace", props.workspace.workspace_id)
     }
 }
+
+const go = () => {
+    router.get(route('workspace.table.index', { workspace: props.workspace.workspace_id }))
+}
 </script>
 
 <template>
@@ -43,6 +50,9 @@ const removeWorkspace = () => {
                 class="border px-2 py-1 rounded" ref="el => editState.nameInputTextField = el" />
             <span v-else>{{ workspace.name }}</span>
         </div>
+        <button @click="go" class="ml-2 px-2 py-1 bg-green-500 text-white rounded">
+            Go
+        </button>
         <button v-if="!editState.isEditing" @click="enableEditing"
             class="ml-2 px-2 py-1 bg-blue-500 text-white rounded">
             Edit

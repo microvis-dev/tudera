@@ -1,13 +1,15 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import {ref, watchEffect, defineOptions } from "vue";
+import { ref, watchEffect, defineOptions } from "vue";
+import MainLayout from "../../Layout/MainLayout.vue";
 
-defineOptions({
-    layout: null
+const props = defineProps({
+    user: Object,
+    workspaces: Array
 })
-</script>
 
+</script>
 <template>
+    <p>{{ user.name }}</p>   
 </template>
-<style scoped>
-</style>
+<style scoped></style>

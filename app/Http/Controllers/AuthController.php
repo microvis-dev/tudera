@@ -10,7 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function create() {
+
+    public function index() {
         return inertia('Auth/Auth');
     }
 
@@ -26,8 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        
-        return redirect()->intended('/'); // !
+        return redirect()->intended('dashboard'); 
     }
 
     public function check_email(Request $request) {
@@ -50,7 +50,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-
-        return redirect()->route('auth');
+        return redirect()->route('auth.index');
     }
 }
