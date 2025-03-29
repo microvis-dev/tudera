@@ -3,8 +3,12 @@ import { watch, computed } from 'vue';
 import { ScheduleXCalendar } from '@schedule-x/vue';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
+import { createEventModalPlugin } from '@schedule-x/event-modal'
+import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import {useForm} from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import { router } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import getDate from '../../Utils/getDate';
 import {
   createCalendar,
@@ -66,12 +70,13 @@ const getEvents = () => {
 };
 
 const calendarEvents = computed(() => getEvents());
+const eventModal = createEventModalPlugin()
 
 const calendarApp = createCalendar(
   {
     isDark: true,
     selectedDate: new Date().toISOString().split('T')[0],
-    views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
+    views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda(), eventModal],
     calendars: {
       personal: {
         colorName: 'personal',
@@ -116,7 +121,7 @@ const calendarApp = createCalendar(
       }
     }
   },
-  [eventsServicePlugin, createDragAndDropPlugin()]
+  [eventsServicePlugin, createDragAndDropPlugin(), eventModal, createCurrentTimePlugin()]
 );
 
 // Add initial events
