@@ -1,6 +1,7 @@
 <script setup>
+import { useTuderaStore } from '@/resources/js/state/state';
 import { useForm } from '@inertiajs/vue3';
-import useSelectedWorkspace from '@/resources/js/Composable/useSelectedWorkspace';
+import { computed } from 'vue';
 
 const props = defineProps({
     isPersonal: Boolean
@@ -8,7 +9,8 @@ const props = defineProps({
 
 const emit = defineEmits(['exit']);
 
-const { selectedWorkspace } = useSelectedWorkspace()
+const tuderaState = useTuderaStore()
+const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const eventForm = useForm({
     title: null,

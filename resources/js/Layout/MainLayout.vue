@@ -9,29 +9,14 @@ import Search from "./Components/MainLayoutComponents/Search.vue";
 import Profile from "./Components/MainLayoutComponents/Profile.vue";
 import MainComponent from "./Components/MainLayoutComponents/MainComponent.vue";
 import TodoList from "./Components/MainLayoutComponents/TodoList.vue";
-//import { useTuderaStore } from "../state/state";
+import { useTuderaStore } from "../state/state";
 
 const page = usePage()
 
-//const tuderaState = useTuderaStore()
-//const user = computed(() => tuderaState.getUser)
+const tuderaState = useTuderaStore()
+const user = computed(() => tuderaState.getUser())
 
-const flashSucess = computed(() => {
-  return page.props.flash.success
-})
-
-const flashErrors = computed(() => {
-  return page.props.flash.error
-})
-
-const user = computed(() => {
-  return page.props.user
-})
-
-const workspaces = computed(() => {
-  // return user.value?.workspaces || []
-  return user.value.workspaces
-})
+const workspaces = computed(() => tuderaState.getWorkspaces())
 
 </script>
 

@@ -2,9 +2,7 @@
 import { ref, watch, nextTick, provide, reactive, computed, watchEffect } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-import useSelectedWorkspace from "../../Composable/useSelectedWorkspace";
-
-const { selectedWorkspace: sharedWorkspace, setWorkspace } = useSelectedWorkspace()
+import { useTuderaStore } from "../../state/state";
 
 const props = defineProps({
   modelValue: {
@@ -12,6 +10,8 @@ const props = defineProps({
     default: false
   },
 })
+
+const tuderaState = useTuderaStore()
 
 const page = usePage()
 const user = computed(() => {
@@ -28,8 +28,7 @@ watch(workspaces, () => { // lehetne jobb
 
 const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
 
-const selectedWorkspace = ref(workspaces.value[0]);
-setWorkspace(selectedWorkspace.value)
+const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 emit('select-workspace', selectedWorkspace.value)
 const dropdownOpen = ref(false);
 const dropdownElement = ref(null); // Reference to the dropdown element
@@ -54,9 +53,10 @@ const updateDropdownHeight = () => {
 };
 
 const selectWorkspace = (workspace) => {
-  selectedWorkspace.value = workspace;
+  tuderaState.setWorkspace(workspace)
+
   dropdownOpen.value = false;
-  setWorkspace(selectedWorkspace.value)
+
   emit('select-workspace', selectedWorkspace.value)
 };
 

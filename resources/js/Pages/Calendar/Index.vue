@@ -2,7 +2,6 @@
 import { watch, computed } from 'vue';
 import { ScheduleXCalendar } from '@schedule-x/vue';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
-import { usePage } from '@inertiajs/vue3';
 import {
   createCalendar,
   createViewDay,
@@ -11,22 +10,19 @@ import {
   createViewWeek,
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
-import useSelectedWorkspace from '../../Composable/useSelectedWorkspace';
+import { useTuderaStore } from '../../state/state';
 
 const eventsServicePlugin = createEventsServicePlugin();
+const tuderaState = useTuderaStore()
+
+const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const props = defineProps({
   workspace_events: Array
 });
 
-const page = usePage();
-const { selectedWorkspace } = useSelectedWorkspace();
-
-const todos = computed(() => page.props.user.todos);
-
-const workspaceEvents = computed(() => {
-  return props.workspace_events.filter(event => event.workspace_id === selectedWorkspace.value.id);
-});
+const todos = computed(() => tuderaState.getTodos());
+const workspaceEvents = computed(() => tuderaState.getWorkspaceEvents())
 
 const getEvents = () => {
   let calendarEvents = [];

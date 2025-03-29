@@ -1,6 +1,14 @@
-import { usePage } from "@inertiajs/vue3";
-import { defineStore } from "pinia";
-import { ref, readonly, computed } from 'vue'
+import {
+    usePage
+} from "@inertiajs/vue3";
+import {
+    defineStore
+} from "pinia";
+import {
+    ref,
+    readonly,
+    computed
+} from 'vue'
 
 export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()
@@ -10,7 +18,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     })
 
     const workspaces = computed(() => {
-        return page.props.workspaces
+        return user.value.workspaces
     })
 
     const selectedWorkspace = ref(workspaces.value[0])
@@ -28,7 +36,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     })
 
     const calendar = computed(() => {
-        return selectedWorkspace.value.calendar
+        return selectedWorkspace.value.calendar_events
     })
 
     function getUser() {
@@ -43,6 +51,32 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return readonly(selectedWorkspace.value)
     }
 
+    function getTables() {
+        return readonly(selectedWorkspace.value.tables)
+    }
+
+    function getTransformedTables() {
+        let tables = []
+        let tableIcon = null
+
+        selectedWorkspace.value.tables.forEach((table) => {
+            let tableObj = {
+                id: table.id,
+                name: table.name,
+                img: tableIcon,
+                url: {
+                    name: 'table.show',
+                    params: {
+                        table: table.id
+                    }
+                }
+            }
+            tables.push(tableObj)
+        })
+
+        return tables
+    }
+
     function setWorkspace(workspace) {
         selectedWorkspace.value = workspace
     }
@@ -51,7 +85,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return readonly(todos.value)
     }
 
-    function getCalendarEvents() {
+    function getWorkspaceEvents() {
         return readonly(calendar.value)
     }
 
@@ -62,7 +96,9 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getSelectedWorkspace,
         setWorkspace,
         getTodos,
-        getCalendarEvents
+        getWorkspaceEvents,
+        getTables,
+        getTransformedTables
     }
 
 })
