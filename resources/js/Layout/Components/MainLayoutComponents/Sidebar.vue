@@ -44,6 +44,7 @@ const updateTables = ((workspace) => {
     // console.log(tableObj)
   })
   // router.get(route('table.show', { table: props.table.id }))
+  router.get(route('dashboard.index'))
 })
 
 

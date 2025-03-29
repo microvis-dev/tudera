@@ -7,6 +7,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Validator;
+use Exception;
 
 class UserController extends Controller
 {
@@ -58,19 +59,71 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, User $user)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone_number' => 'nullable|string',
+                'old_password' => 'required_with:password',
+                'password' => 'nullable|min:8|max:255|confirmed',
+            ]);
+
+            if (!empty($validated['password'])) {
+                if (!Auth::guard('web')->validate([
+                    'email' => $user->email,
+                    'password' => $request->old_password,
+                ])) {
+                    return back()->withErrors(['old_password' => 'The provided password is incorrect.']);
+                }
+                
+                $user->password = bcrypt($validated['password']);
+            }
+
+            $user->name = $validated['name'];
+            $user->phone_number = $validated['phone_number'];
+            
+            $user->save();
+            
+            if (!empty($validated['password'])) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('auth.index');
+            }
+
+            return redirect()->route('settings.index')->with('success', 'Profile updated successfully.');
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return back()->withErrors(['error' => 'Failed to update profile.'])->withInput();
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'password' => 'required|string'
+            ]);
+
+            if (!Auth::guard('web')->validate([
+                'email' => $user->email,
+                'password' => $validated['password'],
+            ])) {
+                return back()->withErrors(['password' => 'The provided password is incorrect.']);
+            }
+
+            $user->delete();
+            
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('auth.index')->with('success', 'Your account has been deleted successfully.');
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            return back()->withErrors(['error' => 'Failed to delete account.']);
+        }
     }
 }

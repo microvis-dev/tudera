@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class IndexController extends Controller
+class SettingsController extends Controller
 {
     public function index(Request $request) {
-        return redirect()->route('dashboard.index');
+        return inertia('Settings/Index');
     }
 }
