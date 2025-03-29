@@ -23,6 +23,9 @@ const enableEditing = async () => {
 }
 
 const saveEdit = () => {
+    if (!editState.editedValue) {
+        emit('delete', props.value)
+    }
     if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
         emit("update", editState.editedValue, props.value)
     }
@@ -56,7 +59,7 @@ const deleteValue = () => {
     <div class="flex flex-col items-center justify-center">
         <div class="flex items-center justify-center py-2 px-3 transition-colors duration-150 rounded-md w-full">
             <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
-                <input v-if="editState.isEditing" v-model="editState.editedValue" @blur="saveEdit"
+                <input v-if="editState.isEditing" v-model="editState.editedValue"
                     @keyup.enter="saveEdit"
                     class="w-full text-center border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-sm"
                     ref="el => editState.valueInputTextField = el" />

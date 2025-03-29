@@ -2,10 +2,8 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import axios from 'axios';
 import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
-import AddValueModal from './Components/AddValueModal.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 
 const props = defineProps({
@@ -14,7 +12,7 @@ const props = defineProps({
     columns: Array,
     table_values: Array
 })
-console.log(props.table_values)
+// state
 
 //col
 const deleteColumn = (column_id) => {
@@ -23,21 +21,6 @@ const deleteColumn = (column_id) => {
 
 const updateColumn = (newColumnName, column) => {
     router.put(route('table.columns.update', { table: props.workspace_table, column: column.id, name: newColumnName }))
-}
-
-//value
-const findValue = (row, column) => {
-    return Object.values(props.table_values).find(v => v.row_id == row.id && v.column_id == column.id)
-}
-
-const getValue = (row, column) => {
-    const value = findValue(row, column)
-    return value ? value : null
-}
-
-const getValueValue = (row, column) => {
-    const value = findValue(row, column)
-    return value ? value.value : null
 }
 
 const updateValue = (newValue, value) => {
@@ -60,49 +43,41 @@ const updateValueDeleteIfEmpty = (newValue, valueObj) => {
 }
 
 const deleteValue = (value) => {
-    console.log(value)
     router.delete(route('table.values.destroy', { table: props.workspace_table, value: value }))
 }
 
 const sortedTable = computed(() => {
-    // [col][values]
     let returnValue = Array(props.columns.length).fill().map(() => [])
 
-    props.columns.forEach((col, index) => {
+    props.columns.forEach((col, colIndex) => {
         let columnValues = []
         props.table_values.forEach((value) => {
-            if (value.column_id == col.id) {
-                columnValues.push(value)
+            if (value.column_id === col.id) {
+                columnValues[value.order - 1] = value
             }
         })
 
-        columnValues.sort((a, b) => a.order - b.order)
-
-        returnValue[index] = columnValues
+        returnValue[colIndex] = columnValues
     })
 
     return returnValue
 })
 
 const maxRows = computed(() => {
-    return Math.max(...sortedTable.value.map(col => col.length), 0);
-});
+    return Math.max(...sortedTable.value.map(col => col.length), 0)
+})
 
-// add value, todo: put this in component
-const showAddValueForm = ref(false)
-const toggleAddValueForm = (column) => {
-    columns.forEach(col => col.showInput = false);
-    column.showInput = true;
-    selectedColumn.value = column;
+const showNewRow = ref(true)
+const toggleNewRow = () => {
+    showNewRow.value = false
 }
 
-const selectedColumn = ref(null);
-
-
-const saveValue = (value, column) => {
-    console.log(value, column)
-    router.post(route('table.values.store', { table: column.table_id, value: value, column: column, column_id: column.id}))
-
+const saveValue = (value, column, order) => {
+    router.post(route('table.values.store', { table: column.table_id }), {
+        order: order,
+        column_id: column.id,
+        value: value
+    })
 }
 </script>
 
@@ -147,17 +122,18 @@ const saveValue = (value, column) => {
                                     :value="sortedTable[colIndex][rowIndex - 1]" @update="updateValue"
                                     @delete="deleteValue" />
                                 <div v-else class="relative group">
-                                    <EmptyValue :column="column" @save="saveValue" />
+                                    <EmptyValue :column="column" :order="rowIndex" @save="saveValue" />
                                 </div>
                             </td>
                             <td class="border-b border-slate-500"></td>
                         </tr>
                         <tr class="">
                             <td class="text-center p-2 border-t border-slate-500">
-                                <button v-if="columns && columns.length > 0" @click="toggleAddValueForm(selectedColumn)"
+                                <button v-if="columns && columns.length > 0 && showNewRow" @click="toggleNewRow()"
                                     class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
                                     + Add task
                                 </button>
+                                <EmptyValue v-else :column="columns.at(0)" :isNewRow="true" @save="saveValue" />
                             </td>
                             <td v-for="column in columns" class="text-center p-2 border-t border-slate-500">
                             </td>
@@ -165,8 +141,6 @@ const saveValue = (value, column) => {
                         </tr>
                     </tbody>
                 </table>
-                <AddValueModal v-if="showAddValueForm" @close="showAddValueForm = false" :table="workspace_table"
-                    :column="selectedColumn" />
             </div>
         </div>
     </div>
