@@ -7,17 +7,12 @@ import lead from '../../../../assets/lead.svg';
 import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
+import { useTuderaStore } from '@/resources/js/state/state';
 const tableIcon = lead // import svg!
 
-const page = usePage()
-const user = computed(() => {
-  return page.props.user
-})
-const workspaces = computed(() => {
-  return user.value.workspaces
-})
+const tuderaState = useTuderaStore()
 
-const tables = ref([])
+const tables = ref(tuderaState.getTables())
 const sidebarItems = computed(() => {
   const defaultItems =  [
     { img: dashboardIcon, name: "Dashboard", url: { name: "dashboard.index", params: null } },
@@ -99,7 +94,7 @@ const updateDropdownHeight = (height) => {
             <h2 class="roboto-font-bold text-lg">{{ item.name }}</h2>
           </div>
             <button @click="showAddTodoModal" v-if="route().current('calendar.index')" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add event</button>
-            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :isPersonal="false"/>
+            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :is-personal="false"/>
         </div>
       </div>
     </aside>
