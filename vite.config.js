@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from 'tailwindcss';
+import path from 'path';
 
 export default defineConfig({
     plugins: [
@@ -40,6 +41,11 @@ export default defineConfig({
         cors: true,
         hmr: {
             host: 'localhost'
+        }
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, '.')
         }
     }
 });

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -23,6 +24,18 @@ class User extends Authenticatable
         'phone_number',
         'password',
     ];
+
+    public function workspaces(): BelongsToMany {
+        return $this->belongsToMany(Workspace::class, 'users_to_workspace', 'user_id', 'workspace_id');
+    }
+    
+    public function tables() {
+        return $this->hasMany(WorkspaceTable::class)->whereIn('workspace_id', $this->workspaces()->pluck('id'));
+    }
+
+    public function todos() {
+        return $this->hasMany(TodoList::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

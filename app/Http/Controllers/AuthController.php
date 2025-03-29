@@ -10,15 +10,16 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function create() {
+
+    public function index() {
         return inertia('Auth/Auth');
     }
 
     public function store(Request $request) {
         if (!Auth::attempt($request->validate([
             'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]), true)) { // true = remember me
+            'password' => 'required|string',
+        ]), $request->is_remember ?? false)) {
             throw ValidationException::withMessages([
                 'email' => 'Auth failed'
             ]);
@@ -26,8 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        
-        return redirect()->intended('/'); // !
+        return redirect()->intended('dashboard'); 
     }
 
     public function check_email(Request $request) {
@@ -50,8 +50,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-
-        return redirect()->route('login');
-        //return inertia('Auth/Login'); nem szabad
+        return redirect()->route('auth.index');
     }
 }

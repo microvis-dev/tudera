@@ -1,34 +1,67 @@
 <?php
-
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\TableValueController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkspaceColumnController;
+use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\WorkspaceRowController;
+use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SetupController;
+use App\Http\Controllers\TodoListController;
 
-Route::get('/', function () {
-    return inertia('Index/Index');
-});
+// index
+Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
 
-Route::get('auth', [AuthController::class, 'create'])
-    ->name('auth');
+//auth
+Route::resource('auth', AuthController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::get('auth/check_email', [AuthController::class, 'check_email'])->name('auth.check_email');
 
-Route::get('auth.check_email', [AuthController::class, 'check_email'])
-    ->name('auth.check_email');
+// user
+Route::resource('user', UserController::class)
+    ->only(['store', 'update', 'destroy']);
 
-Route::post('auth', [AuthController::class, 'store'])
-    ->name('auth.store');
+// setup
+Route::get('setup/workspace/create', [WorkspaceController::class, 'create'])
+    ->name('setup.workspace.create');
 
-Route::delete('logout', [AuthController::class, 'destroy'])
-    ->name('logout');
+Route::post('setup/workspace', [WorkspaceController::class, 'store'])
+    ->name('setup.workspace.store');
 
-/*
-Route::get('/fontos_oldal', [FontosController::class], 'fontos')
-    ->name('fontos')
-    ->middleware('auth');  (78)
-*/
-// login/create
-// login
-// login {login}
+Route::resource('signup', SetupController::class)->only(['create']);
 
-// create user
-Route::resource('user-account', UserAccountController::class)
-    ->only(['create', 'store']);
+
+// workspaces
+Route::resource('workspaces', WorkspaceController::class)
+    ->middleware('auth');
+
+// workspace table
+Route::resource('workspace.table', WorkspaceTableController::class)
+    ->shallow()->middleware('auth');
+
+
+// col
+Route::resource('table.columns', WorkspaceColumnController::class)
+    ->only(['index', 'create', 'store', 'destroy', 'update']);
+Route::resource('table.values', TableValueController::class)
+    ->only(['create', 'store', 'update', 'destroy']);
+
+// calendar
+Route::resource('calendar', CalendarController::class)
+    ->only(['index', 'create', 'update', 'store', 'destroy']);
+
+// dashboard
+Route::resource('dashboard', DashboardController::class)
+    ->only(['index']);
+
+// todo list
+Route::resource('todolist', TodoListController::class)
+    ->only(['show', 'store', 'update', 'destroy']);
+
+// settings
+Route::resource('settings', SettingsController::class)
+    ->only(['index'])->middleware('auth');

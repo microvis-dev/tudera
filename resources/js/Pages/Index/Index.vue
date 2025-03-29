@@ -1,15 +1,15 @@
 <script setup>
-import {ref} from 'vue'
 import AuthLayout from "../../Layout/AuthLayout.vue";
-const counter = ref(0)
-const add = (() => counter.value++)
+import { ref, watchEffect, defineOptions } from "vue";
+import MainLayout from "../../Layout/MainLayout.vue";
+
+const props = defineProps({
+    user: Object,
+    workspaces: Array
+})
+
 </script>
-
 <template>
-    <AuthLayout>
-    </AuthLayout>
+    <p>{{ user.name }}</p>   
 </template>
-
-<style scoped>
-
-</style>
+<style scoped></style>
