@@ -36,7 +36,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     })
 
     const calendar = computed(() => {
-        return selectedWorkspace.value.calendar_events
+        return selectedWorkspace.value.calendar_events || []
     })
 
     function getUser() {
@@ -86,7 +86,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     }
 
     function getWorkspaceEvents() {
-        return readonly(calendar.value)
+        return Array.from(calendar.value || [])
     }
 
     function getFlashSuccess() {

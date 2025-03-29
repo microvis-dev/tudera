@@ -15,9 +15,7 @@ class CalendarController extends Controller
         
         $workspace_ids = $workspaces->pluck('id')->toArray();
         
-        $workspace_events = Calendar::where('user_id', $user->id)
-                          ->whereIn('workspace_id', $workspace_ids)
-                          ->get();
+        $workspace_events = Calendar::whereIn('workspace_id', $workspace_ids)->get();
     
 
         return inertia('Calendar/Index', [
