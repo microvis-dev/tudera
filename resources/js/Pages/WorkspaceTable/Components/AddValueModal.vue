@@ -6,6 +6,7 @@ const props = defineProps({
     table: Object,
     column: Object
 })
+console.log(props.column)
 
 const emit = defineEmits(['close'])
 
@@ -15,12 +16,11 @@ const closeModal = () => {
 
 const valueForm = useForm({
     value: null,
-    column_id: props.column.column_id
+    column_id: props.column.id
 })
 
 const save = () => {
     if (valueForm.value) {
-        console.log(props.table)
         valueForm.post(route('table.values.store', { table: props.table }))
         //valueForm.post(route('table.values.store', { table: props.table, row: props.row, column: props.column }))
         emit('close')

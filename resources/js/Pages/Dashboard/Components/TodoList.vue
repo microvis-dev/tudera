@@ -1,13 +1,13 @@
 <script setup>
-import { ref, reactive, onUnmounted } from 'vue';
+import { ref, reactive, onUnmounted, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import getDate from '@/resources/js/Utils/getDate';
+import getDate from '@/resources/js/Utils/getDate.js';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
+import { useTuderaStore } from '@/resources/js/state/state';
 
-const props = defineProps({
-    todos: Array
-})
+const tuderaState = useTuderaStore()
+const todos = computed(() => tuderaState.getTodos())
 
 const viewState = reactive({
     addTodoModal: false
@@ -28,7 +28,7 @@ const formatDate = (date) => {
     const day = String(d.getDate()).padStart(2, '0');
     const hours = String(d.getHours() - 1).padStart(2, '0');
     const minutes = String(d.getMinutes()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 const currentTime = ref(new Date());

@@ -72,6 +72,7 @@ class TableValueController extends Controller
             return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
             Log::error('Hiba TableValueController store: ' . $e->getMessage());
+            dd($e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while saving: ' . $e->getMessage());
         }
     }

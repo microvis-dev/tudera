@@ -7,17 +7,12 @@ import lead from '../../../../assets/lead.svg';
 import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
+import { useTuderaStore } from '@/resources/js/state/state';
 const tableIcon = lead // import svg!
 
-const page = usePage()
-const user = computed(() => {
-  return page.props.user
-})
-const workspaces = computed(() => {
-  return user.value.workspaces
-})
+const tuderaState = useTuderaStore()
 
-const tables = ref([])
+const tables = ref(tuderaState.getTables())
 const sidebarItems = computed(() => {
   const defaultItems =  [
     { img: dashboardIcon, name: "Dashboard", url: { name: "dashboard.index", params: null } },
