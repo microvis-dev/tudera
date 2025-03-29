@@ -2,24 +2,7 @@ import { usePage } from "@inertiajs/vue3";
 import { defineStore } from "pinia";
 import { ref, readonly, computed } from 'vue'
 
-export const useWorkspaceStore = defineStore('WorkspaceStore', () => {
-    const selectedWorkspace = ref(null)
-
-    function getWorkspace() {
-        return readonly(selectedWorkspace.value)
-    }
-
-    function setWorkspace(workspace) {
-        selectedWorkspace.value = workspace
-    }
-
-    return {
-        getWorkspace,
-        setWorkspace
-    }
-})
-
-export const usePageStore = defineStore('PageStore', () => {
+export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()
 
     const user = computed(() => {
@@ -30,6 +13,24 @@ export const usePageStore = defineStore('PageStore', () => {
         return page.props.workspaces
     })
 
+    const selectedWorkspace = ref(workspaces.value[0])
+
+    const flashSucess = computed(() => {
+        return page.props.flash.success
+    })
+
+    const flashErrors = computed(() => {
+        return page.props.flash.error
+    })
+
+    const todos = computed(() => {
+        return page.props.user.todos
+    })
+
+    const calendar = computed(() => {
+        return selectedWorkspace.value.calendar
+    })
+
     function getUser() {
         return readonly(user.value)
     }
@@ -38,21 +39,30 @@ export const usePageStore = defineStore('PageStore', () => {
         return readonly(workspaces.value)
     }
 
+    function getSelectedWorkspace() {
+        return readonly(selectedWorkspace.value)
+    }
+
+    function setWorkspace(workspace) {
+        selectedWorkspace.value = workspace
+    }
+
+    function getTodos() {
+        return readonly(todos.value)
+    }
+
+    function getCalendarEvents() {
+        return readonly(calendar.value)
+    }
+
+    // flash
     return {
         getUser,
-        getWorkspaces
+        getWorkspaces,
+        getSelectedWorkspace,
+        setWorkspace,
+        getTodos,
+        getCalendarEvents
     }
-})
 
-export const useEventsStore = defineStore('EventStore', () => {
-    const page = usePage()
-
-    const todos = computed(() => {
-        return page.props.user.todos
-    })
-
-    const calendar = computed(() => {
-        
-    })
-    // ...
 })
