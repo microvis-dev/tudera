@@ -7,13 +7,12 @@ import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import AddValueModal from './Components/AddValueModal.vue';
 
-const props = defineProps({
+const props = defineProps({ // use state
     workspace: Object,
     workspace_table: Object,
     columns: Array,
     table_values: Array
 })
-console.log(props.table_values)
 
 //col
 const deleteColumn = (column_id) => {

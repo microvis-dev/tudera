@@ -107,14 +107,22 @@ class WorkspaceTableController extends Controller
             }
             
             DB::transaction(function () use ($request, $workspace_id) {
-                WorkspaceTable::create([
+                $table = WorkspaceTable::create([
                     'name' => strip_tags($request->name),
                     'workspace_id' => $workspace_id,
+                ]);
+                
+                $table->columns()->create([
+                    'table_id' => $table->id,
+                    'type' => 'string',
+                    'name' => strip_tags($request->name),
+                    'order' => 1,
                 ]);
             });
 
             return redirect()->route('dashboard.index')->with('success', 'Workspace table created successfully!');
         } catch (Exception $e) {
+            dd($e->getMessage());
             Log::error('Hiba WorkspaceTableController store: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while creating the table.');
         }
