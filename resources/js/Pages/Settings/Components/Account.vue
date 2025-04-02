@@ -44,7 +44,6 @@ const accountSettingsForm = useForm({
 
 watchEffect(() => {
     viewState.formChanged = accountSettingsForm.isChanged();
-    console.log(flash.value)
 })
 
 const saveUserChanges = () => {
@@ -69,12 +68,12 @@ const deleteUser = () => {
                             <label class="text-[#B3B3B3] roboto-font-regular">Name</label>
                             <input type="text"
                                 class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                                :value="accountSettingsForm.name">
+                                v-model="accountSettingsForm.name">
                         </div>
                     </form>
                     <form class="flex flex-col mb-5">
                         <label class="mb-2 text-[#B3B3B3] roboto-font-regular">Password</label>
-                        <button @click.prevent="viewState.toggleForm('showChangePasswordForm')"
+                        <button @click.prevent="viewState.toggleForm('showChangePasswordForm')" disabled
                             class="px-4 py-2 w-fit font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Change password
                         </button>
@@ -106,11 +105,11 @@ const deleteUser = () => {
                         </div>
                     </form>
                     <div class="flex flex-row justify-around">
-                    <button type="submit"
+                    <button type="submit" disabled
                         class="px-4 py-2 font-medium text-white bg-red-600 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         Delete Account
                     </button>
-                    <button type="submit" disabled
+                    <button type="submit"  @click="saveUserChanges"
                         class="px-4 py-2 font-medium text-white bg-slate-800 hover:bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         Save Changes
                     </button>
