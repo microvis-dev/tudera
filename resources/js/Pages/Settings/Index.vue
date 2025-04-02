@@ -48,7 +48,6 @@ const accountSettingsForm = useForm({
 
 watchEffect(() => {
     viewState.formChanged = accountSettingsForm.isChanged();
-    console.log(flash.value)
 })
 
 const saveUserChanges = () => {
