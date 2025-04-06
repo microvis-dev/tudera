@@ -7,8 +7,9 @@ const profileRef = ref(null);
 const dropdownRef = ref(null);
 
 const props = defineProps({
-  "name": String,
-  "email": String
+    "name": String,
+    "email": String,
+    "profileImage": String
 })
 
 const openDropdown = () => {
@@ -37,7 +38,7 @@ const logout = () => {
   <div ref="profileRef">
     <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5" @click="openDropdown">
       <div>
-        <img src="https://placehold.co/600x400/blue/blue" alt="Company Logo" title="Company Logo"
+        <img :src="props.profileImage" alt="Profile Image" v-if="props.profileImage"
           class="w-10 h-10 me-2 object-cover rounded-full" />
       </div>
       <div>
