@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class User extends Authenticatable
 {
@@ -23,12 +25,13 @@ class User extends Authenticatable
         'email',
         'phone_number',
         'password',
+        'profile_image',
     ];
 
     public function workspaces(): BelongsToMany {
         return $this->belongsToMany(Workspace::class, 'users_to_workspace', 'user_id', 'workspace_id');
     }
-    
+
     public function tables() {
         return $this->hasMany(WorkspaceTable::class)->whereIn('workspace_id', $this->workspaces()->pluck('id'));
     }
@@ -59,4 +62,38 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Profilkép feltöltése
+     *
+     * @param UploadedFile $image
+     * @return void
+     */
+    public function uploadProfileImage(UploadedFile $image): void
+    {
+        if ($this->profile_image) {
+            Storage::disk('s3')->delete($this->profile_image);
+        }
+
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $image->getClientOriginalExtension();
+        $path = $image->storeAs('profile_images', $filename, 's3');
+        $this->profile_image = $path;
+        $this->save();
+    }
+
+    /**
+     * Profilkép URL-jének lekérése
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    public function getProfileImageAttribute(?string $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return Storage::disk("s3")->temporaryUrl($value, now()->addMinutes(5));
+    }
 }
+

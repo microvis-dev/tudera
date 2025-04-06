@@ -16,12 +16,16 @@ const name = reactive({
     }
 })
 
+const profileImageUrl = ref(null);
+const profileImageFile = ref(null);
+
 const userForm = useForm({
     name: computed(() => name.getFullName()),
     phone: '',
     email: '',
     password: '',
-    redirectTo: 'setup.workspace.create'
+    redirectTo: 'setup.workspace.create',
+    profileImageFile: computed(() => profileImageFile.value),
 })
 
 onMounted(() => {
@@ -37,6 +41,35 @@ const submitForm = () => {
     userForm.post(route('user.store'))
 }
 
+const changePicturePreview = (imageUrl) => {
+    const def = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAwAB/Up0GRQAAAAASUVORK5CYII=';
+    if (imageUrl) {
+        profileImageUrl.value = imageUrl;
+    } else {
+        profileImageUrl.value = def;
+        profileImageFile.value = null;
+    }
+}
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            changePicturePreview(e.target.result);
+            profileImageFile.value = file;
+        }
+        if (file.type === "image/png" || file.type === "image/jpeg") {
+            reader.readAsDataURL(file);
+        } else {
+            changePicturePreview(null);
+        }
+    } else {
+        changePicturePreview(null);
+    }
+}
+
+changePicturePreview(null);
+
 </script>
 
 <template>
@@ -48,20 +81,19 @@ const submitForm = () => {
             </section>
             <section class="flex flex-col md:flex-row">
                 <div class="flex flex-col items-center md:mt-5">
-                    <img src="https://placehold.co/600x400/blue/blue" alt="Company Logo" title="Company Logo"
+                    <img :src="profileImageUrl" alt="Company Logo" title="Company Logo"
                         class="w-20 h-20 object-cover rounded-full" />
                 </div>
                 <div class="md:ms-5">
                     <div class="flex flex-col">
                         <h2 class="text-lg roboto-font-bold py-2">Profile picture</h2>
                         <div class="flex flex-row">
-                            <button
-                                class="flex flex-row border border-gray-600 roboto-font-medium rounded-md px-4 py-2 items-center hover:ring-2 hover:ring-gray-500 focus:outline-none"><img
-                                    src="../../../assets/upload.svg" class="mt-1 me-1"><span class="">Upload
-                                    image</span></button>
-                            <button
-                                class="border border-gray-600 rounded-md px-4 py-2 roboto-font-medium items-center ms-5 disabled:text-gray-500"
-                                disabled>Remove</button>
+                            <label class="flex flex-row border border-gray-600 roboto-font-medium rounded-md px-4 py-2 items-center hover:ring-2 hover:ring-gray-500 focus:outline-none cursor-pointer">
+                                <img src="../../../assets/upload.svg" class="mt-1 me-1">
+                                <span class="">Upload image</span>
+                                <input type="file" class="hidden" @change="handleFileUpload" />
+                            </label>
+                            <button @click="changePicturePreview(null)" class="border border-gray-600 rounded-md px-4 py-2 roboto-font-medium items-center ms-5 disabled:text-gray-500" :disabled="profileImageFile == null">Remove</button>
                         </div>
                     </div>
                     <p class="roboto-font-bold text-[#B3B3B3] text-xs mt-2 block">*.png, *.jpg files up to 10MB at least
