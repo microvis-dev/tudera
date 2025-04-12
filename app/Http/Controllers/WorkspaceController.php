@@ -47,6 +47,7 @@ class WorkspaceController extends Controller
 
             $users_to_workspace->workspace_id = $workspace->id;
             $users_to_workspace->user_id = $request->user()->id;
+            $users_to_workspace->role_id = 1; // !
             $users_to_workspace->save();
 
             // create leads
