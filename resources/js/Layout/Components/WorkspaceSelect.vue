@@ -13,12 +13,11 @@ const props = defineProps({
 
 const tuderaState = useTuderaStore()
 
-const page = usePage()
 const user = computed(() => {
-  return page.props.user
+  return tuderaState.getUser()
 })
 const workspaces = computed(() => {
-  return user.value.workspaces
+  return tuderaState.getWorkspaces()
 })
 
 watch(workspaces, () => { // lehetne jobb
