@@ -25,22 +25,7 @@ const updateColumn = (newColumnName, column) => {
 }
 
 const updateValue = (newValue, value) => {
-    if (newValue.length == 0) {
-        router.delete(route('table.values.destroy', { table: props.workspace_table }))
-    } else {
-        router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: newValue }))
-    }
-}
-
-const updateValueDeleteIfEmpty = (newValue, valueObj) => {
-    if (newValue == "" && valueObj && valueObj.id) {
-        router.delete(route('table.values.destroy', { table: props.workspace_table.id, value: valueObj.id }))
-    }
-    else if (valueObj && valueObj.id) {
-        router.put(route('table.values.update', { table: props.workspace_table.id, value: valueObj.id }), {
-            value: newValue
-        })
-    }
+    router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: newValue }))
 }
 
 const deleteValue = (value) => {
@@ -85,21 +70,45 @@ const saveValue = (value, column, order) => {
     })
     showNewRow.value = true
 }
-const mainCheck = ref(false)
+
 const checkboxesState = reactive({
+    mainCheck: false,
     checkboxes: Array(maxRows.value).fill(false),
     checkAll() {
-        this.checkboxes.fill(mainCheck.value);
+        this.checkboxes.fill(this.mainCheck)
     },
-    refresh() {
+    reset() {
+        this.mainCheck = false
         this.checkboxes = Array(maxRows.value).fill(false)
+    },
+    isSelected() {
+        return this.checkboxes.includes(true)
     }
 })
-
-
 watch(() => maxRows.value, () => {
-    checkboxesState.refresh();
-}, { deep: true });
+    checkboxesState.reset()
+}, { deep: true })
+
+watch(() => checkboxesState.checkboxes, (newCheckboxes) => {
+    if (newCheckboxes.every((ch) => ch)) {
+        checkboxesState.mainCheck = true
+    } 
+    else if (checkboxesState.mainCheck && !newCheckboxes.every((ch) => ch)) {
+        checkboxesState.mainCheck = false
+    }
+}, { deep: true })
+
+const deleteRows = (targetRows, updatedTable) => {
+    targetRows.forEach((value) => {
+        router.delete(route('table.values.destroy', { table: props.workspace_table, value: value.id }))
+    })
+
+    updatedTable.forEach((column) => {
+        column.forEach((value) => {
+            router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: value.value, order: value.order }))
+        })
+    })
+}
 </script>
 
 <template>
@@ -119,7 +128,7 @@ watch(() => maxRows.value, () => {
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr>
-                            <th class="border-r border-slate-500"><input v-model="mainCheck"
+                            <th class="border-r border-slate-500"><input v-model="checkboxesState.mainCheck"
                                     @change="checkboxesState.checkAll" type="checkbox"></th>
                             <th v-for="column in columns" :key="column.id" scope="col"
                                 class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
@@ -154,8 +163,9 @@ watch(() => maxRows.value, () => {
                             <td class="border-b border-slate-500"></td>
                         </tr>
                         <tr class="">
-                            <td class="text-center p-2 border-t border-r border-slate-500"><input
-                                    v-model="checkboxesState.checkboxes[maxRows]" disabled type="checkbox"></td>
+                            <td class="text-center p-2 border-t border-r border-slate-500">
+                                <input disabled type="checkbox">
+                            </td>
                             <td class="text-center p-2 border-t border-slate-500">
                                 <button v-if="columns && columns.length > 0 && showNewRow" @click="toggleNewRow()"
                                     class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
@@ -173,7 +183,8 @@ watch(() => maxRows.value, () => {
         </div>
     </div>
     <div class="flex justify-center m-5">
-        <DeleteRowModal />
+        <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
+            :table="sortedTable" @delete="deleteRows" />
     </div>
 </template>
 <style scoped></style>

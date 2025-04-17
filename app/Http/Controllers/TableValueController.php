@@ -78,6 +78,7 @@ class TableValueController extends Controller
     public function update(Request $request, $table_id, $value_id) {
         $request->validate([
             'new_value' => 'required',
+            'order' =>'nullable|integer|min:1'
         ]);
         
         try {
@@ -97,6 +98,11 @@ class TableValueController extends Controller
             }
             
             $value->value = $request->new_value;
+
+            if ($request->has('order')) {
+                $value->order = $request->order;
+            }
+
             $value->save();
             
             return redirect()->back()->with('success', 'Value updated successfully.');
