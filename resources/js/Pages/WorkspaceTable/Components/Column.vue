@@ -5,7 +5,7 @@ const props = defineProps({
     column: Object
 })
 
-const emit = defineEmits(['delete', 'update'])
+const emit = defineEmits(['delete', 'update', 'move-left', 'move-right'])
 
 const deleteColumn = () => {
     if (props.column.order > 1 && confirm("Are u sure?")) {
@@ -40,6 +40,17 @@ const showSettingsBoolean = ref(false)
 const showSetting = () => {
     showSettingsBoolean.value = !showSettingsBoolean.value
 }
+
+// move
+const moveLeft = () => { // ha order = 1 szurke nyil
+    let newOrder = props.column.order - 1
+    emit('move-left', props.column, newOrder)
+}
+
+const moveRight = () => { // ha order = col length szurke nyil
+    let newOrder = props.column.order + 1
+    emit('move-right', props.column, newOrder)
+}
 </script>
 
 <template>
@@ -63,16 +74,14 @@ const showSetting = () => {
             <div v-if="showSettingsBoolean"
                 class="absolute right-0 top-full mt-1 bg-[#3e3f45] rounded-md shadow-lg -10 p-2 min-w-[150px] text-center">
                 <div class="flex flex-row justify-around">
-                    <button @click=""
-                        class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
+                    <button @click="moveLeft" class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
                     </button>
-                    <button @click=""
-                        class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
+                    <button @click="moveRight" class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -80,12 +89,10 @@ const showSetting = () => {
                         </svg>
                     </button>
                 </div>
-                <button @click="enableEditing"
-                    class="text-sm py-1 px-2 hover:bg-gray-700 rounded">
+                <button @click="enableEditing" class="text-sm py-1 px-2 hover:bg-gray-700 rounded">
                     Edit Column
                 </button>
-                <button @click="deleteColumn"
-                    class="text-red-500 text-sm py-1 px-2 hover:bg-gray-700 rounded">
+                <button @click="deleteColumn" class="text-red-500 text-sm py-1 px-2 hover:bg-gray-700 rounded">
                     Delete Column
                 </button>
             </div>

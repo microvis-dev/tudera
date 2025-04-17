@@ -8,7 +8,7 @@ import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
 import DeleteRowModal from './Components/deleteRowModal.vue';
 
-const props = defineProps({ // use state
+const props = defineProps({
     workspace: Object,
     workspace_table: Object,
     columns: Array,
@@ -32,10 +32,14 @@ const deleteValue = (value) => {
     router.delete(route('table.values.destroy', { table: props.workspace_table, value: value }))
 }
 
-const sortedTable = computed(() => {
-    let returnValue = Array(props.columns.length).fill().map(() => [])
+const sortedColumns = computed(() => {
+    return [...props.columns].sort((a, b) => a.order - b.order)
+})
 
-    props.columns.forEach((col, colIndex) => {
+const sortedTable = computed(() => {
+    let returnValue = Array(sortedColumns.value.length).fill().map(() => [])
+
+    sortedColumns.value.forEach((col, colIndex) => {
         let columnValues = []
         props.table_values.forEach((value) => {
             if (value.column_id === col.id) {
@@ -92,7 +96,7 @@ watch(() => maxRows.value, () => {
 watch(() => checkboxesState.checkboxes, (newCheckboxes) => {
     if (newCheckboxes.every((ch) => ch)) {
         checkboxesState.mainCheck = true
-    } 
+    }
     else if (checkboxesState.mainCheck && !newCheckboxes.every((ch) => ch)) {
         checkboxesState.mainCheck = false
     }
@@ -107,6 +111,21 @@ const deleteRows = (targetRows, updatedTable) => {
         column.forEach((value) => {
             router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: value.value, order: value.order }))
         })
+    })
+
+    checkboxesState.reset() // !
+}
+
+// col move
+const colMoveLeft = (col, newOrder) => {
+    router.put(route('table.columns.update', { table: props.workspace_table.id, column: col.id }), {
+        order: newOrder
+    })
+}
+
+const colMoveRight = (col, newOrder) => {
+    router.put(route('table.columns.update', { table: props.workspace_table.id, column: col.id }), {
+        order: newOrder
     })
 }
 </script>
@@ -123,16 +142,17 @@ const deleteRows = (targetRows, updatedTable) => {
                 </div>
             </div>
             <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
-
-
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr>
-                            <th class="border-r border-slate-500"><input v-model="checkboxesState.mainCheck"
-                                    @change="checkboxesState.checkAll" type="checkbox"></th>
-                            <th v-for="column in columns" :key="column.id" scope="col"
+                            <th class="border-r border-slate-500">
+                                <input v-model="checkboxesState.mainCheck" @change="checkboxesState.checkAll"
+                                    type="checkbox">
+                            </th>
+                            <th v-for="column in sortedColumns" :key="column.id" scope="col"
                                 class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
-                                <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
+                                <Column :column="column" @delete="deleteColumn" @update="updateColumn"
+                                    @move-left="colMoveLeft" @move-right="colMoveRight" />
                                 <input v-if="column.showInput" type="text" class="text-black w-full p-1 border rounded"
                                     @blur="column.showInput = false" @keyup.enter="column.showInput = false"
                                     placeholder="Enter value" />
@@ -149,15 +169,15 @@ const deleteRows = (targetRows, updatedTable) => {
 
                     <tbody class="">
                         <tr v-for="(rowIndex, index) in maxRows" :key="rowIndex">
-                            <td class="border-slate-500 border-r border-t border-b text-center"><input
-                                    v-model="checkboxesState.checkboxes[index]" type="checkbox"></td>
-                            <td v-for="(column, colIndex) in columns" :key="column.id"
+                            <td class="border-slate-500 border-r border-t border-b text-center">
+                                <input v-model="checkboxesState.checkboxes[index]" type="checkbox">
+                            </td>
+                            <td v-for="(columnValues, colIndex) in sortedTable" :key="sortedColumns[colIndex].id"
                                 class="text-center p-2 border-slate-500 border-r border-t border-b">
-                                <Value v-if="sortedTable[colIndex] && sortedTable[colIndex][rowIndex - 1]"
-                                    :value="sortedTable[colIndex][rowIndex - 1]" @update="updateValue"
-                                    @delete="deleteValue" />
+                                <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]"
+                                    @update="updateValue" @delete="deleteValue" />
                                 <div v-else class="relative group">
-                                    <EmptyValue :column="column" :order="rowIndex" @save="saveValue" />
+                                    <EmptyValue :column="sortedColumns[colIndex]" :order="rowIndex" @save="saveValue" />
                                 </div>
                             </td>
                             <td class="border-b border-slate-500"></td>
@@ -167,13 +187,13 @@ const deleteRows = (targetRows, updatedTable) => {
                                 <input disabled type="checkbox">
                             </td>
                             <td class="text-center p-2 border-t border-slate-500">
-                                <button v-if="columns && columns.length > 0 && showNewRow" @click="toggleNewRow()"
-                                    class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
+                                <button v-if="sortedColumns && sortedColumns.length > 0 && showNewRow"
+                                    @click="toggleNewRow()" class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
                                     + Add task
                                 </button>
-                                <EmptyValue v-else :column="columns.at(0)" :isNewRow="true" @save="saveValue" />
+                                <EmptyValue v-else :column="sortedColumns.at(0)" :isNewRow="true" @save="saveValue" />
                             </td>
-                            <td v-for="column in columns" class="text-center p-2 border-t border-slate-500">
+                            <td v-for="column in sortedColumns" class="text-center p-2 border-t border-slate-500">
                             </td>
                             <td></td>
                         </tr>
