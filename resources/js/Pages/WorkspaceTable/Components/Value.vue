@@ -61,7 +61,7 @@ const deleteValue = () => {
             <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
                 <input v-if="editState.isEditing" v-model="editState.editedValue"
                     @keyup.enter="saveEdit"
-                    class="w-full text-center bg-transparent  shadow-sm text-sm"
+                    class="w-full text-center bg-[#3e3f45] cursor-pointer rounded-md shadow-sm text-sm"
                     ref="el => editState.valueInputTextField = el" />
                 <div v-else class="text-center">
                     <span class=" font-medium text-sm truncate">{{ value.value }}</span>

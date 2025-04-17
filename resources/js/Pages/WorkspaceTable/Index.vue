@@ -137,7 +137,7 @@ const deleteRows = (targetRows, updatedTable) => {
                                     @blur="column.showInput = false" @keyup.enter="column.showInput = false"
                                     placeholder="Enter value" />
                             </th>
-                            <th v-if="showNewColumn" class="min-w-[80px] border-b border-slate-500"
+                            <th v-if="showNewColumn" class="min-w-[80px] border-b border-slate-500 cursor-pointer"
                                 @click="toggleNewColumn()">
                                 <p>+</p>
                             </th>
@@ -182,7 +182,7 @@ const deleteRows = (targetRows, updatedTable) => {
             </div>
         </div>
     </div>
-    <div class="flex justify-center m-5">
+    <div class="flex justify-center mb-5">
         <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
             :table="sortedTable" @delete="deleteRows" />
     </div>
