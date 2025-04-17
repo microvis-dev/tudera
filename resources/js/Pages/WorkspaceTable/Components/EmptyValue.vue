@@ -30,10 +30,10 @@ const save = () => {
 
 <template>
     <button v-if="showButton && !isNewRow" @click="toggleButton"
-        class="bg-blue-500 text-white w-8 h-8 flex items-center justify-center hover:bg-blue-700 rounded-full mx-auto opacity-0 group-hover:opacity-100 transition-opacity">
+        class="bg-blue-500 w-8 h-8 flex items-center justify-center hover:bg-blue-700 rounded-full mx-auto opacity-0 group-hover:opacity-100 transition-opacity">
         +
     </button>
-    <input v-else v-model="value" type="text" class="w-full p-1 border border-gray-300 rounded" @keyup.enter="save" placeholder="Enter value" />
+    <input v-else v-model="value" type="text" class="w-full p-1 bg-transparent text-center" @keyup.enter="save" placeholder="Enter value" />
 </template>
 
 <style scoped></style>

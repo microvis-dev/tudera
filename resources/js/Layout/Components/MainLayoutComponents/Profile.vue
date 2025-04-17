@@ -39,8 +39,8 @@ const redirectToSettings = () => {
 }
 </script>
 <template>
-  <div ref="profileRef">
-    <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5" @click="openDropdown">
+  <div ref="profileRef" @click="openDropdown">
+    <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5">
       <div>
         <img :src="props.profileImage" alt="Profile Image" v-if="props.profileImage"
           class="w-10 h-10 me-2 object-cover rounded-full" />
@@ -49,8 +49,8 @@ const redirectToSettings = () => {
         <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
         <p class="text-sm roboto-font-regular text-[#757575]">{{ props.email }}</p>
       </div>
-      <img v-if="!dropdownOpen" src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5">
-      <img v-else src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5 rotate-180" </section>
+      <img src="../../../../assets/openArrow.svg" class="w-5 h-5 ms-5" :class="[!dropdownOpen ? '' : 'rotate-180']">
+     </section>
       <div class="relative flex justify-center">
         <transition name="slide-down">
           <div v-if="dropdownOpen" ref="dropdownRef"
