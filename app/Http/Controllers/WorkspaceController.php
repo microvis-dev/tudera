@@ -79,6 +79,7 @@ class WorkspaceController extends Controller
             return redirect()->back()->with('success', 'Workspace deleted successfully.');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while deleting the workspace. Please try again later.');
         }
     }
@@ -87,7 +88,7 @@ class WorkspaceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|regex:/^\S.*$/'
         ]);
-        $workspace_id = $request->workspace_id;
+        $workspace_id = $request->workspace;
     
         try {
             $user = $request->user();
