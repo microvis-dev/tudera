@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TableValue;
+use App\Models\UsersToWorkspace;
 use App\Models\WorkspaceTable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;

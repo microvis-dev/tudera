@@ -36,8 +36,8 @@ Route::resource('signup', SetupController::class)->only(['create']);
 
 
 // workspaces
-Route::resource('workspaces', WorkspaceController::class)
-    ->middleware('auth');
+Route::resource('workspaces', WorkspaceController::class)->middleware('auth');
+
 
 // workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)

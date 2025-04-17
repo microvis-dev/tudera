@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
@@ -42,12 +43,14 @@ class WorkspaceController extends Controller
             $workspace = new Workspace();
             $workspace->name = $request->input('name');
             $workspace->save();
-            
+
+            $owner_role = Role::where('name', 'owner')->first();
+
             $users_to_workspace = new UsersToWorkspace();
 
             $users_to_workspace->workspace_id = $workspace->id;
             $users_to_workspace->user_id = $request->user()->id;
-            $users_to_workspace->role_id = 1; // !
+            $users_to_workspace->role_id = $owner_role->id;
             $users_to_workspace->save();
 
             // create leads

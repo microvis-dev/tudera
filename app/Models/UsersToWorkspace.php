@@ -35,6 +35,7 @@ class UsersToWorkspace extends Model
         return $this->belongsTo(Workspace::class);
     }
 
+
     /**
      * The attributes that should be cast.
      *
