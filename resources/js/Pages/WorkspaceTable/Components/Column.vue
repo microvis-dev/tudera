@@ -40,10 +40,10 @@ const saveEdit = () => {
 
 <template>
     <div
-        class="flex items-center justify-between py-2 px-3 transition-colors duration-150 hover:bg-gray-50 rounded-md group">
+        class="flex items-center justify-between py-2 px-3 transition-colors duration-150 rounded-md group">
         <div @dblclick="enableEditing" class="flex-grow cursor-pointer min-w-0">
             <input v-if="editState.isEditing" v-model="editState.editedName" @blur="saveEdit" @keyup.enter="saveEdit"
-                class="w-full border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-sm"
+                class="w-full bg-transparent text-center border-gray-300 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm text-sm"
                 ref="el => editState.nameInputTextField = el" />
             <div v-else class="flex justify-center">
                 <span class="font-medium text-sm truncate">{{ column.name }}</span>

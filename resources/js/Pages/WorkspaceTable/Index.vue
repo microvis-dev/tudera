@@ -1,10 +1,12 @@
 <script setup>
-import { ref, reactive, computed, onMounted, nextTick } from 'vue';
+import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
+import CreateColumnSelect from './Components/CreateColumnSelect.vue';
+import DeleteRowModal from './Components/deleteRowModal.vue';
 
 const props = defineProps({ // use state
     workspace: Object,
@@ -70,6 +72,10 @@ const showNewRow = ref(true)
 const toggleNewRow = () => {
     showNewRow.value = false
 }
+const showNewColumn = ref(true)
+const toggleNewColumn = () => {
+    showNewColumn.value = false
+}
 
 const saveValue = (value, column, order) => {
     router.post(route('table.values.store', { table: column.table_id }), {
@@ -77,7 +83,23 @@ const saveValue = (value, column, order) => {
         column_id: column.id,
         value: value
     })
+    showNewRow.value = true
 }
+const mainCheck = ref(false)
+const checkboxesState = reactive({
+    checkboxes: Array(maxRows.value).fill(false),
+    checkAll() {
+        this.checkboxes.fill(mainCheck.value);
+    },
+    refresh() {
+        this.checkboxes = Array(maxRows.value).fill(false)
+    }
+})
+
+
+watch(() => maxRows.value, () => {
+    checkboxesState.refresh();
+}, { deep: true });
 </script>
 
 <template>
@@ -86,35 +108,40 @@ const saveValue = (value, column, order) => {
             <div class="rounded-lg shadow-md">
                 <div class="px-6 py-4">
                     <h1 class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
-                    <p class="text-sm text-gray-600 mt-1">
-                        Workspace: <span class="font-medium">{{ workspace.name }}</span>
+                    <p class="text-sm roboto-font-medium text-gray-600 mt-1">
+                        Workspace: <span class="roboto-font-medium">{{ workspace.name }}</span>
                     </p>
                 </div>
             </div>
-            <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500">
+            <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
 
 
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr>
+                            <th class="border-r border-slate-500"><input v-model="mainCheck"
+                                    @change="checkboxesState.checkAll" type="checkbox"></th>
                             <th v-for="column in columns" :key="column.id" scope="col"
-                                class="text-center text-lg font-medium border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
+                                class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
                                 <Column :column="column" @delete="deleteColumn" @update="updateColumn" />
-                                <input v-if="column.showInput" type="text"
-                                    class="w-full p-1 border border-gray-300 rounded" @blur="column.showInput = false"
-                                    @keyup.enter="column.showInput = false" placeholder="Enter value" />
+                                <input v-if="column.showInput" type="text" class="text-black w-full p-1 border rounded"
+                                    @blur="column.showInput = false" @keyup.enter="column.showInput = false"
+                                    placeholder="Enter value" />
                             </th>
-                            <th class="min-w-[80px] border-b border-slate-500">
-                                <Link :href="route('table.columns.create', { table: workspace_table })"
-                                    class="hover:bg-blue-700 text-white font-bold px-6 py-3 text-left">
-                                +
-                                </Link>
+                            <th v-if="showNewColumn" class="min-w-[80px] border-b border-slate-500"
+                                @click="toggleNewColumn()">
+                                <p>+</p>
+                            </th>
+                            <th v-else class="min-w-[80px] border-b border-slate-500" @click="toggleNewColumn()">
+                                <CreateColumnSelect :table="workspace_table" />
                             </th>
                         </tr>
                     </thead>
 
                     <tbody class="">
-                        <tr v-for="rowIndex in maxRows" :key="rowIndex">
+                        <tr v-for="(rowIndex, index) in maxRows" :key="rowIndex">
+                            <td class="border-slate-500 border-r border-t border-b text-center"><input
+                                    v-model="checkboxesState.checkboxes[index]" type="checkbox"></td>
                             <td v-for="(column, colIndex) in columns" :key="column.id"
                                 class="text-center p-2 border-slate-500 border-r border-t border-b">
                                 <Value v-if="sortedTable[colIndex] && sortedTable[colIndex][rowIndex - 1]"
@@ -127,6 +154,8 @@ const saveValue = (value, column, order) => {
                             <td class="border-b border-slate-500"></td>
                         </tr>
                         <tr class="">
+                            <td class="text-center p-2 border-t border-r border-slate-500"><input
+                                    v-model="checkboxesState.checkboxes[maxRows]" disabled type="checkbox"></td>
                             <td class="text-center p-2 border-t border-slate-500">
                                 <button v-if="columns && columns.length > 0 && showNewRow" @click="toggleNewRow()"
                                     class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
@@ -142,6 +171,9 @@ const saveValue = (value, column, order) => {
                 </table>
             </div>
         </div>
+    </div>
+    <div class="flex justify-center m-5">
+        <DeleteRowModal />
     </div>
 </template>
 <style scoped></style>
