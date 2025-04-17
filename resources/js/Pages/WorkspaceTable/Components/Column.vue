@@ -1,9 +1,12 @@
 <script setup>
-import { ref, reactive, nextTick } from 'vue'
+import { useTuderaStore } from '@/resources/js/state/state'
+import { ref,watch, reactive, nextTick } from 'vue'
 
 const props = defineProps({
-    column: Object
+    column: Object,
+    maxRows: Number
 })
+
 
 const emit = defineEmits(['delete', 'update'])
 
@@ -40,6 +43,10 @@ const showSettingsBoolean = ref(false)
 const showSetting = () => {
     showSettingsBoolean.value = !showSettingsBoolean.value
 }
+const changeDisplay = ref('absolute ml-auto')
+watch(() => props.maxRows, (newMaxRows) => {
+    changeDisplay.value = newMaxRows > 1 ? 'relative' : 'absolute ml-auto'
+}, { immediate: true })
 </script>
 
 <template>
@@ -52,7 +59,7 @@ const showSetting = () => {
                 <span class="font-medium text-sm truncate">{{ column.name }}</span>
             </div>
         </div>
-        <div class="relative" v-if="column.order > 1">
+        <div :class="changeDisplay" v-if="column.order > 1" :key="props.maxRows">
             <div @click="showSetting" class="cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -60,8 +67,7 @@ const showSetting = () => {
                         d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
             </div>
-            <div v-if="showSettingsBoolean"
-                class="absolute right-0 top-full mt-1 bg-[#3e3f45] rounded-md shadow-lg -10 p-2 min-w-[150px] text-center">
+            <div v-if="showSettingsBoolean" class="absolute right-0 top-full mt-1 bg-[#3e3f45] rounded-md shadow-lg z-50 p-2 min-w-[150px] text-center">
                 <div class="flex flex-row justify-around">
                     <button @click=""
                         class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
