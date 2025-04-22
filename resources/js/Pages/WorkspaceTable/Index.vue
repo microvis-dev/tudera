@@ -202,7 +202,7 @@ const colMoveRight = (col, newOrder) => {
             </div>
         </div>
     </div>
-    <div class="flex justify-center mb-5">
+    <div class="flex justify-center mb-5 fixed bottom-0 left-0 right-0 z-10">
         <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
             :table="sortedTable" @delete="deleteRows" />
     </div>

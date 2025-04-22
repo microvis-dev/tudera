@@ -12,7 +12,6 @@ import MeetingDropdown from './MeetingDropdown.vue';
         <MeetingDropdown />
         <MeetingDropdown />
         <MeetingDropdown />
-        <MeetingDropdown />
     </section>
 </template>
 

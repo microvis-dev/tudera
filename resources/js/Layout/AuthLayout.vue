@@ -7,7 +7,7 @@
       <section class="flex flex-col justify-center items-center w-full h-full sm:rounded-l-lg xl:rounded-l-lg border border-[#2B2C30] xl:w-[678px] xl:max-h-[866px]">
         <slot></slot>
       </section>
-      <section class="w-full xl:w-[678px]">
+      <section class="w-full xl:w-[678px] xl:max-h-[866px]">
         <div
             class="hidden xl:flex animation rounded-r-lg h-full bg-gradient-to-br from-[#a8b4e7] to-[#2b3a76] justify-center items-center">
           <img src="../../assets/cloud.svg" alt="cloud"

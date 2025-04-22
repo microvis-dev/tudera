@@ -87,7 +87,7 @@ const go = (id) => {
     <!-- Dropdown Menu with transition -->
     <transition name="slide-down">
       <div v-if="dropdownOpen" ref="dropdownElement"
-        class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2">
+        class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg border border-gray-600 shadow-lg py-2">
 
         <!-- Workspaces List -->
         <div>

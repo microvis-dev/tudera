@@ -40,7 +40,7 @@ const redirectToSettings = () => {
 </script>
 <template>
   <div ref="profileRef" @click="openDropdown">
-    <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5">
+    <section class="flex flex-row h-fit items-center pt-1 justify-start ms-5 xl:justify-evenly">
       <div>
         <img :src="props.profileImage" alt="Profile Image" v-if="props.profileImage"
           class="w-10 h-10 me-2 object-cover rounded-full" />
