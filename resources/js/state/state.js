@@ -7,7 +7,8 @@ import {
 import {
     ref,
     readonly,
-    computed
+    computed,
+    nextTick
 } from 'vue'
 
 export const useTuderaStore = defineStore('TuderaStore', () => {
@@ -81,6 +82,11 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         selectedWorkspace.value = workspace
     }
 
+    async function refreshSelectedWorkspace() {
+        setWorkspace(workspaces.value.find(workspace => workspace.id == getSelectedWorkspace().id))
+        await nextTick()
+    }
+
     function getTodos() {
         return readonly(todos.value)
     }
@@ -107,7 +113,8 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getTables,
         getTransformedTables,
         getFlashSuccess,
-        getFlashError
+        getFlashError,
+        refreshSelectedWorkspace
     }
 
 })

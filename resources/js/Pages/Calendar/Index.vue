@@ -155,15 +155,15 @@ watch(calendarEvents, (newEvents) => {
 
 <template>
   <div>
-    <ScheduleXCalendar :calendar-app="calendarApp" />
+    <ScheduleXCalendar :calendar-app="calendarApp" class="p-3"/>
   </div>
 </template>
 
 <style scoped>
 .sx-vue-calendar-wrapper {
-  width: 1200px;
+  width: 100rem;
   max-width: 100vw;
-  height: 800px;
+  height: 100rem;
   max-height: 90vh;
 }
 </style>
