@@ -51,13 +51,14 @@ const updateDropdownHeight = () => {
   }
 };
 
-const selectWorkspace = (workspace) => {
-  tuderaState.setWorkspace(workspace)
-
-  dropdownOpen.value = false;
-
-  emit('select-workspace', selectedWorkspace.value)
-  router.get(route('dashboard.index'))
+const selectWorkspace = async (workspace) => {
+    try {
+        await tuderaState.setWorkspace(workspace);
+        dropdownOpen.value = false;
+        emit('select-workspace', tuderaState.getSelectedWorkspace());
+    } catch (error) {
+        console.error("Failed to set workspace", error);
+    }
 };
 
 const checkSelectedWorkspace = (workspace) => {
@@ -75,7 +76,7 @@ const go = (id) => {
 </script>
 
 <template>
-  <div class="relative w-48">
+  <div class="relative w-full">
     <!-- Dropdown Button -->
     <button @click="dropdownOpen = !dropdownOpen"
       class="w-full flex items-center justify-between bg-[#2B2C30] text-white px-4 py-2 border border-gray-600"
@@ -96,6 +97,7 @@ const go = (id) => {
             :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }">
             <img src="https://placehold.co/20x20" alt="Workspace Icon" class="w-5 h-5" />
             <span class="flex-1">{{ workspace.name }}</span>
+              <span class="w-5 h-5 right-0"><img src="../../../assets/settings.svg"></span>
             <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check"></i>
           </div>
         </div>

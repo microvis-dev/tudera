@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, inject } from 'vue';
+import { computed, reactive, ref, inject, onMounted } from 'vue';
 import { router, usePage } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import dashboardIcon from '../../../../assets/graphUp.svg';
@@ -12,13 +12,18 @@ const tableIcon = lead // import svg!
 
 const tuderaState = useTuderaStore()
 
-const tables = ref(tuderaState.getTables())
+const tables = ref([])
+
+onMounted(async () => {
+    tables.value = await tuderaState.getTables()
+})
+
 const sidebarItems = computed(() => {
-  const defaultItems =  [
-    { img: dashboardIcon, name: "Dashboard", url: { name: "dashboard.index", params: null } },
-    { img: schedule, name: "Schedule", url: { name: "calendar.index", params: null } }
-  ]
-  return [...defaultItems, ...tables.value]
+    const defaultItems =  [
+        { img: dashboardIcon, name: "Dashboard", url: { name: "dashboard.index", params: null } },
+        { img: schedule, name: "Schedule", url: { name: "calendar.index", params: null } }
+    ]
+    return [...defaultItems, ...tables.value]
 })
 
 const handleRedirect = (url) => {

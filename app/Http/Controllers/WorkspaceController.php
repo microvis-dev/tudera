@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RolesEnum;
 use App\Models\Role;
 use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
+use App\Services\WorkspaceService;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
@@ -27,6 +29,11 @@ class WorkspaceController extends Controller
         }
     }
 
+    function get(Request $request) {
+        $workspace_id = session('current_workspace_id') ?? $request->user()->workspaces()->first()->id;
+        return response()->json($workspace_id);
+    }
+
     function create(Request $request) {
         $user = $request->user();
         $workspaces = $user->workspaces;
@@ -43,37 +50,26 @@ class WorkspaceController extends Controller
             $workspace = new Workspace();
             $workspace->name = $request->input('name');
             $workspace->save();
-
-            $owner_role = Role::where('name', 'owner')->first();
-
-            $users_to_workspace = new UsersToWorkspace();
-
-            $users_to_workspace->workspace_id = $workspace->id;
-            $users_to_workspace->user_id = $request->user()->id;
-            $users_to_workspace->role_id = $owner_role->id;
-            $users_to_workspace->save();
-
-            // create leads
-            $this->createDefaultLeadsTable($workspace);
+            //$this->createDefaultLeadsTable($workspace);
         });
 
         return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
     }
 
     function show() {
-        
+
     }
 
     public function destroy(Request $request, $id) {
         try {
             $user = $request->user();
-    
+
             $workspace = $user->workspaces()->find($id);
-    
+
             if (!$workspace) {
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
             }
-            
+
             if ($workspace->users()->count() == 1) {
                 $workspace->delete();
             } else {
@@ -93,17 +89,17 @@ class WorkspaceController extends Controller
             'name' => 'required|string|max:255|regex:/^\S.*$/'
         ]);
         $workspace_id = $request->workspace;
-    
+
         try {
             $user = $request->user();
             $workspace = $user->workspaces()->find($workspace_id);
-    
+
             if (!$workspace) {
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to edit it.');
             }
-    
+
             $workspace->update(['name' => strip_tags($request->name)]);
-    
+
             return redirect()->back()->with('success', 'Workspace name updated successfully.');
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -112,6 +108,14 @@ class WorkspaceController extends Controller
         }
     }
 
+    public function change(Request $request) {
+        $request->validate([
+            'workspace_id' => 'required|exists:workspaces,id',
+        ]);
+
+        $workspace = Workspace::find($request->workspace_id);
+        return WorkspaceService::change($request->user(), $workspace) ? back() : back()->with('error', 'Workspace not found or you do not have permission to change it.');
+    }
 
     private function createDefaultLeadsTable(Workspace $workspace)
     {
@@ -119,7 +123,7 @@ class WorkspaceController extends Controller
             $leadsTable = new WorkspaceTable();
             $leadsTable->workspace_id = $workspace->id;
             $leadsTable->name = 'Leads';
-            $leadsTable->save();        
+            $leadsTable->save();
 
             //col
             $leadsTable->columns()->create([
@@ -137,5 +141,5 @@ class WorkspaceController extends Controller
         }
     }
 
-    
+
 }

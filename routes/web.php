@@ -36,6 +36,8 @@ Route::resource('signup', SetupController::class)->only(['create']);
 
 
 // workspaces
+Route::get('workspaces/get', [WorkspaceController::class, 'get'])->name('workspaces.get')->middleware('auth');
+Route::post('/workspaces/change', [WorkspaceController::class, 'change'])->name('workspaces.change')->middleware('auth');
 Route::resource('workspaces', WorkspaceController::class)->middleware('auth');
 
 
