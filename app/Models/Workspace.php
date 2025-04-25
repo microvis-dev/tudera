@@ -34,23 +34,12 @@ class Workspace extends Model
             $users_to_workspace->workspace_id = $model->id;
             $users_to_workspace->user_id = $user->id;
 
-            if ($users_to_workspace->save() && self::makeRoles($model)) {
+            if ($users_to_workspace->save()) {
                 if (WorkspaceService::change($user, $model)) {
                     $user->assignRole(RolesEnum::OWNER);
                 }
             }
         });
-    }
-
-    private static function makeRoles(Workspace $workspace) : bool
-    {
-        foreach (RolesEnum::cases() as $role) {
-            Role::create([
-                'name' => $role->value,
-                'team_id' => $workspace->id,
-            ]);
-        }
-        return true;
     }
 
     public function users(): BelongsToMany
