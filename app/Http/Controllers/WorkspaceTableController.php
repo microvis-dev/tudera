@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StatusSelectValue;
 use App\Models\TableValue;
 use App\Models\UsersToWorkspace;
 use App\Models\WorkspaceTable;
@@ -30,15 +31,34 @@ class WorkspaceTableController extends Controller
             }
             
             $column_ids = $table->columns->pluck('id')->toArray();
-        
             $values = TableValue::whereIn('column_id', $column_ids)->get()->toArray();
+
+            $status_columns = $table->columns->where('type', 'status');
+
+            $formatted_status_options = [];
+
+            if ($status_columns->count() > 0) {
+                $default_statuses = StatusSelectValue::whereNull('column_id')->get()->toArray(); // and not None!
+                
+                foreach ($status_columns as $column) {
+                    $column_statuses = StatusSelectValue::where('column_id', $column->id)->get()->toArray();
+                    
+                    $formatted_status_options[] = [
+                        'column_id' => $column->id,
+                        'name' => $column->name, 
+                        'options' => array_merge($default_statuses, $column_statuses)
+                    ];
+                }
+            }
 
             return inertia('WorkspaceTable/Index', [
                 'workspace' => $workspace,
                 'workspace_table' => $table,
                 'columns' => $table->columns,
-                'table_values' => $values
+                'table_values' => $values,
+                'status_options' => $formatted_status_options
             ]);
+
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController select: ' . $e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while selecting workspace.');

@@ -1,19 +1,24 @@
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue';
-import { Link, useForm, router } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
 import DeleteRowModal from './Components/deleteRowModal.vue';
+import KanbanSelect from './KanbanBoard/KanbanSelect.vue';
+import { useTuderaStore } from '../../state/state';
 
-const props = defineProps({
+const props = defineProps({ // use state!
     workspace: Object,
     workspace_table: Object,
     columns: Array,
-    table_values: Array
+    table_values: Array,
+    status_options: Array
 })
+
+const tuderaState = useTuderaStore()
 
 //col
 const deleteColumn = (column_id) => {
@@ -57,7 +62,7 @@ const maxRows = computed(() => {
     return Math.max(...sortedTable.value.map(col => col.length), 0)
 })
 
-const showNewRow = ref(true)
+const showNewRow = ref(true) // viewState!
 const toggleNewRow = () => {
     showNewRow.value = false
 }
@@ -128,10 +133,36 @@ const colMoveRight = (col, newOrder) => {
         order: newOrder
     })
 }
+
+// view
+const viewState = reactive({
+    table: true,
+    kanban: false,
+    switch() {
+        this.table = !this.table
+        this.kanban = !this.kanban
+    },
+    toggleKanban() {
+        this.table = false
+        this.kanban = true
+    },
+    toggleTable() {
+        this.table = true
+        this.kanban = false
+    }
+})
+
+// select 
+const options = computed(() => { // !
+    const allOptions = props.status_options.flatMap(opt => opt.options)
+    const uniqueMap = new Map(allOptions.map(opt => [opt.value, opt]))
+
+    return Array.from(uniqueMap.values())
+})
 </script>
 
 <template>
-    <div class="max-h-screen p-6 overflow-hidden">
+    <div class="max-h-screen p-6 overflow-y-auto">
         <div class="max-w-7xl">
             <div class="rounded-lg shadow-md">
                 <div class="px-6 py-4">
@@ -140,8 +171,14 @@ const colMoveRight = (col, newOrder) => {
                         Workspace: <span class="roboto-font-medium">{{ workspace.name }}</span>
                     </p>
                 </div>
+                <div v-if="status_options">
+                    <p>Kanban select</p>
+                    <KanbanSelect :show="viewState.kanban" :status_options="status_options"
+                        @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()" :columns="columns"
+                        :values="table_values" />
+                </div>
             </div>
-            <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
+            <div v-if="viewState.table" class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr>
@@ -152,7 +189,7 @@ const colMoveRight = (col, newOrder) => {
                             <th v-for="column in sortedColumns" :key="column.id" scope="col"
                                 class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
                                 <Column :column="column" @delete="deleteColumn" @update="updateColumn"
-                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows"/>
+                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows" />
                                 <input v-if="column.showInput" type="text" class="text-black w-full p-1 border rounded"
                                     @blur="column.showInput = false" @keyup.enter="column.showInput = false"
                                     placeholder="Enter value" />
@@ -175,9 +212,11 @@ const colMoveRight = (col, newOrder) => {
                             <td v-for="(columnValues, colIndex) in sortedTable" :key="sortedColumns[colIndex].id"
                                 class="text-center p-2 border-slate-500 border-r border-t border-b">
                                 <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]"
-                                    @update="updateValue" @delete="deleteValue" />
+                                    :options="options" :column="sortedColumns[colIndex]" @update="updateValue"
+                                    @delete="deleteValue" />
                                 <div v-else class="relative group">
-                                    <EmptyValue :column="sortedColumns[colIndex]" :order="rowIndex" @save="saveValue" />
+                                    <EmptyValue :options="options" :column="sortedColumns[colIndex]" :order="rowIndex"
+                                        @save="saveValue" />
                                 </div>
                             </td>
                             <td class="border-b border-slate-500"></td>
@@ -191,7 +230,8 @@ const colMoveRight = (col, newOrder) => {
                                     @click="toggleNewRow()" class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
                                     + Add task
                                 </button>
-                                <EmptyValue v-else :column="sortedColumns.at(0)" :isNewRow="true" @save="saveValue" />
+                                <EmptyValue v-else :options="options" :column="sortedColumns.at(0)" :isNewRow="true"
+                                    @save="saveValue" />
                             </td>
                             <td v-for="column in sortedColumns" class="text-center p-2 border-t border-slate-500">
                             </td>
