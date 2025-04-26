@@ -3,6 +3,9 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { ZiggyVue } from 'ziggy-js'
 import MainLayout from './Layout/MainLayout.vue'
 import { createPinia } from 'pinia'
+import { createVuetify } from 'vuetify'
+
+const vuetify = createVuetify()
 
 createInertiaApp({
   resolve: name => {
@@ -18,6 +21,7 @@ createInertiaApp({
       .use(plugin)
       .use(ZiggyVue)
       .use(createPinia())
+      .use(vuetify)
       .mount(el)
   },
 })

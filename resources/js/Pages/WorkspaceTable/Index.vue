@@ -7,6 +7,7 @@ import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
 import DeleteRowModal from './Components/deleteRowModal.vue';
+import Kanban from './KanbanBoard/Kanban.vue';
 
 const props = defineProps({
     workspace: Object,
@@ -206,5 +207,6 @@ const colMoveRight = (col, newOrder) => {
         <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
             :table="sortedTable" @delete="deleteRows" />
     </div>
+    <Kanban />
 </template>
 <style scoped></style>
