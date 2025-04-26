@@ -80,7 +80,7 @@ const addNewTable = () => {
 <template>
   <section class="p-8 h-screen">
     <aside class="flex flex-col items-center h-full">
-      <div @click="redirectToHome" class="w-40 mb-20">
+      <div @click="redirectToHome" class="w-40 mb-20 cursor-pointer">
         <img src="../../../../assets/tuderaLogoWhite.svg">
       </div>
       <WorkspaceSelect @dropdown-change="handleDropdownChange"
