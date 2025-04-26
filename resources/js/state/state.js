@@ -10,6 +10,7 @@ import {
     computed,
     nextTick
 } from 'vue'
+import { route } from "ziggy-js";
 
 export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()

@@ -8,7 +8,6 @@ import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 import { useTuderaStore } from '@/resources/js/state/state';
-const tableIcon = lead // import svg!
 
 const tuderaState = useTuderaStore()
 
@@ -37,7 +36,7 @@ const updateTables = ((workspace) => {
     let tableObj = {
       id: table.id,
       name: table.name,
-      img: tableIcon,
+      img: lead,
       url: { name: 'table.show', params: { table: table.id } }
     }
     tables.value.push(tableObj)
