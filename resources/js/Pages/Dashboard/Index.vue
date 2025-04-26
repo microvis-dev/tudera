@@ -11,27 +11,27 @@ const user = computed(() => tuderaState.getUser())
 </script>
 
 <template>
-  <div class="w-screen h-screen flex flex-row overflow-hidden">
-    <section class="w-10/12 flex flex-col">
-      <div class="flex flex-row h-full">
-        <section class="w-8/12">
-          <div class="w-full h-4/6">
+  <div class="w-full min-h-screen flex flex-col md:flex-row overflow-auto md:overflow-hidden">
+    <section class="w-full flex flex-col">
+      <div class="flex flex-col md:flex-row h-full">
+        <section class="w-full md:w-8/12">
+          <div class="w-full h-auto md:h-4/6">
             <MainComponent />
           </div>
-          <section class="flex flex-row">
-            <div class="h-fit w-1/2 p-5">
+          <section class="flex flex-col sm:flex-row">
+            <div class="h-fit w-full sm:w-1/2 p-3 md:p-5">
               <StatComponent :title="'New Projects'" :value="84" :previous-value="65" :color="'#63D4B7'" />
             </div>
-            <div class="h-fit w-1/2 p-5">
+            <div class="h-fit w-full sm:w-1/2 p-3 md:p-5">
               <StatComponent :title="'New Tasks'" :value="262" :previous-value="180" :color="'#4469DE'" />
             </div>
           </section>
         </section>
-        <section class="w-4/12">
-          <div class="w-full h-1/2 overflow-y-auto">
+        <section class="w-full md:w-4/12">
+          <div class="w-full h-auto md:h-1/2 overflow-y-auto">
             <TodoList />
           </div>
-          <div class="w-full h-1/2 overflow-y-auto">
+          <div class="w-full h-auto md:h-1/2 overflow-y-auto">
             <Meetings :profile-image='user.profile_image'/>
           </div>
         </section>

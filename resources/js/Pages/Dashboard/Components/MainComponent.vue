@@ -23,7 +23,7 @@ const lastTables = computed(() => {
 
 </script>
 <template>
-  <section class="flex flex-col p-5">
+  <section class="flex flex-row md:flex-col p-5">
     <div v-if="lastTables.value == 1">
       <h1 class="text-3xl roboto-font-bold mb-2">
         Start managing<br>
@@ -40,7 +40,7 @@ const lastTables = computed(() => {
       </h1>
       <p class="text-sm roboto-font-small mb-5 text-[#B3B3B3]">Quickly jump back into your team's most <br> recent tables and projects.
       </p>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <LastTableCard v-for="table in lastTables" :table="table" />
       </div>
     </div>

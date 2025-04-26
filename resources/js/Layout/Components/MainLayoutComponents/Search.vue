@@ -8,7 +8,7 @@
         <img src="../../../../assets/search.svg" class="w-5 h-5">
           </div>
           <input type="text"
-        class="pl-10 pr-3 py-2 w-96 bg-[#1C1D21] border border-gray-600 rounded-lg roboto-font-regular focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm"
+        class="pl-10 pr-3 py-2 w-fit md:w-96 bg-[#1C1D21] border border-gray-600 rounded-lg roboto-font-regular focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm"
         placeholder="Search">
         </div>
         <div>
