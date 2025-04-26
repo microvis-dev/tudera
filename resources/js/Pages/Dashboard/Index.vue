@@ -1,9 +1,13 @@
 <script setup>
+import { computed } from "vue";
 import StatComponent from "../../Layout/Components/MainLayoutComponents/StatComponent.vue";
 import MainComponent from "./Components/MainComponent.vue";
 import TodoList from "./Components/TodoList.vue";
 import Meetings from "./Components/Meetings.vue";
+import { useTuderaStore } from "../../state/state";
 
+const tuderaState = useTuderaStore()
+const user = computed(() => tuderaState.getUser())
 </script>
 
 <template>
@@ -28,7 +32,7 @@ import Meetings from "./Components/Meetings.vue";
             <TodoList />
           </div>
           <div class="w-full h-1/2 overflow-y-auto">
-            <Meetings />
+            <Meetings :profile-image='user.profile_image'/>
           </div>
         </section>
       </div>
