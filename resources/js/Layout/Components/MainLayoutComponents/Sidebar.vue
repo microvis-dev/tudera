@@ -78,15 +78,15 @@ const addNewTable = () => {
 
 </script>
 <template>
-  <section class="p-8">
-    <aside class="flex flex-col items-center">
+  <section class="p-8 h-screen">
+    <aside class="flex flex-col items-center h-full">
       <div @click="redirectToHome" class="w-40 mb-20">
         <img src="../../../../assets/tuderaLogoWhite.svg">
       </div>
       <WorkspaceSelect @dropdown-change="handleDropdownChange"
         @height-change="updateDropdownHeight" @select-workspace="updateTables" />
-      <div class="w-full">
-        <div class="sidebar-items flex flex-col" :class="{ 'dropdown-open': workspaceDropdownOpen }">
+      <div class="w-full flex-grow">
+        <div class="sidebar-items flex flex-col overflow-y-auto h-full max-h-[calc(100vh-250px)]" :class="{ 'dropdown-open': workspaceDropdownOpen }">
           <div v-for="item in sidebarItems"
             class="flex flex-row items-center p-5 mt-3 hover:bg-gray-500 hover:rounded-xl"
             @click="handleRedirect(item.url)">
