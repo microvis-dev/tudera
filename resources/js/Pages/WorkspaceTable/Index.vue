@@ -8,6 +8,7 @@ import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
 import DeleteRowModal from './Components/deleteRowModal.vue';
 import KanbanSelect from './KanbanBoard/KanbanSelect.vue';
+import { useTuderaStore } from '../../state/state';
 
 const props = defineProps({ // use state!
     workspace: Object,
@@ -16,6 +17,8 @@ const props = defineProps({ // use state!
     table_values: Array,
     status_options: Array
 })
+
+const tuderaState = useTuderaStore()
 
 //col
 const deleteColumn = (column_id) => {
@@ -148,6 +151,17 @@ const viewState = reactive({
         this.kanban = false
     }
 })
+
+// select 
+const options = computed(() => {
+    const allOptions = props.status_options.flatMap(opt => opt.options)
+    const seen = new Set()
+    return allOptions.filter(opt => {
+        if (seen.has(opt.value)) return false
+        seen.add(opt.value)
+        return true
+    })
+})
 </script>
 
 <template>
@@ -198,10 +212,10 @@ const viewState = reactive({
                             </td>
                             <td v-for="(columnValues, colIndex) in sortedTable" :key="sortedColumns[colIndex].id"
                                 class="text-center p-2 border-slate-500 border-r border-t border-b">
-                                <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]"
+                                <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]" :options="options" :column="sortedColumns[colIndex]"
                                     @update="updateValue" @delete="deleteValue" />
                                 <div v-else class="relative group">
-                                    <EmptyValue :column="sortedColumns[colIndex]" :order="rowIndex" @save="saveValue" />
+                                    <EmptyValue :options="options" :column="sortedColumns[colIndex]" :order="rowIndex" @save="saveValue" />
                                 </div>
                             </td>
                             <td class="border-b border-slate-500"></td>
@@ -215,7 +229,7 @@ const viewState = reactive({
                                     @click="toggleNewRow()" class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
                                     + Add task
                                 </button>
-                                <EmptyValue v-else :column="sortedColumns.at(0)" :isNewRow="true" @save="saveValue" />
+                                <EmptyValue v-else :options="options" :column="sortedColumns.at(0)" :isNewRow="true" @save="saveValue" />
                             </td>
                             <td v-for="column in sortedColumns" class="text-center p-2 border-t border-slate-500">
                             </td>

@@ -5,6 +5,8 @@ const emit = defineEmits(['add', 'update', 'delete'])
 
 const props = defineProps({
     value: Object,
+    column: Object,
+    options: Array
 })
 
 // edit
@@ -53,16 +55,29 @@ const deleteValue = () => {
         emit('delete', props.value)
     }
 }
+
+const getValueType = () => {
+    switch (props.type) {
+        case "status": "select"
+        default: "text"
+    }
+}
 </script>
 
 <template>
     <div class="flex flex-col items-center justify-center">
         <div class="flex items-center justify-center py-2 px-3 duration-150 rounded-md w-full">
             <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
-                <input v-if="editState.isEditing" v-model="editState.editedValue"
-                    @keyup.enter="saveEdit"
-                    class="w-full text-center bg-[#3e3f45] cursor-pointer rounded-md shadow-sm text-sm"
-                    ref="el => editState.valueInputTextField = el" />
+                <div v-if="editState.isEditing">
+                    <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit">
+                        <option v-for="option in options" :key="option.value" :value="option.value">
+                            {{ option.value }}
+                        </option>
+                    </select>
+                    <input v-else v-model="editState.editedValue" @keyup.enter="saveEdit"
+                        class="w-full text-center bg-[#3e3f45] cursor-pointer rounded-md shadow-sm text-sm"
+                        ref="el => editState.valueInputTextField = el" :type="getValueType()" />
+                </div>
                 <div v-else class="text-center">
                     <span class=" font-medium text-sm truncate">{{ value.value }}</span>
                 </div>

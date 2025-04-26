@@ -1,16 +1,39 @@
 <script setup>
 import TaskCard from "./Components/TaskCard.vue";
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import draggableComponent from 'vue3-draggable-next';
+import { useTuderaStore } from "@/resources/js/state/state";
 
 const props = defineProps({
     selectedKanban: Object
 })
 
 const emit = defineEmits(['back'])
+
+const tuderaState = useTuderaStore()
+
 const back = (() => emit('back'))
 
-const columns = reactive([
+const columns = computed(() => {
+    let options = props.selectedKanban.options
+    let result = []
+
+
+    options.forEach((option) => {
+        let tasks = []
+        let taskObj = {
+            title: option.value,
+            tasks: tasks
+        }
+
+        result.push(taskObj)
+    })
+
+    return result
+})
+console.log(props.selectedKanban)
+
+const columnsS = reactive([
     {
         title: "Backlog", // col name
         tasks: [

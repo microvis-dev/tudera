@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue"
+import { useTuderaStore } from "@/resources/js/state/state"
 import Kanban from "./Kanban.vue"
 
 const props = defineProps({
@@ -11,6 +12,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['hide-table', 'back'])
+
+const tuderaState = useTuderaStore()
 
 const selectedKanban = ref(props.status_options[0])
 const selectKanban = ((index) => {
