@@ -5,8 +5,6 @@ import MainLayout from './Layout/MainLayout.vue'
 import { createPinia } from 'pinia'
 import { createVuetify } from 'vuetify'
 
-const vuetify = createVuetify()
-
 createInertiaApp({
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
@@ -21,7 +19,7 @@ createInertiaApp({
       .use(plugin)
       .use(ZiggyVue)
       .use(createPinia())
-      .use(vuetify)
+      .use(createVuetify())
       .mount(el)
   },
 })

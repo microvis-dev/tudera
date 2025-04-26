@@ -1,172 +1,83 @@
 <script setup>
-import TaskCard from "./Components/TaskCard.vue";
-import { computed, reactive } from 'vue';
-import draggableComponent from 'vue3-draggable-next';
-import { useTuderaStore } from "@/resources/js/state/state";
+import TaskCard from "./Components/TaskCard.vue"
+import { computed } from 'vue'
+import draggableComponent from 'vue3-draggable-next'
 
 const props = defineProps({
-    selectedKanban: Object
+    selectedKanban: Object,
+    values: Array,
+    columns: Array
 })
 
-const emit = defineEmits(['back'])
+const emit = defineEmits(['back', 'update'])
+const back = () => emit('back')
 
-const tuderaState = useTuderaStore()
+const statusColumnId = computed(() => props.selectedKanban.column_id)
 
-const back = (() => emit('back'))
-
-const columns = computed(() => {
-    let options = props.selectedKanban.options
-    let result = []
-
-
-    options.forEach((option) => {
-        let tasks = []
-        let taskObj = {
-            title: option.value,
-            tasks: tasks
+const kanbanColumns = computed(() => {
+    const rowGroups = {}
+    props.values?.forEach(value => {
+        const rowKey = `row_${value.order}`
+        if (!rowGroups[rowKey]) {
+            rowGroups[rowKey] = { id: rowKey, values: {} }
         }
-
-        result.push(taskObj)
+        rowGroups[rowKey].values[value.column_id] = value.value
     })
 
-    return result
-})
-console.log(props.selectedKanban)
+    const statColId = statusColumnId.value
+    const options = props.selectedKanban?.options || []
 
-const columnsS = reactive([
-    {
-        title: "Backlog", // col name
-        tasks: [
-            {
-                id: 1, // values
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            },
-            {
-                id: 2,
-                title: "Provide documentation on integrations",
-                date: "Sep 12"
-            },
-            {
-                id: 3,
-                title: "Design shopping cart dropdown",
-                date: "Sep 9",
-                type: "Design"
-            },
-            {
-                id: 4,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            },
-            {
-                id: 5,
-                title: "Test checkout flow",
-                date: "Sep 15",
-                type: "QA"
-            }
-        ]
-    },
-    {
-        title: "In Progress",
-        tasks: [
-            {
-                id: 6,
-                title: "Design shopping cart dropdown",
-                date: "Sep 9",
-                type: "Design"
-            },
-            {
-                id: 7,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            },
-            {
-                id: 8,
-                title: "Provide documentation on integrations",
-                date: "Sep 12",
-                type: "Backend"
-            }
-        ]
-    },
-    {
-        title: "Review",
-        tasks: [
-            {
-                id: 9,
-                title: "Provide documentation on integrations",
-                date: "Sep 12"
-            },
-            {
-                id: 10,
-                title: "Design shopping cart dropdown",
-                date: "Sep 9",
-                type: "Design"
-            },
-            {
-                id: 11,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            },
-            {
-                id: 12,
-                title: "Design shopping cart dropdown",
-                date: "Sep 9",
-                type: "Design"
-            },
-            {
-                id: 13,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            }
-        ]
-    },
-    {
-        title: "Done",
-        tasks: [
-            {
-                id: 14,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            },
-            {
-                id: 15,
-                title: "Design shopping cart dropdown",
-                date: "Sep 9",
-                type: "Design"
-            },
-            {
-                id: 16,
-                title: "Add discount code to checkout page",
-                date: "Sep 14",
-                type: "Feature Request"
-            }
-        ]
-    }
-])
+    return options.map(option => {
+        const columnTasks = Object.values(rowGroups)
+            .filter(row => row.values[statColId] == option.value)
+            .map(row => {
+                const taskValues = Object.entries(row.values)
+                    .filter(([colId]) => colId != statColId.toString())
+                    .map(([colId, value]) => {
+                        const column = props.columns?.find(col => col.id.toString() == colId.toString())
+                        return {
+                            columnName: column?.name || 'Unknown',
+                            colId,
+                            value
+                        }
+                    })
+
+                return {
+                    id: row.id,
+                    title: taskValues[0]?.value || 'Untitled',
+                    details: taskValues
+                }
+            })
+
+        return {
+            title: option.value,
+            tasks: columnTasks
+        }
+    })
+})
+
+const update = (e) => {
+    // console.log(e)
+    emit('update', e)
+}
 </script>
 
 <template>
-    <button @click="back" class="bg-blue-600">Back</button>
-    <div id="app">
-        <div class="flex justify-center">
-            <div class="min-h-screen flex overflow-x-scroll py-12">
-                <div v-for="column in columns" :key="column.title"
-                    class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
-                    <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
-
-                    <draggableComponent v-model="column.tasks" :animation="200" ghost-class="ghost-card" group="tasks"
-                        item-key="id">
-                        <template #item="{ element }">
-                            <task-card :task="element" class="mt-3 cursor-move"></task-card>
-                        </template>
-                    </draggableComponent>
-                </div>
+    <button @click="back" class="bg-blue-600 px-4 py-2 text-white rounded mb-4">Back</button>
+    <div class="flex justify-center">
+        <div class="min-h-screen flex overflow-x-scroll py-12">
+            <div v-for="column in kanbanColumns" :key="column.title"
+                class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
+                <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
+                <p v-if="column.tasks.length == 0" class="text-gray-400 italic py-4 text-center">
+                    No tasks in this column
+                </p>
+                <draggableComponent v-model="column.tasks" @end="update" :animation="200" ghost-class="ghost-card"
+                    group="tasks" item-key="id">
+                    <template #item="{ element }">
+                        <TaskCard :task="element" class="mt-3 cursor-move"></TaskCard>
+                    </template>
+                </draggableComponent>
             </div>
         </div>
     </div>

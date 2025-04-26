@@ -13,13 +13,14 @@ const props = defineProps({
         type: Number,
         default: null
     },
-    options: Array // ezt meg lehetne col alapjan sortolni is 
+    options: Array 
 })
 
 const showButton = ref(true)
 const value = ref("")
 if (props.column.type == "status") {
     value.value = "None"
+    emit('save', value.value, props.column, props.order)
 }
 
 const toggleButton = () => {

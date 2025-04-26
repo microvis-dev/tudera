@@ -6,7 +6,7 @@ const emit = defineEmits(['add', 'update', 'delete'])
 const props = defineProps({
     value: Object,
     column: Object,
-    options: Array
+    options: Array // ezt meg lehetne col alapjan sortolni is 
 })
 
 // edit

@@ -34,6 +34,7 @@ class WorkspaceTableController extends Controller
             $values = TableValue::whereIn('column_id', $column_ids)->get()->toArray();
 
             $status_columns = $table->columns->where('type', 'status');
+
             $formatted_status_options = [];
 
             if ($status_columns->count() > 0) {

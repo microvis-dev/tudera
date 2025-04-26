@@ -153,19 +153,16 @@ const viewState = reactive({
 })
 
 // select 
-const options = computed(() => {
+const options = computed(() => { // !
     const allOptions = props.status_options.flatMap(opt => opt.options)
-    const seen = new Set()
-    return allOptions.filter(opt => {
-        if (seen.has(opt.value)) return false
-        seen.add(opt.value)
-        return true
-    })
+    const uniqueMap = new Map(allOptions.map(opt => [opt.value, opt]))
+
+    return Array.from(uniqueMap.values())
 })
 </script>
 
 <template>
-    <div class="max-h-screen p-6 overflow-hidden">
+    <div class="max-h-screen p-6 overflow-y-auto">
         <div class="max-w-7xl">
             <div class="rounded-lg shadow-md">
                 <div class="px-6 py-4">
@@ -176,7 +173,9 @@ const options = computed(() => {
                 </div>
                 <div v-if="status_options">
                     <p>Kanban select</p>
-                    <KanbanSelect :show="viewState.kanban" :status_options="status_options" @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()"/>
+                    <KanbanSelect :show="viewState.kanban" :status_options="status_options"
+                        @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()" :columns="columns"
+                        :values="table_values" />
                 </div>
             </div>
             <div v-if="viewState.table" class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
@@ -190,7 +189,7 @@ const options = computed(() => {
                             <th v-for="column in sortedColumns" :key="column.id" scope="col"
                                 class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
                                 <Column :column="column" @delete="deleteColumn" @update="updateColumn"
-                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows"/>
+                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows" />
                                 <input v-if="column.showInput" type="text" class="text-black w-full p-1 border rounded"
                                     @blur="column.showInput = false" @keyup.enter="column.showInput = false"
                                     placeholder="Enter value" />
@@ -212,10 +211,12 @@ const options = computed(() => {
                             </td>
                             <td v-for="(columnValues, colIndex) in sortedTable" :key="sortedColumns[colIndex].id"
                                 class="text-center p-2 border-slate-500 border-r border-t border-b">
-                                <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]" :options="options" :column="sortedColumns[colIndex]"
-                                    @update="updateValue" @delete="deleteValue" />
+                                <Value v-if="columnValues[rowIndex - 1]" :value="columnValues[rowIndex - 1]"
+                                    :options="options" :column="sortedColumns[colIndex]" @update="updateValue"
+                                    @delete="deleteValue" />
                                 <div v-else class="relative group">
-                                    <EmptyValue :options="options" :column="sortedColumns[colIndex]" :order="rowIndex" @save="saveValue" />
+                                    <EmptyValue :options="options" :column="sortedColumns[colIndex]" :order="rowIndex"
+                                        @save="saveValue" />
                                 </div>
                             </td>
                             <td class="border-b border-slate-500"></td>
@@ -229,7 +230,8 @@ const options = computed(() => {
                                     @click="toggleNewRow()" class="w-fit h-5 items-center mx-auto text-[#B3B3B3]">
                                     + Add task
                                 </button>
-                                <EmptyValue v-else :options="options" :column="sortedColumns.at(0)" :isNewRow="true" @save="saveValue" />
+                                <EmptyValue v-else :options="options" :column="sortedColumns.at(0)" :isNewRow="true"
+                                    @save="saveValue" />
                             </td>
                             <td v-for="column in sortedColumns" class="text-center p-2 border-t border-slate-500">
                             </td>
