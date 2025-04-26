@@ -8,7 +8,6 @@ const props = defineProps({
   }
 });
 
-// Számított tulajdonság a szín osztályokhoz
 const colorClasses = computed(() => {
   return {
     [`bg-${props.color}-100`]: true,

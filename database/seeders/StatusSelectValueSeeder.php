@@ -14,6 +14,7 @@ class StatusSelectValueSeeder extends Seeder
     public function run(): void
     {
         $statuses = [
+            'None', // nem fog szerepelni a kanbanban ha a status None
             'backlog',
             'in-progress',
             'review',

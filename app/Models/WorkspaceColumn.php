@@ -27,6 +27,10 @@ class WorkspaceColumn extends Model
         return $this->belongsTo(WorkspaceTable::class, 'table_id');
     }
 
+    public function values() {
+        return $this->hasMany(TableValue::class, 'column_id')->orderBy('order');
+    }
+
     /**
      * The attributes that should be cast.
      *

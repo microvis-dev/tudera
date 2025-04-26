@@ -1,19 +1,20 @@
 <script setup>
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue';
-import { Link, useForm, router } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
 import DeleteRowModal from './Components/deleteRowModal.vue';
-import Kanban from './KanbanBoard/Kanban.vue';
+import KanbanSelect from './KanbanBoard/KanbanSelect.vue';
 
-const props = defineProps({
+const props = defineProps({ // use state!
     workspace: Object,
     workspace_table: Object,
     columns: Array,
-    table_values: Array
+    table_values: Array,
+    status_options: Array
 })
 
 //col
@@ -58,7 +59,7 @@ const maxRows = computed(() => {
     return Math.max(...sortedTable.value.map(col => col.length), 0)
 })
 
-const showNewRow = ref(true)
+const showNewRow = ref(true) // viewState!
 const toggleNewRow = () => {
     showNewRow.value = false
 }
@@ -129,6 +130,24 @@ const colMoveRight = (col, newOrder) => {
         order: newOrder
     })
 }
+
+// view
+const viewState = reactive({
+    table: true,
+    kanban: false,
+    switch() {
+        this.table = !this.table
+        this.kanban = !this.kanban
+    },
+    toggleKanban() {
+        this.table = false
+        this.kanban = true
+    },
+    toggleTable() {
+        this.table = true
+        this.kanban = false
+    }
+})
 </script>
 
 <template>
@@ -141,8 +160,12 @@ const colMoveRight = (col, newOrder) => {
                         Workspace: <span class="roboto-font-medium">{{ workspace.name }}</span>
                     </p>
                 </div>
+                <div v-if="status_options">
+                    <p>Kanban select</p>
+                    <KanbanSelect :show="viewState.kanban" :status_options="status_options" @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()"/>
+                </div>
             </div>
-            <div class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
+            <div v-if="viewState.table" class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
                 <table class="min-w-full table-auto">
                     <thead>
                         <tr>
@@ -207,6 +230,5 @@ const colMoveRight = (col, newOrder) => {
         <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
             :table="sortedTable" @delete="deleteRows" />
     </div>
-    <Kanban />
 </template>
 <style scoped></style>

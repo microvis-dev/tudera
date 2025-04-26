@@ -3,12 +3,19 @@ import TaskCard from "./Components/TaskCard.vue";
 import { reactive } from 'vue';
 import draggableComponent from 'vue3-draggable-next';
 
+const props = defineProps({
+    selectedKanban: Object
+})
+
+const emit = defineEmits(['back'])
+const back = (() => emit('back'))
+
 const columns = reactive([
     {
-        title: "Backlog",
+        title: "Backlog", // col name
         tasks: [
             {
-                id: 1,
+                id: 1, // values
                 title: "Add discount code to checkout page",
                 date: "Sep 14",
                 type: "Feature Request"
@@ -122,14 +129,14 @@ const columns = reactive([
 </script>
 
 <template>
+    <button @click="back" class="bg-blue-600">Back</button>
     <div id="app">
         <div class="flex justify-center">
             <div class="min-h-screen flex overflow-x-scroll py-12">
                 <div v-for="column in columns" :key="column.title"
-                    class="bg-gray-100 rounded-lg px-3 py-3 column-width rounded mr-4">
+                    class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
                     <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
 
-                    <!-- Frissített draggable használat Vue 3 szintaxissal -->
                     <draggableComponent v-model="column.tasks" :animation="200" ghost-class="ghost-card" group="tasks"
                         item-key="id">
                         <template #item="{ element }">
