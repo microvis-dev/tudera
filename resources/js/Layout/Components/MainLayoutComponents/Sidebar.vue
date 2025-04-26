@@ -10,6 +10,7 @@ import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToD
 import { useTuderaStore } from '@/resources/js/state/state';
 
 const tuderaState = useTuderaStore()
+const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const tables = ref(tuderaState.getTables())
 const sidebarItems = computed(() => {
@@ -48,7 +49,6 @@ const redirectToHome = () => { // click cursor
   router.get(route('index'))
 }
 
-// attilamunkaja.html
 const viewState = reactive({
     addTodoModal: false
 })
@@ -72,6 +72,9 @@ const updateDropdownHeight = (height) => {
   dropdownHeight.value = height;
   document.documentElement.style.setProperty('--dropdown-height', `${height}px`);
 };
+const addNewTable = () => {
+  router.get(route('workspace.table.create', { workspace: selectedWorkspace.value }))
+}
 
 </script>
 <template>
@@ -91,6 +94,7 @@ const updateDropdownHeight = (height) => {
             <h2 class="roboto-font-bold text-lg">{{ item.name }}</h2>
           </div>
             <button @click="showAddTodoModal" v-if="route().current('calendar.index')" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add event</button>
+            <button @click="addNewTable" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add new Table</button>
             <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :is-personal="false"/>
         </div>
       </div>
