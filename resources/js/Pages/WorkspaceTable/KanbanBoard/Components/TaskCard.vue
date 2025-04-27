@@ -10,21 +10,21 @@ defineProps({
 </script>
 
 <template>
-    <div class="bg-white shadow rounded px-3 pt-3 pb-5 border border-white hover:shadow-md">
-        <div class="flex justify-between">
-            <p class="text-gray-700 font-semibold font-sans tracking-wide text-base my-1">
-                {{ task.title }}
-            </p>
-        </div>
+    <div class="bg-[#2B2C30] shadow px-2 py-2 rounded-lg hover:scale-110 hover:shadow-xl">
+        <p class="text-sm">{{ task.date }}</p>
+        <p class="roboto-font-bold text-xl tracking-wide">
+            {{ task.title }}
+        </p>
 
-        <div class="mt-2">
-            <div v-for="(detail, index) in task.details" :key="index" class="text-gray-600 text-sm mb-1">
-                <span class="font-medium">{{ detail.columnName }}:</span> {{ detail.value }}
+        <div class="mt-1 mb-5">
+            <div v-for="(detail, index) in task.details" :key="index">
+                <p class="roboto-font-medium text-lg">{{ detail.value }}</p>
             </div>
-        </div>
-        
-        <div class="flex mt-4 justify-between items-center">
-            <p class="text-gray-600 text-sm">{{ task.date }}</p>
         </div>
     </div>
 </template>
+<style scoped>
+div {
+    transition: transform 0.3s ease;
+}
+</style>

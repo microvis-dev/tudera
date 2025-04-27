@@ -47,7 +47,8 @@ const kanbanColumns = computed(() => {
                 return {
                     id: row.id,
                     title: taskValues[0]?.value || 'Untitled',
-                    details: taskValues
+                    details: taskValues.slice(1),
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '.',
                 }
             })
 
@@ -76,13 +77,12 @@ const deleteOption = (column) => {
 </script>
 
 <template>
-    <button @click="back" class="bg-blue-600 px-4 py-2 text-white rounded mb-4">Back</button>
-    <div class="flex justify-center">
-        <div class="min-h-screen flex overflow-x-scroll py-12">
-            <div v-for="(column, index) in kanbanColumns" :key="column.title"
-                class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
-                <button style="color: black;" @click="deleteOption(column)">delete</button>
-                <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
+    <div class="w-full">
+        <div class="min-h-screen flex justify-evenly py-12">
+            <div v-for="column in kanbanColumns" :key="column.title"
+                class="bg-transparent px-3 w-3/12 py-3">
+                <button @click="deleteOption(column)">delete</button>
+                <p class="roboto-font-bold capitalize tracking-wide text-lg">{{ column.title }}</p>
                 <p v-if="column.tasks.length == 0" class="text-gray-400 italic py-4 text-center">
                     No tasks in this column
                 </p>

@@ -182,12 +182,11 @@ const options = computed(() => {
                     <p class="text-sm roboto-font-medium text-gray-600 mt-1">
                         Workspace: <span class="roboto-font-medium">{{ workspace.name }}</span>
                     </p>
-                </div>
-                <div v-if="status_options">
-                    <p>Kanban select</p>
-                    <KanbanSelect :show="viewState.kanban" :status_options="status_options"
-                        @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()" :columns="columns"
-                        :values="table_values" />
+                    <div v-if="status_options">
+                        <KanbanSelect :show="viewState.kanban" :status_options="status_options"
+                            @hide-table="viewState.toggleKanban()" @back="viewState.toggleTable()" :columns="columns"
+                            :values="table_values" />
+                    </div>
                 </div>
             </div>
             <div v-if="viewState.table" class="overflow-x-auto w-fit bg-[#2B2C30] border border-slate-500 mt-5">
