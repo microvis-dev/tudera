@@ -1,18 +1,31 @@
 <script setup>
 import { ref } from "vue";
+
+const props = defineProps({
+    column: Object
+})
+
+const emit = defineEmits(['exit', 'save']);
+
 const customValue = ref("");
-const emit = defineEmits(['exit']);
+
 const close = () => {
     emit('exit');
 };
+
+const save = () => {
+    emit('save', props.column, customValue.value);
+    close()
+}
 </script>
 
 <template>
-    <form>
+    <form @submit.prevent="save">
         <div class="fixed inset-0 flex items-center justify-center z-50 text-white">
             <div class="bg-[#2B2C30] p-8 rounded-lg shadow-lg w-11/12 max-w-md relative" @click.stop>
                 <span
-                    class="absolute top-4 right-4 text-2xl cursor-pointer opacity-70 hover:opacity-100 transition-opacity" @click="close">&times;</span>
+                    class="absolute top-4 right-4 text-2xl cursor-pointer opacity-70 hover:opacity-100 transition-opacity"
+                    @click="close">&times;</span>
                 <h2 class="text-xl font-semibold mb-6">Create a custom value in Kanban </h2>
                 <div class="bg-transparent">
                     <input type="text" placeholder="Add custom value..." v-model="customValue"
@@ -32,8 +45,9 @@ const close = () => {
                     <button type="button" @click="close"
                         class="bg-gray-100 text-gray-800 px-5 py-3 rounded-xl hover:bg-gray-200 hover:drop-shadow-xl transition-colors sm:w-auto w-full">Cancel</button>
                     <button type="submit"
-                        class="text-white px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 hover:drop-shadow-xl transition-colors sm:w-auto w-full">Add
-                        custom value</button>
+                        class="text-white px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 hover:drop-shadow-xl transition-colors sm:w-auto w-full">
+                        Add custom value
+                    </button>
                 </div>
             </div>
         </div>

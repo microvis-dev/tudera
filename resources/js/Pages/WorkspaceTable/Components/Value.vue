@@ -1,13 +1,15 @@
 <script setup>
 import { reactive, nextTick, ref, computed } from 'vue';
 import AddCustomStatusModal from './AddCustomStatusModal.vue';
+import { router } from "@inertiajs/vue3";
+import { route } from "ziggy-js";
 
 const emit = defineEmits(['add', 'update', 'delete'])
 
 const props = defineProps({
     value: Object,
     column: Object,
-    options: Array // ezt meg lehetne col alapjan sortolni is 
+    options: Array
 })
 
 const columnOptions = computed(() => {
@@ -38,14 +40,15 @@ const enableEditing = async () => {
 }
 const showModal = ref(false)
 const saveEdit = () => {
-    if (!editState.editedValue) {
-        emit('delete', props.value)
-    }
-    if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
-        emit("update", editState.editedValue, props.value)
-    }
-    if(editState.editedValue == "Add new option..."){
+    if (editState.editedValue == "Add new option...") {
         showModal.value = true
+    } else {
+        if (!editState.editedValue) {
+            emit('delete', props.value)
+        }
+        if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
+            emit("update", editState.editedValue, props.value)
+        }
     }
 
     editState.isEditing = false
@@ -81,6 +84,13 @@ const getValueType = () => {
     }
 }
 // hideCustomStatusModal
+const hideCustomStatusModal = () => {
+    showModal.value = false
+}
+
+const saveCustomStatus = (column, value) => {
+    router.post(route('selectvalues.store'), { column_id: column.id, value: value })
+}
 </script>
 
 <template>
@@ -104,6 +114,6 @@ const getValueType = () => {
         </div>
     </div>
     <div v-if="showModal">
-        <AddCustomStatusModal @exit="hideAddTodoModal"/>
+        <AddCustomStatusModal :column="column" @exit="hideCustomStatusModal" @save="saveCustomStatus" />
     </div>
 </template>

@@ -25,11 +25,11 @@ const selectedKanban = ref(null);
 const isPlaceholderDisabled = computed(() => selectedKanban.value === null);
 
 const selectKanban = () => {
-  if (selectedKanban.value === null) {
-    emit('back'); // If selecting "Switch to Kanban version" again, go back
-  } else {
-    emit('hide-table'); // If a kanban selected, hide table
-  }
+    if (selectedKanban.value === null) {
+        emit('back'); // If selecting "Switch to Kanban version" again, go back
+    } else {
+        emit('hide-table'); // If a kanban selected, hide table
+    }
 };
 
 const back = () => {
@@ -40,9 +40,9 @@ const back = () => {
 const handleUpdate = (event) => {
     console.log('Updating value:', event.valueId)
     // Use the same structure as the updateValue function in Index.vue
-    router.put(route('table.values.update', { 
-        table: props.workspace_table.id, 
-        value: event.valueId 
+    router.put(route('table.values.update', {
+        table: props.workspace_table.id,
+        value: event.valueId
     }), {
         new_value: event.newValue
     })
@@ -51,31 +51,20 @@ const handleUpdate = (event) => {
 </script>
 
 <template>
-  <select 
-    v-model="selectedKanban" 
-    @change="selectKanban" 
-    class="bg-[#5D5E5B] peer rounded-md px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600">
-    
-    <option :value="null" :disabled="isPlaceholderDisabled">
-      {{ isPlaceholderDisabled ? 'Switch to Kanban version' : 'Go back' }}
-    </option>
+    <select v-model="selectedKanban" @change="selectKanban"
+        class="bg-[#5D5E5B] peer rounded-md px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600">
 
-    <option 
-      v-for="kanban in props.status_options" 
-      :key="kanban.name" 
-      :value="kanban">
-      {{ kanban.name }}
-    </option>
-  </select>
+        <option :value="null" :disabled="isPlaceholderDisabled">
+            {{ isPlaceholderDisabled ? 'Switch to Kanban version' : 'Go back' }}
+        </option>
 
-  <Kanban 
-    v-if="show" 
-    :selectedKanban="selectedKanban" 
-    :values="values" 
-    :columns="columns" 
-    @back="back()" 
-    @update="handleUpdate" 
-  />
+        <option v-for="kanban in props.status_options" :key="kanban.name" :value="kanban">
+            {{ kanban.name }}
+        </option>
+    </select>
+
+    <Kanban v-if="show" :selectedKanban="selectedKanban" :values="values" :columns="columns" @back="back()"
+        @update="handleUpdate" />
 </template>
 
 <style scoped></style>

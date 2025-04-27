@@ -1,6 +1,6 @@
 <script setup>
 import TaskCard from "./Components/TaskCard.vue"
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import draggableComponent from 'vue3-draggable-next'
 import { router } from "@inertiajs/vue3"
 import { route } from "ziggy-js"
@@ -14,7 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['back', 'update'])
 const back = () => emit('back')
 
-const statusColumnId = computed(() => props.selectedKanban.column_id)
+const statusColumnId = computed(() => props.selectedKanban?.column_id || null)
 
 const kanbanColumns = computed(() => {
     const rowGroups = {}
@@ -73,6 +73,8 @@ const deleteOption = (column) => {
     if (confirm(`Are you sure you want to delete the "${column.title}" column?`)) {
         router.delete(route('selectvalues.destroy', { selectvalue: optionToDelete.id }))
     }
+
+    emit('back')
 }
 </script>
 
