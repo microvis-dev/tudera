@@ -2,6 +2,8 @@
 import TaskCard from "./Components/TaskCard.vue"
 import { computed } from 'vue'
 import draggableComponent from 'vue3-draggable-next'
+import { router } from "@inertiajs/vue3"
+import { route } from "ziggy-js"
 
 const props = defineProps({
     selectedKanban: Object,
@@ -60,14 +62,26 @@ const update = (e) => {
     // console.log(e)
     emit('update', e)
 }
+
+const deleteOption = (column) => {
+    const optionToDelete = props.selectedKanban?.options?.find(opt => 
+        opt.value === column.title && 
+        opt.column_id === props.selectedKanban.column_id
+    )
+    
+    if (confirm(`Are you sure you want to delete the "${column.title}" column?`)) {
+        router.delete(route('selectvalues.destroy', { selectvalue: optionToDelete.id }))
+    }
+}
 </script>
 
 <template>
     <button @click="back" class="bg-blue-600 px-4 py-2 text-white rounded mb-4">Back</button>
     <div class="flex justify-center">
         <div class="min-h-screen flex overflow-x-scroll py-12">
-            <div v-for="column in kanbanColumns" :key="column.title"
+            <div v-for="(column, index) in kanbanColumns" :key="column.title"
                 class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
+                <button style="color: black;" @click="deleteOption(column)">delete</button>
                 <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
                 <p v-if="column.tasks.length == 0" class="text-gray-400 italic py-4 text-center">
                     No tasks in this column

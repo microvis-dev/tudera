@@ -10,11 +10,15 @@ const props = defineProps({
 })
 
 const columnOptions = computed(() => {
-    if (!props.options || !props.column) return [];
-    
-    return props.options
+    if (!props.options || !props.column) return [{ value: "Add new option..." }]
+
+    const filteredOptions = props.options
         .filter(option => option.column_id === props.column.id)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    return [
+        { value: "Add new option..." },
+        ...filteredOptions
+    ]
 })
 
 // edit
@@ -66,7 +70,9 @@ const deleteValue = () => {
 
 const getValueType = () => {
     switch (props.type) {
-        case "status": "select"
+        case "integer": return "number"
+        case "float": return "number"
+        case "datetime": return "datetime-local"
         default: "text"
     }
 }

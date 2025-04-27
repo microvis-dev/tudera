@@ -165,7 +165,7 @@ const viewState = reactive({
 })
 
 // select 
-const options = computed(() => { // !
+const options = computed(() => { 
     const allOptions = props.status_options.flatMap(opt => opt.options)
     const uniqueMap = new Map(allOptions.map(opt => [opt.value, opt]))
 
