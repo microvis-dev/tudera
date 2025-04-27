@@ -25,7 +25,7 @@ const kanbanColumns = computed(() => {
     })
 
     const statColId = statusColumnId.value
-    const options = props.selectedKanban?.options || []
+    const options = (props.selectedKanban?.options || []).filter(option => option.value !== 'None')
 
     return options.map(option => {
         const columnTasks = Object.values(rowGroups)
@@ -84,10 +84,6 @@ const update = (e) => {
 </template>
 
 <style scoped>
-.column-width {
-    min-width: 320px;
-    width: 320px;
-}
 
 .ghost-card {
     opacity: 0.5;

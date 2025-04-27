@@ -13,6 +13,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\TodoListController;
+use App\Models\StatusSelectValue;
 
 // index
 Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
@@ -67,3 +68,7 @@ Route::resource('todolist', TodoListController::class)
 // settings
 Route::resource('settings', SettingsController::class)
     ->only(['index'])->middleware('auth');
+
+// status select value
+Route::resource('selectvalues', StatusSelectValue::class)
+    ->only(['store', 'update', 'destroy']);
