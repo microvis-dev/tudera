@@ -38,15 +38,13 @@ class WorkspaceTableController extends Controller
             $formatted_status_options = [];
 
             if ($status_columns->count() > 0) {
-                $default_statuses = StatusSelectValue::whereNull('column_id')->get()->toArray(); // and not None!
-                
                 foreach ($status_columns as $column) {
                     $column_statuses = StatusSelectValue::where('column_id', $column->id)->get()->toArray();
                     
                     $formatted_status_options[] = [
                         'column_id' => $column->id,
                         'name' => $column->name, 
-                        'options' => array_merge($default_statuses, $column_statuses)
+                        'options' => $column_statuses
                     ];
                 }
             }

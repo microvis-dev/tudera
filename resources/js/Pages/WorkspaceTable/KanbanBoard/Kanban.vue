@@ -1,7 +1,9 @@
 <script setup>
 import TaskCard from "./Components/TaskCard.vue"
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import draggableComponent from 'vue3-draggable-next'
+import { router } from "@inertiajs/vue3"
+import { route } from "ziggy-js"
 
 const props = defineProps({
     selectedKanban: Object,
@@ -12,7 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['back', 'update'])
 const back = () => emit('back')
 
-const statusColumnId = computed(() => props.selectedKanban.column_id)
+const statusColumnId = computed(() => props.selectedKanban?.column_id || null)
 
 const kanbanColumns = computed(() => {
     const rowGroups = {}
@@ -25,7 +27,7 @@ const kanbanColumns = computed(() => {
     })
 
     const statColId = statusColumnId.value
-    const options = props.selectedKanban?.options || []
+    const options = (props.selectedKanban?.options || []).filter(option => option.value !== 'None')
 
     return options.map(option => {
         const columnTasks = Object.values(rowGroups)
@@ -45,7 +47,8 @@ const kanbanColumns = computed(() => {
                 return {
                     id: row.id,
                     title: taskValues[0]?.value || 'Untitled',
-                    details: taskValues
+                    details: taskValues.slice(1),
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '.',
                 }
             })
 
@@ -60,15 +63,28 @@ const update = (e) => {
     // console.log(e)
     emit('update', e)
 }
+
+const deleteOption = (column) => {
+    const optionToDelete = props.selectedKanban?.options?.find(opt => 
+        opt.value === column.title && 
+        opt.column_id === props.selectedKanban.column_id
+    )
+    
+    if (confirm(`Are you sure you want to delete the "${column.title}" column?`)) {
+        router.delete(route('selectvalues.destroy', { selectvalue: optionToDelete.id }))
+    }
+
+    emit('back')
+}
 </script>
 
 <template>
-    <button @click="back" class="bg-blue-600 px-4 py-2 text-white rounded mb-4">Back</button>
-    <div class="flex justify-center">
-        <div class="min-h-screen flex overflow-x-scroll py-12">
+    <div class="w-full">
+        <div class="min-h-screen flex justify-evenly py-12">
             <div v-for="column in kanbanColumns" :key="column.title"
-                class="bg-gray-100 rounded-lg px-3 py-3 column-width mr-4">
-                <p class="text-gray-700 font-semibold font-sans tracking-wide text-sm">{{ column.title }}</p>
+                class="bg-transparent px-3 w-3/12 py-3">
+                <button @click="deleteOption(column)">delete</button>
+                <p class="roboto-font-bold capitalize tracking-wide text-lg">{{ column.title }}</p>
                 <p v-if="column.tasks.length == 0" class="text-gray-400 italic py-4 text-center">
                     No tasks in this column
                 </p>
@@ -84,10 +100,6 @@ const update = (e) => {
 </template>
 
 <style scoped>
-.column-width {
-    min-width: 320px;
-    width: 320px;
-}
 
 .ghost-card {
     opacity: 0.5;

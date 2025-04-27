@@ -5,7 +5,7 @@ const props = defineProps({
     table: Object
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits(['create', 'close'])
 
 const columnForm = useForm({
     type: '', 
@@ -14,6 +14,7 @@ const columnForm = useForm({
 
 const send = () => {
     columnForm.post(route('table.columns.store', { table: props.table.id }))
+    emit('close')
 }
 </script>
 <template>
