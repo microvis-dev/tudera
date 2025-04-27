@@ -60,9 +60,8 @@ class WorkspaceColumnController extends Controller
             $column->type = strip_tags($request->input('type'));
             $column->order = $table->columns->count() + 1;
             $column->save();
-            
-            return redirect()->route('workspace.table.index', ['workspace' => $workspace->id])
-                ->with('success', 'Column created successfully.');
+
+            return redirect()->back()->with('success', 'Column created successfully!');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceColumnController store: ' . $e->getMessage());
             dd($e->getMessage());

@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, nextTick, ref } from 'vue';
+import { reactive, nextTick, ref, computed } from 'vue';
 
 const emit = defineEmits(['add', 'update', 'delete'])
 
@@ -7,6 +7,14 @@ const props = defineProps({
     value: Object,
     column: Object,
     options: Array // ezt meg lehetne col alapjan sortolni is 
+})
+
+const columnOptions = computed(() => {
+    if (!props.options || !props.column) return [];
+    
+    return props.options
+        .filter(option => option.column_id === props.column.id)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
 })
 
 // edit
@@ -70,7 +78,7 @@ const getValueType = () => {
             <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
                 <div v-if="editState.isEditing">
                     <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit">
-                        <option v-for="option in options" :key="option.value" :value="option.value">
+                        <option v-for="option in columnOptions" :key="option.value" :value="option.value">
                             {{ option.value }}
                         </option>
                     </select>

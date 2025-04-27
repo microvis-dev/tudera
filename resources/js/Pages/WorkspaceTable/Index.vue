@@ -29,6 +29,23 @@ const updateColumn = (newColumnName, column) => {
     router.put(route('table.columns.update', { table: props.workspace_table, column: column.id, name: newColumnName }))
 }
 
+const saveValue = (value, column, order) => {
+    router.post(route('table.values.store', { table: column.table_id }), {
+        order: order,
+        column_id: column.id,
+        value: value
+    })
+    console.log(value, column)
+    if (column.type == "status") {
+        router.post(route('selectvalues.store'), {
+            column_id: column.id,
+            value: value
+        });
+    }
+
+    showNewRow.value = true
+}
+
 const updateValue = (newValue, value) => {
     router.put(route('table.values.update', { table: props.workspace_table, value: value, new_value: newValue }))
 }
@@ -71,13 +88,8 @@ const toggleNewColumn = () => {
     showNewColumn.value = false
 }
 
-const saveValue = (value, column, order) => {
-    router.post(route('table.values.store', { table: column.table_id }), {
-        order: order,
-        column_id: column.id,
-        value: value
-    })
-    showNewRow.value = true
+const closeNewColumn = () => {
+    showNewColumn.value = true
 }
 
 const checkboxesState = reactive({
@@ -198,7 +210,7 @@ const options = computed(() => { // !
                                 <p>+</p>
                             </th>
                             <th v-else class="min-w-[80px] border-b border-slate-500" @click="toggleNewColumn()">
-                                <CreateColumnSelect :table="workspace_table" />
+                                <CreateColumnSelect :table="workspace_table" @close="closeNewColumn" />
                             </th>
                         </tr>
                     </thead>
