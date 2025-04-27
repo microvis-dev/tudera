@@ -2,6 +2,8 @@
 import { cloneVNode, computed, ref } from "vue"
 import { useTuderaStore } from "@/resources/js/state/state"
 import Kanban from "./Kanban.vue"
+import { route } from "ziggy-js"
+import { router } from "@inertiajs/vue3"
 
 const props = defineProps({
     status_options: Array,
@@ -28,7 +30,14 @@ const back = () => {
 }
 
 const handleUpdate = (event) => {
-    
+    console.log('Updating value:', event.valueId)
+    // Use the same structure as the updateValue function in Index.vue
+    router.put(route('table.values.update', { 
+        table: props.workspace_table.id, 
+        value: event.valueId 
+    }), {
+        new_value: event.newValue
+    })
 }
 
 </script>
