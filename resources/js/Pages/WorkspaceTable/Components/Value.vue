@@ -1,5 +1,6 @@
 <script setup>
 import { reactive, nextTick, ref, computed } from 'vue';
+import AddCustomStatusModal from './AddCustomStatusModal.vue';
 
 const emit = defineEmits(['add', 'update', 'delete'])
 
@@ -10,11 +11,15 @@ const props = defineProps({
 })
 
 const columnOptions = computed(() => {
-    if (!props.options || !props.column) return [];
-    
-    return props.options
+    if (!props.options || !props.column) return [{ value: "Add new option..." }]
+
+    const filteredOptions = props.options
         .filter(option => option.column_id === props.column.id)
-        .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    return [
+        { value: "Add new option..." },
+        ...filteredOptions
+    ]
 })
 
 // edit
@@ -31,13 +36,16 @@ const enableEditing = async () => {
         editState.nameInputTextField.focus()
     }
 }
-
+const showModal = ref(false)
 const saveEdit = () => {
     if (!editState.editedValue) {
         emit('delete', props.value)
     }
     if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
         emit("update", editState.editedValue, props.value)
+    }
+    if(editState.editedValue == "Add new option..."){
+        showModal.value = true
     }
 
     editState.isEditing = false
@@ -70,6 +78,7 @@ const getValueType = () => {
         default: "text"
     }
 }
+// hideCustomStatusModal
 </script>
 
 <template>
@@ -91,5 +100,8 @@ const getValueType = () => {
                 </div>
             </div>
         </div>
+    </div>
+    <div v-if="showModal">
+        <AddCustomStatusModal @exit="hideAddTodoModal"/>
     </div>
 </template>
