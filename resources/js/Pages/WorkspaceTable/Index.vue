@@ -35,7 +35,7 @@ const saveValue = (value, column, order) => {
         column_id: column.id,
         value: value
     })
-    console.log(value, column)
+    
     if (column.type == "status") {
         router.post(route('selectvalues.store'), {
             column_id: column.id,

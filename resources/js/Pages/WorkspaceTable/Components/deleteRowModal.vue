@@ -36,7 +36,7 @@ const deleteRows = () => {
         return filteredColumn.length > 0 ? filteredColumn : null
     }).filter(column => column !== null)
 
-    emit('delete', rowsToDelete.flat(), updatedTable)
+    emit('delete', rowsToDelete.flat(Infinity), updatedTable)
 }
 </script>
 <template>

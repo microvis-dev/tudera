@@ -37,18 +37,7 @@ class StatusSelectValueController extends Controller
                 'value' => $validated['value'],
             ]);
         }
-        
-        $existingDefaultValue = StatusSelectValue::where('value', $validated['value'])
-            ->whereNull('column_id')
-            ->first();
             
-        if (!$existingDefaultValue) {
-            StatusSelectValue::create([
-                'column_id' => null,
-                'value' => $validated['value'],
-            ]);
-        }
-        
         return redirect()->back()->with("message", "");
     }
 

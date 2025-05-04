@@ -14,8 +14,8 @@ const tuderaState = useTuderaStore()
 
 const tables = ref([])
 
-onMounted(async () => {
-    tables.value = await tuderaState.getTables()
+onMounted(() => {
+    updateTables(tuderaState.getSelectedWorkspace())
 })
 
 const sidebarItems = computed(() => {
@@ -51,7 +51,7 @@ const updateTables = ((workspace) => {
 
 
 const redirectToHome = () => { // click cursor
-  router.get(route('index'))
+  router.get(route('dashboard.index'))
 }
 
 // attilamunkaja.html
