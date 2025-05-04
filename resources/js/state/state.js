@@ -28,7 +28,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return user.value.workspaces
     })
 
-    const selectedWorkspace = ref(null)
+    const selectedWorkspace = ref(null) 
 
     let workspaceInitialized = null;
     function initWorkspace() {
@@ -44,9 +44,12 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
                 selectedWorkspace.value = workspaces.value[0]
                 return selectedWorkspace.value;
             });
+        
+        router.get(route('dashboard.index'))
     }
 
     initWorkspace()
+
 
     const flashSucess = computed(() => {
         return page.props.flash.success

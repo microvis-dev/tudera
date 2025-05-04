@@ -11,11 +11,14 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
+
 const tuderaState = useTuderaStore()
 
 const user = computed(() => {
   return tuderaState.getUser()
 })
+
 const workspaces = computed(() => {
   return tuderaState.getWorkspaces()
 })
@@ -25,10 +28,9 @@ watch(workspaces, () => { // lehetne jobb
   emit('select-workspace', updatedWorkspace)
 }, { deep: true });
 
-const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
 
 const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
-emit('select-workspace', selectedWorkspace.value)
+//emit('select-workspace', selectedWorkspace.value)
 const dropdownOpen = ref(false);
 const dropdownElement = ref(null); // Reference to the dropdown element
 
