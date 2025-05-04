@@ -5,11 +5,11 @@ import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop'
 import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCurrentTimePlugin } from '@schedule-x/current-time'
-import {useForm} from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { router } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
-import getDate from '../../Utils/getDate';
+import { getDate, getWorkspaceEventDate } from '../../utils/utils';
 import {
   createCalendar,
   createViewDay,
@@ -54,15 +54,15 @@ const getEvents = () => {
   });
 
   workspaceEvents.value.forEach(event => {
-    let start = getDate(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
-    let end = getDate(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
+    let start = getWorkspaceEventDate(event.start_date).toISOString().slice(0, 16).replace('T', ' ');
+    let end = getWorkspaceEventDate(event.end_date).toISOString().slice(0, 16).replace('T', ' ');
 
     calendarEvents.push({
       id: event.id,
       title: event.title,
       start: start,
       end: end,
-      calendarId: 'work' // Fixed typo
+      calendarId: 'work'
     });
   });
 
@@ -106,18 +106,32 @@ const calendarApp = createCalendar(
       }
     },
     callbacks: {
-      onEventUpdate(updatedEvent){
-        let calendar = useForm({
-          id: updatedEvent.id,
-          title: updatedEvent.title,
-          start_date: updatedEvent.start,
-          end_date: updatedEvent.end,
-        })
-        
-        calendar.put(route("calendar.update", {
-          calendar: updatedEvent.id,
-          workspace: selectedWorkspace.value.id
-        }))
+      onEventUpdate(updatedEvent) {
+        if (updatedEvent.calendarId == "work") {
+          const calendarForm = useForm({
+            id: updatedEvent.id,
+            title: updatedEvent.title,
+            start_date: updatedEvent.start,
+            end_date: updatedEvent.end,
+          })
+
+          calendarForm.put(route("calendar.update", {
+            calendar: updatedEvent.id,
+            workspace: selectedWorkspace.value.id
+          }))
+        } else if (updatedEvent.calendarId == "personal") {
+          const todoForm = useForm({
+            id: updatedEvent.id,
+            title: updatedEvent.title,
+            is_done: false,
+            start_date: updatedEvent.start,
+            end_date: updatedEvent.end
+          })
+
+          todoForm.put(route("todolist.update", {
+            todolist: updatedEvent.id,
+          }))
+        }
       }
     }
   },
@@ -155,7 +169,7 @@ watch(calendarEvents, (newEvents) => {
 
 <template>
   <div>
-    <ScheduleXCalendar :calendar-app="calendarApp" class="p-3"/>
+    <ScheduleXCalendar :calendar-app="calendarApp" class="p-3" />
   </div>
 </template>
 

@@ -16,9 +16,7 @@ const lastTables = computed(() => {
   let tables = selectedWorkspace.value?.tables || []
   let length = tables.length >= 4 ? 4 : tables.length
 
-  return tables
-    ? tables.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, length)
-    : [];
+  return tables ? [...tables].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, length) : []
 })
 </script>
 <template>

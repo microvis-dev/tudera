@@ -17,7 +17,7 @@ use App\Http\Controllers\TodoListController;
 use App\Models\StatusSelectValue;
 
 // index
-Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
+Route::resource('/', IndexController::class)->only('index')->middleware('auth');
 
 //auth
 Route::resource('auth', AuthController::class)->only(['index', 'create', 'store', 'destroy']);
@@ -60,7 +60,8 @@ Route::resource('calendar', CalendarController::class)
 
 // dashboard
 Route::resource('dashboard', DashboardController::class)
-    ->only(['index']);
+    ->only(['index'])
+    ->middleware('auth');
 
 // todo list
 Route::resource('todolist', TodoListController::class)

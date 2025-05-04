@@ -2,7 +2,7 @@
 import { ref, reactive, onUnmounted, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import getDate from '@/resources/js/Utils/getDate.js';
+import { getDate } from '@/resources/js/utils/utils';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 import { useTuderaStore } from '@/resources/js/state/state';
 
