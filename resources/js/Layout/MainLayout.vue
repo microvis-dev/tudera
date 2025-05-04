@@ -51,7 +51,7 @@ const isSidebarOpen = ref(false)
           <Profile :profile-image='user.profile_image' :name='user.name' :email="user.email" />
         </div>
       </div>
-      <div class="flex flex-row h-full">
+      <div class="flex flex-row h-full pb-4">
         <section class="w-full">
           <div class="w-full h-full">
             <slot></slot>

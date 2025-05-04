@@ -194,7 +194,7 @@ class WorkspaceTableController extends Controller
             
             $table->delete();
             
-            return redirect()->back()->with('success', 'Table deleted successfully!');
+            return redirect()->route('dashboard.index')->with('success', 'Table deleted successfully!');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceTableController destroy: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while deleting the table.');

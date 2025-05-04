@@ -35,7 +35,7 @@ const saveValue = (value, column, order) => {
         column_id: column.id,
         value: value
     })
-    
+
     if (column.type == "status") {
         router.post(route('selectvalues.store'), {
             column_id: column.id,
@@ -171,6 +171,14 @@ const options = computed(() => {
 
     return Array.from(uniqueMap.values())
 })
+const deleteTable = () => {
+    if(confirm("Are you sure you want to delete '" + props.workspace_table.name + "'!")){
+        router.delete(route("table.destroy", {
+            table: props.workspace_table.id,
+            workspace: props.workspace.id
+        }))
+    }
+}
 </script>
 
 <template>
@@ -180,7 +188,7 @@ const options = computed(() => {
                 <div class="px-6 py-4">
                     <div class="flex flex-row">
                         <h1 class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
-                        <div class="relative group">
+                        <div class="relative group" @click="deleteTable">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-7 h-7 ms-5 hover:text-red-500">
                                 <path stroke-linecap="round" stroke-linejoin="round"

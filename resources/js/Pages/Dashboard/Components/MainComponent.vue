@@ -20,7 +20,6 @@ const lastTables = computed(() => {
     ? tables.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, length)
     : [];
 })
-
 </script>
 <template>
   <section class="flex flex-row md:flex-col p-5">

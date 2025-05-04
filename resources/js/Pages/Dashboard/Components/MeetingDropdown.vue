@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="flex flex-col pt-5 ps-5 pe-5">
+    <div class="flex flex-col pt-5 ps-5 pe-5 overflow-auto">
         <div class="flex items-center justify-between bg-[#2B2C30] p-2 cursor-pointer transition-all duration-500 ease-in-out"
             @click="toggleDropdown" :class="isOpen ? 'rounded-t-xl' : 'rounded-xl'">
             <div class="flex items-center w-full overflow-hidden">
