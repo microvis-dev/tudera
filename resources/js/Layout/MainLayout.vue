@@ -22,7 +22,7 @@ const isSidebarOpen = ref(false)
 
 <template>
   <div class="w-screen h-screen flex flex-row overflow-auto md:overflow-hidden">
-    <section class="w-2/12 md:w-2/12">
+    <section class="w-0/12 md:w-2/12">
       <div class="h-screen relative">
 
         <!-- Sidebar - hidden on mobile by default, visible on larger screens -->

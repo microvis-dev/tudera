@@ -16,6 +16,10 @@ import { route } from "ziggy-js";
 export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()
 
+    const errors = computed(() => {
+        return page.props.errors
+    })
+
     const user = computed(() => {
         return page.props.user
     })
@@ -62,6 +66,10 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
 
     function getUser() {
         return readonly(user.value)
+    }
+
+    function getErrors() {
+        return readonly(errors.value)
     }
 
     function getWorkspaces() {
@@ -144,6 +152,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getUser,
         getWorkspaces,
         getSelectedWorkspace,
+        getErrors,
         setWorkspace,
         getTodos,
         getWorkspaceEvents,

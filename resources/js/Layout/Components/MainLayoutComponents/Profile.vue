@@ -47,7 +47,7 @@ const redirectToSettings = () => {
       </div>
       <div class="hidden md:block">
         <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
-        <p class="text-sm roboto-font-regular text-[#757575]">{{ props.email }}</p>
+        <p class="text-sm roboto-font-regular text-[#757575] truncate max-w-[150px]">{{ props.email }}</p>
       </div>
       <img src="../../../../assets/openArrow.svg" class="hidden md:block w-5 h-5 ms-5" :class="[!dropdownOpen ? '' : 'rotate-180']">
      </section>
