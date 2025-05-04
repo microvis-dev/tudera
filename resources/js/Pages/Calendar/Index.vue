@@ -162,7 +162,7 @@ watch(calendarEvents, (newEvents) => {
 <style scoped>
 .sx-vue-calendar-wrapper {
   width: 100rem;
-  max-width: 100vw;
+  max-width: 100%;
   height: 100rem;
   max-height: 90vh;
 }

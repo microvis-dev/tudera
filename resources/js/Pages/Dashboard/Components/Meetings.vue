@@ -1,6 +1,8 @@
 <script setup>
 import MeetingDropdown from './MeetingDropdown.vue';
-
+const props = defineProps({
+    "profileImage": String
+})
 </script>
 
 <template>
@@ -9,7 +11,7 @@ import MeetingDropdown from './MeetingDropdown.vue';
         <p class="text-sm roboto-font-light text-[#B3B3B3] mb-2">
             Quickly join your meetings from a simple sidebar.
         </p>
-        <MeetingDropdown />
+        <MeetingDropdown :profile-image='props.profileImage'/>
         <MeetingDropdown />
         <MeetingDropdown />
     </section>
