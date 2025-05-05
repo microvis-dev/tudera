@@ -54,16 +54,8 @@ const redirectToHome = () => { // click cursor
   router.get(route('dashboard.index'))
 }
 
-const viewState = reactive({
-    addTodoModal: false
-})
-
 const showAddTodoModal = () => {
-    viewState.addTodoModal = true
-}
-
-const hideAddTodoModal = () => {
-    viewState.addTodoModal = false
+    tuderaState.changeModal()
 }
 
 const workspaceDropdownOpen = ref(false);
@@ -100,7 +92,6 @@ const addNewTable = () => {
           </div>
             <button @click="showAddTodoModal" v-if="route().current('calendar.index')" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add event</button>
             <button @click="addNewTable" class="mt-5 p-2 w-full bg-blue-500 text-white rounded hover:bg-blue-600">Add new Table</button>
-            <CreateToDoModal v-if="viewState.addTodoModal" @exit="hideAddTodoModal" :is-personal="false"/>
         </div>
       </div>
     </aside>
