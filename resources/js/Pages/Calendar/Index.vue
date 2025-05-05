@@ -19,6 +19,8 @@ import {
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
 import { useTuderaStore } from '../../state/state';
+import { reactive } from 'vue';
+import CreateToDoModal from '../Dashboard/Components/CreateToDoModal.vue';
 
 const eventsServicePlugin = createEventsServicePlugin();
 
@@ -164,12 +166,12 @@ watch(calendarEvents, (newEvents) => {
     });
   });
 }, { deep: true });
-
 </script>
 
 <template>
   <div>
     <ScheduleXCalendar :calendar-app="calendarApp" class="p-3" />
+    <CreateToDoModal v-if="tuderaState.getModal().value" @exit="tuderaState.changeModal()" :is-personal="false"/>
   </div>
 </template>
 

@@ -16,8 +16,18 @@ import { route } from "ziggy-js";
 export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()
 
+    const showModal = ref(false)
+
     const errors = computed(() => {
         return page.props.errors
+    })
+
+    function changeModal() {
+        showModal.value = !showModal.value;
+    }
+
+    const modal = computed(() => {
+        return showModal
     })
 
     const user = computed(() => {
@@ -66,6 +76,10 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     const calendar = computed(() => {
         return selectedWorkspace.value.calendar_events || []
     })
+
+    function getModal() {
+        return readonly(modal)
+    }
 
     function getUser() {
         return readonly(user.value)
@@ -155,8 +169,10 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getUser,
         getWorkspaces,
         getSelectedWorkspace,
+        changeModal,
         getErrors,
         setWorkspace,
+        getModal,
         getTodos,
         getWorkspaceEvents,
         getTables,
