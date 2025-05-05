@@ -1,12 +1,12 @@
 <script setup>
-import { watch, computed, inject, ref } from 'vue';
+import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useTuderaStore } from '@/resources/js/state/state';
 import LastTableCard from './LastTableCard.vue';
 
-const { getSelectedWorkspace } = useTuderaStore()
-const selectedWorkspace = computed(() => getSelectedWorkspace())
+const tuderaState = useTuderaStore()
+const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const addNewTable = () => {
   router.get(route('workspace.table.create', { workspace: selectedWorkspace.value }))
@@ -18,10 +18,14 @@ const lastTables = computed(() => {
 
   return tables ? [...tables].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, length) : []
 })
+
+const redirect = (table) => {
+  router.get(route('table.show', { table: table.id }))
+}
 </script>
 <template>
   <section class="flex flex-row md:flex-col p-5">
-    <div v-if="lastTables.value == 1">
+    <div v-if="lastTables == 0"> <!-- 1 ha lesz leads table, 2 ha leads+kanban -->
       <h1 class="text-3xl roboto-font-bold mb-2">
         Start managing<br>
         your business!
@@ -30,7 +34,7 @@ const lastTables = computed(() => {
       </p>
       <button @click="addNewTable" class="w-fit p-2 px-10 rounded-xl bg-blue-600">Add new Table</button>
     </div>
-    <div>
+    <div v-else>
       <h1 class="text-3xl roboto-font-bold mb-2">
         Take control of<br>
         your workflow!
@@ -39,9 +43,7 @@ const lastTables = computed(() => {
         tables and projects.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div v-for="table in lastTables" :key="table.id"
-          @click="router.get(route('table.show', { table: table.id }))"
-          class="cursor-pointer">
+        <div v-for="table in lastTables" :key="table.id" @click="redirect(table)" class="cursor-pointer">
           <LastTableCard :table="table" />
         </div>
       </div>
