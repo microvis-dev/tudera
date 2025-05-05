@@ -23,8 +23,10 @@ const workspaces = computed(() => {
   return tuderaState.getWorkspaces()
 })
 
-watch(workspaces, () => { // lehetne jobb
-  let updatedWorkspace = workspaces.value.find(workspace => workspace.id === selectedWorkspace.value.id);
+watch(workspaces, async () => {
+  let updatedWorkspace = workspaces.value.find(workspace => workspace.id == selectedWorkspace.value.id)
+
+  //await tuderaState.refreshSelectedWorkspace()
   emit('select-workspace', updatedWorkspace)
 }, { deep: true });
 

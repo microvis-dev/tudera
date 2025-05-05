@@ -40,6 +40,21 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
 
     const selectedWorkspace = ref(null) 
 
+    function getInitializedSelectedWorkspace() {
+        return readonly(selectedWorkspace.value || workspaces.value[0])
+    }
+
+    const reactiveSelectedWorkspace = computed(() => { // *
+        return getWorkspaces()
+            .find((workspace) => {
+                return getInitializedSelectedWorkspace().id == workspace.id
+            })
+    })
+
+    function getSelectedWorkspace() { // getSelectedReactiveWorkspace
+        return readonly(reactiveSelectedWorkspace.value || workspaces.value[0])
+    }
+
     let workspaceInitialized = null;
     function initWorkspace() {
         workspaceInitialized = fetch(route('workspaces.get'))
@@ -93,15 +108,12 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return readonly(workspaces.value)
     }
 
-    function getSelectedWorkspace() {
-        return readonly(selectedWorkspace.value || workspaces.value[0])
-    }
-
     async function getTables() {
         if (!selectedWorkspace.value) {
             await workspaceInitialized;
         }
-        const workspace = getSelectedWorkspace()
+        const workspace = getInitializedSelectedWorkspace()
+        
         return readonly(workspace?.tables || [])
     }
 
@@ -145,8 +157,8 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     }
 
     async function refreshSelectedWorkspace() {
-        setWorkspace(workspaces.value.find(workspace => workspace.id == getSelectedWorkspace().id))
-        await nextTick()
+        //setWorkspace(workspaces.value.find(workspace => workspace.id == getSelectedWorkspace().id))
+        //initWorkspace()
     }
 
     function getTodos() {
@@ -179,7 +191,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getTransformedTables,
         getFlashSuccess,
         getFlashError,
-        refreshSelectedWorkspace
+        refreshSelectedWorkspace,
     }
 
 })
