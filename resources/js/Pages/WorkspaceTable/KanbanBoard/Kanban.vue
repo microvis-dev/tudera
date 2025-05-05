@@ -14,6 +14,8 @@ const props = defineProps({
 const emit = defineEmits(['back', 'update'])
 const back = () => emit('back')
 
+const table_id = props.columns[0].table_id
+
 const statusColumnId = computed(() => props.selectedKanban?.column_id || null)
 
 const kanbanColumns = computed(() => {
@@ -75,10 +77,10 @@ const kanbanColumns = computed(() => {
             title: option.value,
             tasks: columnTasks,
             move(task) {
-                const parent = getStatusValue(task)    
+                const parent = getStatusValue(task)
 
                 router.put(route("table.values.update", {
-                    table: props.columns[0].table_id,
+                    table: table_id,
                     value: parent.id,
                     new_value: option.value
                 }))
@@ -100,10 +102,26 @@ const deleteOption = (column) => {
     )
 
     if (confirm(`Are you sure you want to delete the "${column.title}" column?`)) {
-        router.delete(route('selectvalues.destroy', { selectvalue: optionToDelete.id }))
+        router.delete(route('selectvalues.destroy', { selectvalue: optionToDelete.id }), {
+            onSuccess: () => {
+                const targetValues = props.values
+                    .filter((v) => {
+                        return v.column_id == optionToDelete.column_id && v.value == optionToDelete.value
+                    })
+
+                targetValues.forEach((targetValue) => {
+                    router.put(route("table.values.update", {
+                        table: table_id,
+                        value: targetValue.id,
+                        new_value: "None"
+                    }))
+                })
+            }
+        })
+        
     }
 
-    emit('back')
+    //emit('back')
 }
 </script>
 
