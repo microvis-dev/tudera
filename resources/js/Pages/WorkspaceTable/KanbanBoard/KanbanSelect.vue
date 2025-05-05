@@ -21,14 +21,13 @@ const tuderaState = useTuderaStore();
 
 const selectedKanban = ref(null);
 
-// Computed: Disable "Switch to Kanban version" only if nothing selected
 const isPlaceholderDisabled = computed(() => selectedKanban.value === null);
 
 const selectKanban = () => {
     if (selectedKanban.value === null) {
-        emit('back'); // If selecting "Switch to Kanban version" again, go back
+        emit('back')
     } else {
-        emit('hide-table'); // If a kanban selected, hide table
+        emit('hide-table')
     }
 };
 
@@ -38,7 +37,8 @@ const back = () => {
 };
 
 const handleUpdate = (event) => {
-    console.log('Updating value:', event.valueId)
+    return
+    console.log('Updating value:', event)
     // Use the same structure as the updateValue function in Index.vue
     router.put(route('table.values.update', {
         table: props.workspace_table.id,
