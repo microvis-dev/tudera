@@ -6,7 +6,7 @@ import Column from './Components/Column.vue';
 import Value from './Components/Value.vue';
 import EmptyValue from './Components/EmptyValue.vue';
 import CreateColumnSelect from './Components/CreateColumnSelect.vue';
-import DeleteRowModal from './Components/deleteRowModal.vue';
+import ModifyRowModal from './Components/ModifyRowModal.vue';
 import KanbanSelect from './KanbanBoard/KanbanSelect.vue';
 import { useTuderaStore } from '../../state/state';
 
@@ -133,6 +133,20 @@ const deleteRows = (targetRows, updatedTable) => {
     checkboxesState.reset() // !
 }
 
+const updateRows = (targetValues) => {
+    targetValues.forEach((value) => {
+        router.put(route('table.values.update', {
+            table: props.workspace_table,
+            value: value.id
+        }), {
+            new_value: value.value,
+            order: value.order
+        })
+    })
+
+    checkboxesState.reset()
+}
+
 // col move
 const colMoveLeft = (col, newOrder) => {
     router.put(route('table.columns.update', { table: props.workspace_table.id, column: col.id }), {
@@ -172,7 +186,7 @@ const options = computed(() => {
     return Array.from(uniqueMap.values())
 })
 const deleteTable = () => {
-    if(confirm("Are you sure you want to delete '" + props.workspace_table.name + "'!")){
+    if (confirm("Are you sure you want to delete '" + props.workspace_table.name + "'!")) {
         router.delete(route("table.destroy", {
             table: props.workspace_table.id,
             workspace: props.workspace.id
@@ -200,8 +214,9 @@ const updateTable = () => {
                     <div class="flex flex-row">
                         <h1 v-if="!updateName" class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
                         <div v-if="updateName">
-                            <input v-model="workspace_table.name" type="text" class="bg-[#5D5E5B] w-fit rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" />
-                           <button @click="updateTable" class="w-fit ms-4 px-3 rounded-md bg-blue-600">Save</button>
+                            <input v-model="workspace_table.name" type="text"
+                                class="bg-[#5D5E5B] w-fit rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" />
+                            <button @click="updateTable" class="w-fit ms-4 px-3 rounded-md bg-blue-600">Save</button>
                         </div>
                         <div class="relative group" @click="deleteTable">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -301,8 +316,8 @@ const updateTable = () => {
         </div>
     </div>
     <div class="flex justify-center mb-5 fixed bottom-0 left-0 right-0 z-10">
-        <DeleteRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
-            :table="sortedTable" @delete="deleteRows" />
+        <ModifyRowModal v-if="checkboxesState.isSelected()" :checkboxes="checkboxesState.checkboxes"
+            :table="sortedTable" @delete="deleteRows" @update="updateRows" />
     </div>
 </template>
 <style scoped></style>

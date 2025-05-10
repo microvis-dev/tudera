@@ -9,7 +9,6 @@ import {
     ref,
     readonly,
     computed,
-    nextTick
 } from 'vue'
 import { route } from "ziggy-js";
 
@@ -188,12 +187,18 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return Array.from(calendar.value || [])
     }
 
-    function getFlashSuccess() {
-        return readonly(flashSucess.value)
+    function getFlashSuccess() { // value cannot be made readonly
+        return flashSucess.value ?? ""
     }
 
     function getFlashError() {
-        return readonly(flashErrors.value)
+        return flashErrors.value ?? ""
+    }
+
+    function clearPageProps() {
+        page.props.errors = ""
+        page.props.flash.errors = ""
+        page.props.flash.success = ""
     }
 
     return {
@@ -211,6 +216,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getFlashSuccess,
         getFlashError,
         refreshSelectedWorkspace,
+        clearPageProps
     }
 
 })

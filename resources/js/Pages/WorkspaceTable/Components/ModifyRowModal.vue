@@ -1,6 +1,6 @@
 <script setup>
 import { useTuderaStore } from '@/resources/js/state/state';
-import { computed, proxyRefs } from 'vue';
+import { computed, proxyRefs, reactive } from 'vue';
 
 const tuderaState = useTuderaStore()
 
@@ -9,7 +9,7 @@ const props = defineProps({
     table: Array
 })
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'update'])
 
 const selected = computed(() => {
     return props.checkboxes.filter(checkbox => checkbox === true).length
@@ -38,6 +38,36 @@ const deleteRows = () => {
 
     emit('delete', rowsToDelete.flat(Infinity), updatedTable)
 }
+
+const arrowState = reactive({ // disabled!
+    up: !props.checkboxes.at(0),
+    down: !props.checkboxes.at(props.checkboxes.length - 1),
+})
+
+const updateRowOrder = (isUp) => {
+    const selectedRowIndex = props.checkboxes.findIndex(checkbox => checkbox == true)
+    const targetIndex = isUp ? (selectedRowIndex - 1) : (selectedRowIndex + 1)
+    const targetValues = []
+
+    props.table.forEach((column) => {
+        if (column[selectedRowIndex]) {
+            targetValues.push({
+                ...column[selectedRowIndex],
+                order: targetIndex + 1
+            })
+        }
+        
+        if (column[targetIndex]) {
+            targetValues.push({
+                ...column[targetIndex],
+                order: selectedRowIndex + 1
+            })
+        }
+    })
+    
+    emit('update', targetValues)
+}
+
 </script>
 <template>
     <div class="bg-[#2B2C30] p-5 rounded-xl w-46">
@@ -54,13 +84,13 @@ const deleteRows = () => {
             </div>
             <div v-if="selected == 1" class="flex flex-row items-center">
                 <div class="hover:bg-[#3e3f45] hover:scale-125 mx-5 p-2 rounded-lg cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    <svg v-if="arrowState.up" @click="updateRowOrder(true)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
                     </svg>
                 </div>
                 <div class="hover:bg-[#3e3f45] hover:scale-125 p-2 rounded-lg cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    <svg v-if="arrowState.down" @click="updateRowOrder(false)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                     </svg>

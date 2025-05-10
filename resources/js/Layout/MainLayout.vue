@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, ref, watch } from "vue"
+import { nextTick, ref, watch, watchEffect } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
@@ -10,6 +10,8 @@ import Profile from "./Components/MainLayoutComponents/Profile.vue";
 import MainComponent from "../Pages/Dashboard/Components/MainComponent.vue";
 import TodoList from "../Pages/Dashboard/Components/TodoList.vue";
 import { useTuderaStore, useTuderaViewStore } from "../state/state";
+import { createToast } from "mosha-vue-toastify";
+import 'mosha-vue-toastify/dist/style.css';
 
 const page = usePage()
 
@@ -26,6 +28,49 @@ watch(modalState, (newValue) => {
     console.log("Modal state changed:", newValue);
   }
 });
+
+const errors = computed(() => tuderaState.getErrors())
+const flashErrors = computed(() => tuderaState.getFlashError())
+const flashSuccess = computed(() => tuderaState.getFlashSuccess())
+
+const showMessageToast = (message) => {
+  createToast(message, {
+    type: "success",
+    transition: "slide",
+    position: "top-right",
+    timeout: 3000
+  })
+}
+
+const showSuccessToast = (message, timeout = 3000) => {
+  createToast(message, {
+    type: 'success',
+    transition: 'slide',
+    position: 'top-right',
+    timeout: timeout,
+  })
+}
+
+const showErrorToast = (message, timeout = 5000) => {
+  createToast(message, {
+    type: 'danger',
+    transition: 'slide',
+    position: 'top-right',
+    timeout: timeout,
+  })
+}
+
+watchEffect(() => {
+  if (flashErrors.value) {
+    showErrorToast(flashErrors.value)
+  }
+  if (flashSuccess.value) {
+    showSuccessToast(flashSuccess.value)
+  }
+
+  tuderaState.clearPageProps()
+})
+
 </script>
 
 <template>
