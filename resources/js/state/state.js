@@ -13,6 +13,26 @@ import {
 } from 'vue'
 import { route } from "ziggy-js";
 
+
+export const useTuderaViewStore = defineStore('TuderaViewStore', ()=> {
+    const showAddTodoModal = ref(false)
+
+    function changeAddTodoModal(){
+        showAddTodoModal.value = !showAddTodoModal.value
+    }
+    const addTodoModal = computed(() => {
+        return showAddTodoModal
+    })
+    function getModal(){
+        console.log("hehe")
+        return readonly(addTodoModal)
+    }
+    return{
+        getModal,
+        changeAddTodoModal
+    }
+})
+
 export const useTuderaStore = defineStore('TuderaStore', () => {
     const page = usePage()
 

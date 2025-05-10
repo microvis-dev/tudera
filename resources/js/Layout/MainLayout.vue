@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, ref } from "vue"
+import { nextTick, ref, watch } from "vue"
 import { usePage, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { route } from 'ziggy-js';
@@ -9,15 +9,23 @@ import Search from "./Components/MainLayoutComponents/Search.vue";
 import Profile from "./Components/MainLayoutComponents/Profile.vue";
 import MainComponent from "../Pages/Dashboard/Components/MainComponent.vue";
 import TodoList from "../Pages/Dashboard/Components/TodoList.vue";
-import { useTuderaStore } from "../state/state";
+import { useTuderaStore, useTuderaViewStore } from "../state/state";
 
 const page = usePage()
 
 const tuderaState = useTuderaStore()
+const tuderaViewState = useTuderaViewStore()
 const user = computed(() => tuderaState.getUser())
 const workspaces = computed(() => tuderaState.getWorkspaces())
 const isSidebarOpen = ref(false)
 
+const modalState = computed(() => tuderaViewState.getModal());
+
+watch(modalState, (newValue) => {
+  if (newValue) {
+    console.log("Modal state changed:", newValue);
+  }
+});
 </script>
 
 <template>

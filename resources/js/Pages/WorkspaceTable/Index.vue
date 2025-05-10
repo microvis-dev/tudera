@@ -179,6 +179,17 @@ const deleteTable = () => {
         }))
     }
 }
+const updateName = ref(false)
+const changeUpdateName = () => {
+    updateName.value = !updateName.value
+}
+const updateTable = () => {
+    router.put(route('table.update', props.workspace_table.id), {
+        name: props.workspace_table.name,
+        workspace: props.workspace.id
+    })
+    updateName.value = !updateName.value
+}
 </script>
 
 <template>
@@ -187,7 +198,11 @@ const deleteTable = () => {
             <div class="rounded-lg shadow-md">
                 <div class="px-6 py-4">
                     <div class="flex flex-row">
-                        <h1 class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
+                        <h1 v-if="!updateName" class="text-2xl roboto-font-bold">{{ workspace_table.name }}</h1>
+                        <div v-if="updateName">
+                            <input v-model="workspace_table.name" type="text" class="bg-[#5D5E5B] w-fit rounded-md px-3 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600" />
+                           <button @click="updateTable" class="w-fit ms-4 px-3 rounded-md bg-blue-600">Save</button>
+                        </div>
                         <div class="relative group" @click="deleteTable">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-7 h-7 ms-5 hover:text-red-500">
@@ -199,7 +214,7 @@ const deleteTable = () => {
                                 Delete
                             </span>
                         </div>
-                        <div class="relative group">
+                        <div class="relative group" @click="changeUpdateName">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-7 h-7 ms-2 hover:text-blue-500">
                                 <path stroke-linecap="round" stroke-linejoin="round"

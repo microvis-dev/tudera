@@ -54,7 +54,6 @@ class CalendarController extends Controller
             
             return redirect()->back()->with('success', 'Event created successfully.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             Log::error('Error creating calendar event: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to create event: ' . $e->getMessage());
         }
