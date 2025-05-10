@@ -96,7 +96,27 @@ class CalendarController extends Controller
         }
     }
 
-    public function destroy() {
-        
+    public function destroy(Request $request, $calendar) {
+        try {
+            $user = $request->user();
+            
+            $calendarEvent = Calendar::find($calendar);
+            
+            if (!$calendarEvent) {
+                return redirect()->back()->with('error', 'Event not found.');
+            }
+            
+            $workspace = $user->workspaces->find($calendarEvent->workspace_id);
+            if (!$workspace) {
+                return redirect()->back()->with('error', 'You do not have access to delete this event.');
+            }
+            
+            $calendarEvent->delete();
+            
+            return redirect()->back()->with('success', 'Event deleted successfully.');
+        } catch (Exception $e) {
+            Log::error('Error deleting calendar event: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete event: ' . $e->getMessage());
+        }
     }
 }

@@ -24,7 +24,6 @@ export const useTuderaViewStore = defineStore('TuderaViewStore', ()=> {
         return showAddTodoModal
     })
     function getModal(){
-        console.log("hehe")
         return readonly(addTodoModal)
     }
     return{
@@ -109,7 +108,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     })
 
     const calendar = computed(() => {
-        return selectedWorkspace.value.calendar_events || []
+        return getSelectedWorkspace().calendar_events || []
     })
 
     function getModal() {

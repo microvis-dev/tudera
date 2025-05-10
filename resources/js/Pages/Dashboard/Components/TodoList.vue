@@ -55,7 +55,19 @@ const updateIsDone = (todo) => {
     }, 5000);
 }
 
-// todo: datum formazas
+const workspaceEvents = computed(() => tuderaState.getWorkspaceEvents()) 
+const eventCheckboxes = ref(Array(workspaceEvents.value.length).fill(false))
+
+const deleteCalendarEvent = (event, i) => {
+    setTimeout(() => {
+        if (eventCheckboxes.value[i]) {
+            router.delete(route('calendar.destroy', {
+                calendar: event.id
+            }))
+        }
+    }, 5000)
+}
+
 </script>
 <template>
     <section class="flex flex-col p-5">
@@ -113,11 +125,11 @@ const updateIsDone = (todo) => {
                 </div>
             </div>
             <div v-if="viewState.viewType === 'events'">
-                <div v-for="(event, index) in tuderaState.getWorkspaceEvents()" class="flex flex-row py-2 w-full items-center gap-4">
+                <div v-for="(event, index) in workspaceEvents" class="flex flex-row py-2 w-full items-center gap-4">
                     <div class="w-1/12">
                         <div class="inline-flex items-center">
                             <label class="flex items-center cursor-pointer relative">
-                                <input type="checkbox"
+                                <input type="checkbox" @click="deleteCalendarEvent(event, index)" v-model="eventCheckboxes[index]"
                                     class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
                                     :id="`check-${index}`" />
                                 <span
