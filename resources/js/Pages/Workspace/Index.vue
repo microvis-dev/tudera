@@ -8,14 +8,6 @@ const props = defineProps({
     workspace: Number
 })
 
-
-const updateTable = (table) => {
-    router.put(route('table.update', table.id), {
-        name: table.name,
-        workspace: props.workspace
-    })
-}
-
 const removeTable = (tableId) => {
     router.delete(route('table.destroy', {
         table: tableId,

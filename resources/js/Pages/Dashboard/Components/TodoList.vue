@@ -67,7 +67,7 @@ const deleteCalendarEvent = (event, i) => {
         }
     }, 5000)
 }
-
+viewState.viewType = 'todos';
 </script>
 <template>
     <section class="flex flex-col p-5">
@@ -78,14 +78,14 @@ const deleteCalendarEvent = (event, i) => {
                 <label class="flex items-center cursor-pointer">
                     <input type="radio" name="viewType" value="todos" v-model="viewState.viewType" class="hidden" />
                     <span class="px-4 py-2 rounded-lg"
-                        :class="{ 'bg-blue-600 text-white': viewState.viewType === 'todos', 'bg-gray-200': viewState.viewType !== 'todos' }">
+                        :class="{ 'bg-blue-600 text-white': viewState.viewType === 'todos', 'bg-[#2B2C30]': viewState.viewType !== 'todos' }">
                         Todos
                     </span>
                 </label>
                 <label class="flex items-center cursor-pointer">
                     <input type="radio" name="viewType" value="events" v-model="viewState.viewType" class="hidden" />
                     <span class="px-4 py-2 rounded-lg"
-                        :class="{ 'bg-blue-600 text-white': viewState.viewType === 'events', 'bg-gray-200': viewState.viewType !== 'events' }">
+                        :class="{ 'bg-blue-600 text-white': viewState.viewType === 'events', 'bg-[#2B2C30]': viewState.viewType !== 'events' }">
                         Events
                     </span>
                 </label>
