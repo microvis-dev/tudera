@@ -3,14 +3,17 @@ import { reactive, nextTick, ref, computed } from 'vue';
 import AddCustomStatusModal from './AddCustomStatusModal.vue';
 import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-
-const emit = defineEmits(['add', 'update', 'delete'])
+import { getInputType } from '@/resources/js/utils/utils';
 
 const props = defineProps({
     value: Object,
     column: Object,
     options: Array
 })
+
+const emit = defineEmits(['add', 'update', 'delete'])
+
+const inputType = computed(() => getInputType(props.column.type))
 
 const columnOptions = computed(() => {
     if (!props.options || !props.column) return [{ value: "Add new option..." }]
@@ -46,7 +49,7 @@ const saveEdit = () => {
         if (!editState.editedValue) {
             emit('delete', props.value)
         }
-        if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
+        if (editState.editedValue !== props.value?.value) {
             emit("update", editState.editedValue, props.value)
         }
     }
@@ -75,14 +78,6 @@ const deleteValue = () => {
     }
 }
 
-const getValueType = () => {
-    switch (props.type) {
-        case "integer": return "number"
-        case "float": return "number"
-        case "datetime": return "datetime-local"
-        default: "text"
-    }
-}
 // hideCustomStatusModal
 const hideCustomStatusModal = () => {
     showModal.value = false
@@ -105,7 +100,7 @@ const saveCustomStatus = (column, value) => {
                     </select>
                     <input v-else v-model="editState.editedValue" @keyup.enter="saveEdit"
                         class="w-full text-center bg-[#3e3f45] cursor-pointer rounded-md shadow-sm text-sm"
-                        ref="el => editState.valueInputTextField = el" :type="getValueType()" />
+                        ref="el => editState.valueInputTextField = el" :type="inputType" />
                 </div>
                 <div v-else class="text-center">
                     <span class=" font-medium text-sm truncate">{{ value.value }}</span>

@@ -12,3 +12,12 @@ export function getWorkspaceEventDate(date) {
     adjustedDate.setHours(adjustedDate.getHours() + 2);
     return adjustedDate;
 }
+
+export function getInputType(type) {
+    switch (type) {
+        case "integer": return "number"
+        case "float": return "number"
+        case "datetime": return "datetime-local"
+        default: "text"
+    }
+}

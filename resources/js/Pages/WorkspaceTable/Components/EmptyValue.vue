@@ -1,7 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-
-const emit = defineEmits(['save'])
+import { computed, ref } from 'vue'
+import { getInputType } from '@/resources/js/utils/utils'
 
 const props = defineProps({
     column: Object,
@@ -16,8 +15,13 @@ const props = defineProps({
     options: Array 
 })
 
+const emit = defineEmits(['save'])
+
+const inputType = computed(() => getInputType(props.column.type))
+
 const showButton = ref(true)
 const value = ref("")
+
 if (props.column.type == "status") {
     value.value = "None"
     emit('save', value.value, props.column, props.order)
@@ -43,7 +47,7 @@ const save = () => {
         <select v-if="column.type == 'status'" v-model="value" @change="save">
             <option v-for="option in options" :key="option.value" :value="option.value">{{ option.value }}</option>
         </select>
-        <input v-else v-model="value" type="text" class="w-full p-1 bg-transparent text-center" @keyup.enter="save" placeholder="Enter value" />
+        <input v-else v-model="value" :type="inputType" class="w-full p-1 bg-transparent text-center" @keyup.enter="save" placeholder="Enter value" />
     </div>
 </template>
 
