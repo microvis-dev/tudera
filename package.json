@@ -27,6 +27,7 @@
         "@schedule-x/vue": "^2.23.0",
         "circle-progress.vue": "^3.3.0",
         "core-js": "^3.41.0",
+        "mosha-vue-toastify": "^1.0.23",
         "pinia": "^3.0.1",
         "vbootstrap": "^1.0.0",
         "vue3-draggable-next": "^4.1.4",

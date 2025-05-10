@@ -28,8 +28,6 @@ const createTodo = () => {
             onSuccess: () => emit('exit')
         })
     }
-
-
 };
 
 const close = () => {
