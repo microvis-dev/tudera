@@ -9,7 +9,19 @@ const props = defineProps({
 })
 
 const formatDate = () => {
-    const dateString = props.table.updated_at;
+    const findLatestDate = (dates) => {
+        dates = dates.map((date) => new Date(date))
+
+        return new Date(Math.max.apply(null, dates))
+    }
+
+    const dates = [
+        props.table.updated_at,
+        ...props.table.columns.map(col => col.updated_at),
+        ...props.table.columns.flatMap(col => col.values.map(val => val.updated_at))
+    ]
+
+    const dateString = findLatestDate(dates)
     if (!dateString) return 'Never updated';
 
     const date = new Date(dateString);
@@ -35,6 +47,16 @@ const formatDate = () => {
 
 const formattedUpdatedAt = computed(formatDate);
 
+const entries = computed(() => {
+    const columns = props.table.columns
+    let entriesValue = 0
+
+    columns.forEach((col) => {
+        entriesValue += col.values.length
+    })
+
+    return entriesValue
+})
 
 </script>
 <template>
@@ -43,7 +65,7 @@ const formattedUpdatedAt = computed(formatDate);
         <h1 class="roboto-font-bold">{{ table.name }}</h1>
         <p>Potential client contacts</p>
         <div class="flex flex-row justify-evenly text-center">
-            <p>-1 entries</p>
+            <p>{{ entries }} entries</p>
             <p>·</p>
             <p>{{ formattedUpdatedAt }}</p>
         </div>
