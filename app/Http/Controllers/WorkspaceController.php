@@ -8,6 +8,7 @@ use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
 use App\Services\WorkspaceService;
+use App\Services\WorkspaceTableService;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
@@ -50,7 +51,7 @@ class WorkspaceController extends Controller
             $workspace = new Workspace();
             $workspace->name = $request->input('name');
             $workspace->save();
-            //$this->createDefaultLeadsTable($workspace);
+            WorkspaceTableService::initDefaultTables($workspace);
         });
 
         return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
@@ -140,31 +141,5 @@ class WorkspaceController extends Controller
             'url' => url('api/v1/users-to-workspace/datatable')
         ]);
     }
-
-    private function createDefaultLeadsTable(Workspace $workspace)
-    {
-        try {
-            $leadsTable = new WorkspaceTable();
-            $leadsTable->workspace_id = $workspace->id;
-            $leadsTable->name = 'Leads';
-            $leadsTable->save();
-
-            //col
-            $leadsTable->columns()->create([
-                'table_id' => $leadsTable->id,
-                'type' => 'string',
-                'name' => "Leads",
-                'order' => 1,
-            ]);
-
-            // todo fill
-        } catch (Exception $e) {
-            Log::error('Error creating default Leads table: ' . $e->getMessage());
-            dd($e->getMessage());
-            throw $e;
-        }
-    }
-
-
 }
 

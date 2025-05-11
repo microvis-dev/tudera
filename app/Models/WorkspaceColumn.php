@@ -23,6 +23,8 @@ class WorkspaceColumn extends Model
         'order'
     ];
 
+    public static $bypassProtectionCheck = false;
+
     public function workspace_table(): BelongsTo {
         return $this->belongsTo(WorkspaceTable::class, 'table_id');
     }
@@ -42,4 +44,26 @@ class WorkspaceColumn extends Model
         'name' => 'string',
         'order' => 'integer'
     ];
+
+    private static function checkProtected(WorkspaceColumn $column)
+    {
+        return $column->workspace_table()->first()->protected && !self::$bypassProtectionCheck;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            if (static::checkProtected($model)) throw new \Exception("Cannot create protected columns.");
+        });
+
+        self::updating(function ($model) {
+            if (static::checkProtected($model)) throw new \Exception("Cannot update protected columns.");
+        });
+
+        self::deleting(function ($model) {
+            if (static::checkProtected($model)) throw new \Exception("Cannot delete protected columns.");
+        });
+    }
 }
