@@ -12,7 +12,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['back', 'update'])
-const back = () => emit('back')
 
 const table_id = props.columns[0].table_id
 
@@ -121,7 +120,7 @@ const deleteOption = (column) => {
 
     }
 
-    //emit('back')
+    emit('back')
 }
 </script>
 
