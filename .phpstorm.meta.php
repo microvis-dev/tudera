@@ -2611,11 +2611,11 @@ namespace PHPSTORM_META {
 'signup.create','workspaces.get','workspaces.change','workspaces.settings','workspaces.user.show',
 'workspaces.user.update','workspaces.user.destroy','workspace.table.index','workspace.table.create','workspace.table.store',
 'table.show','table.edit','table.update','table.destroy','table.columns.index',
-'table.columns.create','table.columns.store','table.columns.update','table.columns.destroy','table.values.create',
-'table.values.store','table.values.update','table.values.destroy','calendar.index','calendar.create',
-'calendar.store','calendar.update','calendar.destroy','dashboard.index','todolist.store',
-'todolist.show','todolist.update','todolist.destroy','settings.index','selectvalues.store',
-'selectvalues.update','selectvalues.destroy','storage.local',);
+'table.columns.create','table.columns.store','table.columns.update','table.columns.destroy','table.values.store',
+'table.values.update','table.values.destroy','calendar.index','calendar.create','calendar.store',
+'calendar.update','calendar.destroy','dashboard.index','todolist.store','todolist.show',
+'todolist.update','todolist.destroy','settings.index','selectvalues.store','selectvalues.update',
+'selectvalues.destroy','storage.local',);
         registerArgumentsSet('views', 
 'app','laravel-exceptions::401','laravel-exceptions::402','laravel-exceptions::403','laravel-exceptions::404',
 'laravel-exceptions::419','laravel-exceptions::429','laravel-exceptions::500','laravel-exceptions::503','laravel-exceptions::layout',
