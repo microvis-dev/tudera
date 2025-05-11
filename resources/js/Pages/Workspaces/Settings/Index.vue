@@ -15,9 +15,11 @@ DataTable.use(DataTablesCore);
 
 import {ref} from "vue";
 import {route} from "ziggy-js";
+import axios from 'axios';
 import WorkspaceSetting from './WorkspaceSetting.vue';
 
 const activeView = ref('settings');
+const inviteCode = ref('');
 
 const props = defineProps({
     workspace: Object,
@@ -63,7 +65,12 @@ const options = ref({
         {
             text: 'Invite',
             action: (e, dt, node, config) => {
-                alert('invite');
+                axios.get(route('workspace.invite.create', {
+                    id: props.workspace.id
+                })).then(response => {
+                    inviteCode.value = response.data.invite_id;
+
+                })
             }
         },
         {
@@ -100,26 +107,26 @@ const options = ref({
     <div class="mt-4">
         <div class="btn-group" role="group">
             <label class="flex items-center cursor-pointer">
-                <input 
-                    type="radio" 
-                    name="activeViewRadio" 
-                    value="settings" 
-                    v-model="activeView" 
+                <input
+                    type="radio"
+                    name="activeViewRadio"
+                    value="settings"
+                    v-model="activeView"
                     class="hidden" />
-                <span 
+                <span
                     class="px-4 py-2 rounded-lg"
                     :class="{ 'bg-blue-600 text-white': activeView === 'settings', 'bg-[#2B2C30]': activeView !== 'settings' }">
                     Workspace Settings
                 </span>
             </label>
             <label class="flex items-center cursor-pointer ms-2 mb-3">
-                <input 
-                    type="radio" 
-                    name="activeViewRadio" 
-                    value="users" 
-                    v-model="activeView" 
+                <input
+                    type="radio"
+                    name="activeViewRadio"
+                    value="users"
+                    v-model="activeView"
                     class="hidden" />
-                <span 
+                <span
                     class="px-4 py-2 rounded-lg"
                     :class="{ 'bg-blue-600 text-white': activeView === 'users', 'bg-[#2B2C30] ': activeView !== 'users' }">
                     Users
@@ -138,6 +145,7 @@ const options = ref({
         </tr>
         </thead>
     </DataTable>
+    <p>{{inviteCode}}</p>
 </template>
 
 <style scoped>

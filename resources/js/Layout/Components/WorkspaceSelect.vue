@@ -121,6 +121,10 @@ const toSettings = (id) => {
           class="px-4 py-2 text-sm flex justify-center text-gray-400 hover:text-white cursor-pointer">
           Add new workspace
         </div>
+        <div
+          class="px-4 py-2 text-xs flex justify-center text-gray-400 hover:text-white cursor-pointer">
+          Join existing workspace
+        </div>
       </div>
     </transition>
   </div>

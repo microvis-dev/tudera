@@ -42,6 +42,14 @@ Route::get('workspaces/get', [WorkspaceController::class, 'get'])->name('workspa
 Route::post('/workspaces/change', [WorkspaceController::class, 'change'])->name('workspaces.change')->middleware('auth');
 Route::get('workspaces/{id}/settings', [WorkspaceController::class, 'settings'])->name('workspaces.settings')->middleware('auth');
 // users to workspace
+Route::get('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController::class, 'create'])
+    ->name('workspaces.user.create')
+    ->middleware('auth');
+
+Route::post('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController::class, 'store'])
+    ->name('workspaces.user.store')
+    ->middleware('auth');
+
 Route::get('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'show'])
     ->name('workspaces.user.show')
     ->middleware('auth');
