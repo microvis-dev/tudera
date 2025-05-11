@@ -135,7 +135,7 @@ const redirect = (result) => {
             <p class="text-sm text-[#B3B3B3] roboto-font-light">Mark all as read</p>
           </div>
           <div class="flex flex-col items-center">
-            <p class="text-sm text-[#B3B3B3] roboto-font-light">Today</p>
+            <p class="text-sm text-[#B3B3B3] roboto-font-light">Today</p> 
             <div class="flex flex-col w-full justify-center rounded-[5px] items">
               <div class="flex flex-row p-2 justify-between items-start">
                 <div class="px-2">
