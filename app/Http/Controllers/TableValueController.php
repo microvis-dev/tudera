@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\WorkspaceColumnTypeEnum;
 use App\Models\TableValue;
+use App\Models\WorkspaceColumn;
 use App\Models\WorkspaceTable;
 use Illuminate\Http\Request;
 
@@ -11,37 +13,48 @@ use Log;
 
 class TableValueController extends Controller
 {
-
-//    public function create(Request $request, $table_id) {
-//        return;
-//        try {
-//            $user = $request->user();
-//            $table = WorkspaceTable::findOrFail($table_id);
-//            $workspace = $table->workspace;
-//
-//            if (!$user->workspaces()->find($workspace->id)) {
-//                return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
-//            }
-//
-//            return inertia('WorkspaceTable/CreateValue', [
-//                'table' => $table
-//            ]);
-//        } catch (Exception $e) {
-//            Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
-//            dd($e->getMessage());
-//            return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
-//        }
-//    }
-
-    public function store(Request $request, $table_id) {
-        $validated = $request->validate([
-            'value' => 'required',
-            'column_id' => 'required|integer|exists:workspace_columns,id',
-            'order' => 'nullable|integer|min:0'
-        ]);
-
-
+    private function getValidationRules($columnType) {
         try {
+            $typeEnum = WorkspaceColumnTypeEnum::from($columnType);
+            return $typeEnum->getValidationRule();
+        } catch (Exception $e) {
+            Log::warning("Unknown column type: $columnType");
+            return 'required|string';
+        }
+    }
+
+    public function create(Request $request, $table_id) { 
+        return;
+        try {
+            $user = $request->user();
+            $table = WorkspaceTable::findOrFail($table_id);
+            $workspace = $table->workspace;
+        
+            if (!$user->workspaces()->find($workspace->id)) {
+                return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
+            }
+            
+            return inertia('WorkspaceTable/CreateValue', [
+                'table' => $table
+            ]);
+        } catch (Exception $e) {
+            Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
+            dd($e->getMessage());
+            return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
+        }   
+    }
+
+    public function store(Request $request, $table_id) {    
+        try {
+            $columnType = WorkspaceColumn::where('id', $request->input('column_id'))->value('type');
+
+            $validated = $request->validate([
+                'value' => $this->getValidationRules($columnType),
+                'column_id' => 'required|integer|exists:workspace_columns,id',
+                'order' => 'nullable|integer|min:1'
+            ]);
+
+
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
             $workspace = $table->workspace;
@@ -65,19 +78,19 @@ class TableValueController extends Controller
 
             return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             Log::error('Error in TableValueController store: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while saving the value.');
         }
     }
 
     public function update(Request $request, $table_id, $value_id) {
-        $request->validate([
-            'new_value' => 'required',
-            'order' =>'nullable|integer|min:1'
-        ]);
-
         try {
+            $columnType = WorkspaceColumn::where('id', TableValue::where('id', $value_id)->value('column_id'))->value('type');
+            $request->validate([
+                'new_value' => $this->getValidationRules($columnType),
+                'order' =>'nullable|integer|min:1'
+            ]);
+
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
             $workspace = $table->workspace;
@@ -104,7 +117,6 @@ class TableValueController extends Controller
             return redirect()->back()->with('success', 'Value updated successfully.');
         } catch (Exception $e) {
             Log::error('Hiba TableValueController update: ' . $e->getMessage());
-            dd($e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while updating the value.');
         }
     }
