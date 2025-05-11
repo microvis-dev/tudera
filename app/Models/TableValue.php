@@ -36,6 +36,6 @@ class TableValue extends Model
     protected $casts = [
         'column_id' => 'integer',
         'order' => 'integer',
-        'value' => 'string', 
+        'value' => 'string',
     ];
 }

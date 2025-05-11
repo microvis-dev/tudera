@@ -62,7 +62,7 @@ Route::resource('workspace.table', WorkspaceTableController::class)
 Route::resource('table.columns', WorkspaceColumnController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
 Route::resource('table.values', TableValueController::class)
-    ->only(['create', 'store', 'update', 'destroy']);
+    ->only(['store', 'update', 'destroy']);
 
 // calendar
 Route::resource('calendar', CalendarController::class)
