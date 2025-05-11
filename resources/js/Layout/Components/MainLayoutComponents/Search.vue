@@ -129,7 +129,7 @@ const redirect = (result) => {
       <!-- Notifications -->
       <transition name="slide-down">
         <div v-if="dropdownOpen" ref="dropdownRef"
-          class="absolute right-36 min-w-[250px] min-h-[250px] flex flex-col items-center bg-[#2B2C30] text-white rounded-lg shadow-lg mt-2 me-2">
+          class="absolute right-36 min-w-[250px] min-h-[250px] flex flex-col items-center bg-[#2B2C30] text-white rounded-lg shadow-lg mt-2 me-2 z-10">
           <div class="flex justify-between w-full p-2 items-center">
             <h1 class="text-lg roboto-font-regular">Notifications</h1>
             <p class="text-sm text-[#B3B3B3] roboto-font-light">Mark all as read</p>
