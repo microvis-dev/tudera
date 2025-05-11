@@ -40,6 +40,11 @@ class UsersToWorkspaceController extends Controller
         return redirect(route('dashboard.index'));
     }
 
+    public function create(Request $request)
+    {
+        return inertia("Workspaces/UsersToWorkspace/Create");
+    }
+
     public function update(Request $request)
     {
         $workspace_id = $request->route('id');
