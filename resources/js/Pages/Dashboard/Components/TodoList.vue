@@ -131,7 +131,7 @@ viewState.viewType = 'todos';
                             <label class="flex items-center cursor-pointer relative">
                                 <input type="checkbox" @click="deleteCalendarEvent(event, index)" v-model="eventCheckboxes[index]"
                                     class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-slate-800 checked:border-slate-800"
-                                    :id="`check-${index}`" />
+                                    :id="`check-event-${index}`" /> <!-- Consider unique ID like check-event-${index} if needed, though v-if makes current one safe -->
                                 <span
                                     class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20"
@@ -144,11 +144,12 @@ viewState.viewType = 'todos';
                             </label>
                         </div>
                     </div>
-                    <div class="w-6/12">
-                        <h2 class="roboto-font-bold text-md">{{
+                    <div class="w-6/12"> <!-- Title column, matches todo's title column width -->
+                        <h2 class="roboto-font-bold text-md" :class="{ 'text-gray-500 line-through': eventCheckboxes[index] }">{{
                             event.title }}</h2>
                     </div>
-                    <div class="w-7/12 text-center rounded-xl p-1">
+                    <div class="w-7/12 text-center rounded-xl p-1"
+                        :class="{ 'text-gray-500 line-through': eventCheckboxes[index], 'bg-red-500': lateToDate(event) }"> <!-- Date column, matches todo's date column width and conditional styling -->
                         <p>{{ formatDate(event.end_date) }}</p>
                     </div>
                 </div>
