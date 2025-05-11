@@ -1,23 +1,65 @@
 <script setup>
-    
+import { ref } from 'vue';
+const dropdownOpen = ref(false);
+const openDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value
+}
 </script>
 <template>
-    <section class="flex flex-row justify-between h-fit px-5 py-2">
-        <div class="relative">
-          <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+  <section class="flex flex-row justify-between h-fit px-5 py-2">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
         <img src="../../../../assets/search.svg" class="w-5 h-5">
-          </div>
-          <input type="text"
-        class="pl-10 pr-3 py-2 w-fit md:w-96 bg-[#1C1D21] border border-gray-600 rounded-lg roboto-font-regular focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm"
+      </div>
+      <input type="text"
+        class="pl-10 pr-3 py-2 w-96 bg-[#1C1D21] border border-gray-600 rounded-lg roboto-font-regular focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm"
         placeholder="Search">
+    </div>
+    <div @click="openDropdown">
+      <div class="flex flex-row items-center bg-pink-500 rounded-lg px-2 bell">
+        <img src="../../../../assets/bell.svg" class="w-10 h-10">
+        <p class="ms-2 text-lg">1</p>
+      </div>
+      <transition name="slide-down">
+        <div v-if="dropdownOpen" ref="dropdownRef" class="absolute right-36 min-w-[250px] min-h-[250px] flex flex-col items-center bg-[#2B2C30] text-white rounded-lg shadow-lg mt-2 me-2">
+          <div class="flex justify-between w-full p-2 items-center">
+            <h1 class="text-lg roboto-font-regular">Notifications</h1>
+            <p class="text-sm text-[#B3B3B3] roboto-font-light">Mark all as read</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <p class="text-sm text-[#B3B3B3] roboto-font-light">Today</p>
+          <div class="flex flex-col w-full justify-center rounded-[5px] items">
+            <div class="flex flex-row p-2 justify-between items-start">
+              <div class="px-2">
+                <img src="../../../../assets/bell.svg" class="w-7 h-7">
+              </div>
+                <div class="flex flex-col px-2">
+                  <p class="text-sm">Dávid completed their task</p>
+                  <p class="text-xs text-[#B3B3B3]">Dávid successfully completed their task: Backend</p>
+                </div>
+                <p class="text-xs roboto-font-light text-[#B3B3B3]">5h ago</p>
+            </div>
+          </div>
+          <div class="flex flex-col w-full justify-center rounded-[5px] items">
+            <div class="flex flex-row p-2 justify-between items-start">
+              <div class="px-2">
+                <img src="../../../../assets/bell.svg" class="w-7 h-7">
+              </div>
+                <div class="flex flex-col px-2">
+                  <p class="text-sm">Dávid completed their task</p>
+                  <p class="text-xs text-[#B3B3B3]">Dávid successfully completed their task: Backend</p>
+                </div>
+                <p class="text-xs roboto-font-light text-[#B3B3B3]">5h ago</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <img src="../../../../assets/bell.svg" class="w-10 h-10 bell">
-        </div>
-      </section>
+      </div>
+      </transition>
+    </div>
+  </section>
 </template>
 <style scoped>
-    .bell {
+.bell img {
   width: 2rem;
   transform-origin: 50% 0;
 
@@ -59,5 +101,42 @@
   100% {
     transform: rotate(0);
   }
+}
+
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.2s ease;
+  transform-origin: top;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Focus state for accessibility */
+button:focus::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -10px;
+  width: 5px;
+  height: 80%;
+  background-color: #2F81F7;
+  border-radius: 5px;
+  opacity: 1;
+}
+
+.items:hover> :not(:hover) {
+  transition: 500ms;
+  filter: blur(1px);
+  transform: scale(0.95, 0.95);
 }
 </style>
