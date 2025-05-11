@@ -56,6 +56,18 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return user.value.workspaces
     })
 
+    const notifications = computed(() => {
+        const MAX_NOTIFICATION = 5
+
+        let length = user.value.notifications.length >= MAX_NOTIFICATION ? MAX_NOTIFICATION : user.value.notifications.length
+        let sortedNotifications = [...user.value.notifications]
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .splice(0, length)
+            
+
+        return sortedNotifications
+    })
+
     const selectedWorkspace = ref(null)
     let workspaceInitialized = null;
 
@@ -181,6 +193,10 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return readonly(todos.value)
     }
 
+    function getNotifications() {
+        return readonly(notifications.value)
+    }
+
     function getWorkspaceEvents() {
         return Array.from(calendar.value || [])
     }
@@ -214,6 +230,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getFlashSuccess,
         getFlashError,
         clearPageProps,
-        getWorkspaceInitPromise
+        getWorkspaceInitPromise,
+        getNotifications
     }
 })
