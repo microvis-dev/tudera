@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -37,8 +36,13 @@ class User extends Authenticatable
         return $this->hasMany(WorkspaceTable::class)->whereIn('workspace_id', $this->workspaces()->pluck('id'));
     }
 
-    public function todos() {
+    public function todos(): HasMany {
         return $this->hasMany(TodoList::class);
+    }
+
+    public function notifications(): HasMany 
+    {
+        return $this->hasMany(Notification::class);
     }
 
     /**
@@ -97,4 +101,3 @@ class User extends Authenticatable
         return Storage::disk("s3")->temporaryUrl($value, now()->addMinutes(5));
     }
 }
-

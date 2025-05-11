@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
             'workspaces.tables.columns.values',
             'workspaces.calendar_events',
             'todos',
+            'notifications'
         ]);
     }
     
