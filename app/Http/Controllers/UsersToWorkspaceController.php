@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UsersToWorkspace;
+use App\Models\WorkspaceInvites;
 use App\Services\WorkspaceService;
 use Illuminate\Http\Request;
 
@@ -43,6 +44,29 @@ class UsersToWorkspaceController extends Controller
     public function create(Request $request)
     {
         return inertia("Workspaces/UsersToWorkspace/Create");
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'invite' => 'required|string|max:36',
+        ]);
+        $user = auth()->user();
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+        if ($invite = WorkspaceInvites::find(['used' => false, 'invite_id' => $validated['invite']])->first()) {
+            if (UsersToWorkspace::where('user_id', $user->id)->where('workspace_id', $invite->workspace_id)->exists()) {
+                return redirect()->back()->with('error', 'User already joined this workspace.');
+            }
+            $invite->used = true;
+            $invite->save();
+            return redirect()->back()->with('success', 'Successfully joined the workspace.');
+        } else {
+            return redirect()->back()->with('error', 'Invite not found.');
+        }
+
+
     }
 
     public function update(Request $request)

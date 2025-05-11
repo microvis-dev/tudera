@@ -46,6 +46,10 @@ Route::get('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController:
     ->name('workspaces.user.create')
     ->middleware('auth');
 
+Route::post('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController::class, 'store'])
+    ->name('workspaces.user.store')
+    ->middleware('auth');
+
 Route::get('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'show'])
     ->name('workspaces.user.show')
     ->middleware('auth');
