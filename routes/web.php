@@ -38,13 +38,23 @@ Route::resource('signup', SetupController::class)->only(['create']);
 // workspaces
 Route::get('workspaces/get', [WorkspaceController::class, 'get'])->name('workspaces.get')->middleware('auth');
 Route::post('/workspaces/change', [WorkspaceController::class, 'change'])->name('workspaces.change')->middleware('auth');
-Route::resource('workspaces', WorkspaceController::class)->middleware('auth');
+Route::get('workspaces/{id}/settings', [WorkspaceController::class, 'settings'])->name('workspaces.settings')->middleware('auth');
+// users to workspace
+Route::get('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'show'])
+    ->name('workspaces.user.show')
+    ->middleware('auth');
 
+Route::post('workspaces/{id}/users/{user}/update', [\App\Http\Controllers\UsersToWorkspaceController::class, 'update'])
+    ->name('workspaces.user.update')
+    ->middleware('auth');
+
+Route::delete('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'destroy'])
+    ->name('workspaces.user.destroy')
+    ->middleware('auth');
 
 // workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow()->middleware('auth');
-
 
 // col
 Route::resource('table.columns', WorkspaceColumnController::class)
