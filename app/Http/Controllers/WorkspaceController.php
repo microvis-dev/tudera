@@ -46,7 +46,6 @@ class WorkspaceController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-
         DB::transaction(function () use ($request) {
             $workspace = new Workspace();
             $workspace->name = $request->input('name');

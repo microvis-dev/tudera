@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Models\Workspace;
 
@@ -35,6 +36,14 @@ class WorkspaceService
             setPermissionsTeamId($workspace->id);
             return true;
         }
+    }
+
+    public static function assign(User $user, Workspace $workspace) : bool
+    {
+        $user->workspaces()->attach($workspace->id, ['created_at' => now(), 'updated_at' => now()]);
+        static::change($user, $workspace);
+        $user->syncRoles([RolesEnum::VIEWER]);
+        return true;
     }
 }
 ?>
