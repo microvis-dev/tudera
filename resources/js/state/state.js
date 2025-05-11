@@ -56,24 +56,13 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return user.value.workspaces
     })
 
-    const selectedWorkspace = ref(null) 
-
-    function getInitializedSelectedWorkspace() {
-        return readonly(selectedWorkspace.value || workspaces.value[0])
-    }
-
-    const reactiveSelectedWorkspace = computed(() => { // *
-        return getWorkspaces()
-            .find((workspace) => {
-                return getInitializedSelectedWorkspace().id == workspace.id
-            })
-    })
-
-    function getSelectedWorkspace() { // getSelectedReactiveWorkspace
-        return readonly(reactiveSelectedWorkspace.value || workspaces.value[0])
-    }
-
+    const selectedWorkspace = ref(null)
     let workspaceInitialized = null;
+
+    function getWorkspaceInitPromise() {
+        return workspaceInitialized;
+    }
+
     function initWorkspace() {
         workspaceInitialized = fetch(route('workspaces.get'))
             .then(response => response.json())
@@ -87,12 +76,22 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
                 selectedWorkspace.value = workspaces.value[0]
                 return selectedWorkspace.value;
             });
-        
-        router.get(route('dashboard.index'))
+
+        return workspaceInitialized;
     }
 
-    initWorkspace()
+    initWorkspace();
 
+    const reactiveSelectedWorkspace = computed(() => {
+        return getWorkspaces()
+            .find((workspace) => {
+                return (selectedWorkspace.value?.id || workspaces.value[0]?.id) === workspace.id
+            })
+    })
+
+    function getSelectedWorkspace() {
+        return readonly(reactiveSelectedWorkspace.value || workspaces.value[0])
+    }
 
     const flashSucess = computed(() => {
         return page.props.flash.success
@@ -107,7 +106,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
     })
 
     const calendar = computed(() => {
-        return getSelectedWorkspace().calendar_events || []
+        return getSelectedWorkspace()?.calendar_events || []
     })
 
     function getModal() {
@@ -130,16 +129,20 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         if (!selectedWorkspace.value) {
             await workspaceInitialized;
         }
-        const workspace = getInitializedSelectedWorkspace()
-        
+
+        const workspace = reactiveSelectedWorkspace.value || workspaces.value[0];
         return readonly(workspace?.tables || [])
     }
 
     function getTransformedTables() {
+        if (!reactiveSelectedWorkspace.value || !reactiveSelectedWorkspace.value.tables) {
+            return [];
+        }
+
         let tables = []
         let tableIcon = null
 
-        selectedWorkspace.value.tables.forEach((table) => {
+        reactiveSelectedWorkspace.value.tables.forEach((table) => {
             let tableObj = {
                 id: table.id,
                 name: table.name,
@@ -163,7 +166,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
                 workspace_id: workspace.id
             }, {
                 preserveState: true,
-                onSuccess: (response) => {
+                onSuccess: () => {
                     selectedWorkspace.value = workspace
                     resolve(workspace)
                 },
@@ -174,11 +177,6 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         });
     }
 
-    async function refreshSelectedWorkspace() {
-        //setWorkspace(workspaces.value.find(workspace => workspace.id == getSelectedWorkspace().id))
-        //initWorkspace()
-    }
-
     function getTodos() {
         return readonly(todos.value)
     }
@@ -187,7 +185,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         return Array.from(calendar.value || [])
     }
 
-    function getFlashSuccess() { // value cannot be made readonly
+    function getFlashSuccess() {
         return flashSucess.value ?? ""
     }
 
@@ -215,8 +213,7 @@ export const useTuderaStore = defineStore('TuderaStore', () => {
         getTransformedTables,
         getFlashSuccess,
         getFlashError,
-        refreshSelectedWorkspace,
-        clearPageProps
+        clearPageProps,
+        getWorkspaceInitPromise
     }
-
 })
