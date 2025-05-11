@@ -3,13 +3,16 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test": "vitest"
     },
     "devDependencies": {
-        "@vitejs/plugin-vue": "^5.2.1",
+        "@vitejs/plugin-vue": "^5.2.4",
+        "@vue/test-utils": "^2.4.6",
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.1",
         "concurrently": "^9.0.1",
+        "jsdom": "^26.1.0",
         "laravel-echo": "^2.1.0",
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.5.3",
@@ -45,6 +48,7 @@
         "pinia": "^3.0.1",
         "vbootstrap": "^1.0.0",
         "vue3-draggable-next": "^4.1.4",
+        "vue3-select2-component": "^0.1.7",
         "vuedraggable": "^4.1.0",
         "vuetify": "^3.8.2",
         "ziggy-js": "^2.5.2"
