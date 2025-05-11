@@ -43,6 +43,30 @@ const showSetting = () => {
     showSettingsBoolean.value = !showSettingsBoolean.value
 }
 
+// Hide settings when clicking outside
+import { onMounted, onBeforeUnmount } from 'vue'
+
+const handleClickOutside = (event) => {
+    // Find the settings menu and the button
+    const settingsMenu = document.querySelector('.absolute.right-0.top-full')
+    const settingsButton = event.target.closest('.cursor-pointer')
+    if (
+        showSettingsBoolean.value &&
+        settingsMenu &&
+        !settingsMenu.contains(event.target) &&
+        !settingsButton
+    ) {
+        showSettingsBoolean.value = false
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('mousedown', handleClickOutside)
+})
+onBeforeUnmount(() => {
+    document.removeEventListener('mousedown', handleClickOutside)
+})
+
 // move
 const moveLeft = () => { // ha order = 1 szurke nyil
     let newOrder = props.column.order - 1
