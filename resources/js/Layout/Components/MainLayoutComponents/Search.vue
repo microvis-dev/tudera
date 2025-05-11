@@ -92,7 +92,7 @@ const results = computed(() => {
       }
     })
 
-  return [...tableResults, ...columnResults, ...valueResults, ...eventResults]
+  return [...tableResults, ...columnResults, ...valueResults, ...eventResults].filter(Boolean)
 })
 
 const redirect = (result) => {
@@ -115,10 +115,10 @@ const redirect = (result) => {
     <div v-if="results.length > 0"
       class="absolute z-10 mt-10 w-96 bg-[#2B2C30] border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
       <ul class="py-1">
-      <li v-for="result in results" :key="result.title" @click="redirect(result)"
-        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer">
-        {{ result?.title }}
-      </li>
+        <li v-for="(result, index) in results" :key="index" @click="redirect(result)"
+          class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer">
+          {{ result?.title }}
+        </li>
       </ul>
     </div>
     <div @click="openDropdown">
