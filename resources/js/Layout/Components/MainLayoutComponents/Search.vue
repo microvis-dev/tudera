@@ -126,7 +126,7 @@ const user = computed(() => tuderaState.getUser())
       </ul>
     </div>
     <div @click="openDropdown">
-      <div class="flex flex-row items-center bg-pink-500 rounded-lg px-2 bell">
+      <div class="flex flex-row items-center bg-[#2B2C30] rounded-lg px-2 bell">
         <img src="../../../../assets/bell.svg" class="w-10 h-10">
         <p class="ms-2 text-lg">{{ notifications.length }}</p>
       </div>

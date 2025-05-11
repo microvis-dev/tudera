@@ -66,18 +66,21 @@ const continueAuth = async () => {
             viewState.authMethodDisabled = true
             viewState.passwordField = true
         }
+    else {
+        viewState.errorField = "This email address does not exist. Please sign up.";
+    }
     } else {
-        if (!isExists) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(authForm.email)) {
-                viewState.errorField = "Please enter a valid email address.";
-                return;
-            }
-            localStorage.setItem('userEmail', authForm.email)
-            router.get(route('signup.create'))
-        } else {
-            viewState.errorField = "The email address already exist."
+    if (!isExists) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(authForm.email)) {
+        viewState.errorField = "Please enter a valid email address.";
+        return;
         }
+        localStorage.setItem('userEmail', authForm.email)
+        router.get(route('signup.create'))
+    } else {
+        viewState.errorField = "The email address already exist."
+    }
 
     }
 }

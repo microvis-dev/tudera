@@ -38,9 +38,7 @@ class AuthController extends Controller
             ]);
     
             $emailExists = User::where('email', $request->email)->exists();
-            if(!$emailExists){
-                return response()->json(["status" => "error", "message" => "The email address does not exist."]);
-            }
+
             return response()->json(["status" => "success", 'exists' => $emailExists]);
         } catch (Exception $e) {
             return response()->json(["status" => "error", "message" => $e->getMessage()]);
