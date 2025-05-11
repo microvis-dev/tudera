@@ -104,7 +104,9 @@ const redirect = (result) => {
 
 const notifications = computed(() => tuderaState.getNotifications())
 
-const user = computed(() => tuderaState.getUser())
+const deleteNotification = (notification) => {
+  router.delete(route('notification.destroy'))
+}
 </script>
 <template>
   <section class="flex flex-row justify-between h-fit px-5 py-2">
@@ -136,7 +138,6 @@ const user = computed(() => tuderaState.getUser())
           class="absolute right-36 min-w-[250px] min-h-[250px] flex flex-col items-center bg-[#2B2C30] text-white rounded-lg shadow-lg mt-2 me-2 z-10">
           <div class="flex justify-between w-full p-2 items-center">
             <h1 class="text-lg roboto-font-regular">Notifications</h1>
-            <p class="text-sm text-[#B3B3B3] roboto-font-light">Mark all as read</p>
           </div>
           <div class="flex flex-col items-center">
             <div v-for="(notification, i) in notifications" class="flex flex-col w-full justify-center rounded-[5px] items">
@@ -146,6 +147,9 @@ const user = computed(() => tuderaState.getUser())
                 </div>
                 <div class="flex flex-col px-2">
                   <p class="text-sm">{{ notification.value }}</p>
+                </div>
+                <div>
+                  <button @click="deleteNotification(notification)">delete</button>
                 </div>
                 <p class="text-xs roboto-font-light text-[#B3B3B3]">{{ formatTimeAgo(notification.updated_at) }}</p>
               </div>

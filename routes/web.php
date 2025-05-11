@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\StatusSelectValueController;
@@ -92,3 +93,7 @@ Route::resource('settings', SettingsController::class)
 // status select value
 Route::resource('selectvalues', StatusSelectValueController::class)
     ->only(['store', 'update', 'destroy']);
+
+// notifications
+Route::resource('notification', NotificationController::class)
+    ->only(['store', 'destroy']);
