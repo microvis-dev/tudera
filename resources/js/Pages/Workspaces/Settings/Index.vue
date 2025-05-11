@@ -15,6 +15,10 @@ DataTable.use(DataTablesCore);
 
 import {ref} from "vue";
 import {route} from "ziggy-js";
+import WorkspaceSetting from './WorkspaceSetting.vue';
+
+const activeView = ref('settings');
+
 const props = defineProps({
     workspace: Object,
     url: String,
@@ -51,7 +55,7 @@ const options = ref({
     },
     select: {
         style: 'single',
-        selector: 'td:first-child'
+        selector: 'td:first-child',
     },
     responsive: true,
     dom: 'Bfrtip',
@@ -93,7 +97,39 @@ const options = ref({
 </script>
 
 <template>
-    <DataTable :columns="columns" :options="options" class="table display">
+    <div class="mt-4">
+        <div class="btn-group" role="group">
+            <label class="flex items-center cursor-pointer">
+                <input 
+                    type="radio" 
+                    name="activeViewRadio" 
+                    value="settings" 
+                    v-model="activeView" 
+                    class="hidden" />
+                <span 
+                    class="px-4 py-2 rounded-lg"
+                    :class="{ 'bg-blue-600 text-white': activeView === 'settings', 'bg-[#2B2C30]': activeView !== 'settings' }">
+                    Workspace Settings
+                </span>
+            </label>
+            <label class="flex items-center cursor-pointer ms-2 mb-3">
+                <input 
+                    type="radio" 
+                    name="activeViewRadio" 
+                    value="users" 
+                    v-model="activeView" 
+                    class="hidden" />
+                <span 
+                    class="px-4 py-2 rounded-lg"
+                    :class="{ 'bg-blue-600 text-white': activeView === 'users', 'bg-[#2B2C30] ': activeView !== 'users' }">
+                    Users
+                </span>
+            </label>
+        </div>
+    </div>
+
+    <WorkspaceSetting v-if="activeView === 'settings'" />
+    <DataTable v-else :columns="columns" :options="options" class="table display">
         <thead>
         <tr>
             <th>Name</th>
@@ -105,8 +141,6 @@ const options = ref({
 </template>
 
 <style scoped>
-@import url('../../../../../node_modules/datatables.net-dt');
-@import url('../../../../../node_modules/datatables.net-buttons-dt');
-@import url('../../../../../node_modules/datatables.net-responsive-dt');
-@import url('../../../../../node_modules/datatables.net-select-dt');
+@import url('bootstrap');
+@import url('datatables.net-bs5');
 </style>
