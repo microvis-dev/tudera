@@ -133,3 +133,20 @@ const handleWorkspaceChange = async (workspace) => {
         </aside>
     </section>
 </template>
+<style scoped>
+.sidebar-items {
+  transition: transform 0.3s ease;
+}
+.dropdown-open {
+  transform: translateY(var(--dropdown-height, 150px));
+}
+.bell {
+  width: 2rem;
+  transform-origin: 50% 0;
+
+  &:hover,
+  &:focus {
+    animation: bell-swing 1s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+</style>
