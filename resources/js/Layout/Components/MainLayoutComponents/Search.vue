@@ -16,7 +16,7 @@ const openDropdown = () => {
 const searchValue = ref("")
 
 const results = computed(() => {
-  if (searchValue.value.length < 2) return []
+  if (searchValue.value.length < 3) return []
 
   const check = (name, target = searchValue.value) => {
     return name.toLowerCase().includes(target.toLowerCase())
@@ -96,6 +96,8 @@ const results = computed(() => {
 })
 
 const redirect = (result) => {
+  searchValue.value = ""
+
   router.get(route(result.url.name, result.url.params))
 }
 
@@ -110,8 +112,14 @@ const redirect = (result) => {
         class="pl-10 pr-3 py-2 w-96 bg-[#1C1D21] border border-gray-600 rounded-lg roboto-font-regular focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-gray-500 text-sm"
         placeholder="Search">
     </div>
-    <div v-if="results.length > 0">
-      <p v-for="result in results" @click="redirect(result)">{{ result?.title }}</p>
+    <div v-if="results.length > 0"
+      class="absolute z-10 mt-10 w-96 bg-[#2B2C30] border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+      <ul class="py-1">
+      <li v-for="result in results" :key="result.title" @click="redirect(result)"
+        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer">
+        {{ result?.title }}
+      </li>
+      </ul>
     </div>
     <div @click="openDropdown">
       <div class="flex flex-row items-center bg-pink-500 rounded-lg px-2 bell">
