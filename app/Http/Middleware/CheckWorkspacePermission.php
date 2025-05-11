@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckWorkspaceRole
+class CheckWorkspacePermission
 {
     protected $levels = [
         'viewer' => 0,
@@ -19,7 +19,7 @@ class CheckWorkspaceRole
      *
      * @param  Request  $request
      * @param  Closure  $next
-     * @param  string   $requiredRole  
+     * @param  string   $requiredRole
      * @return Response
      */
     public function handle(Request $request, Closure $next, string $requiredRole)
@@ -35,7 +35,7 @@ class CheckWorkspaceRole
             abort(403, '!');
         }
 
-        $userRole = $utw->role->name; 
+        $userRole = $utw->role->name;
 
         if ($this->levels[$userRole] < $this->levels[$requiredRole]) {
             abort(403, '!');

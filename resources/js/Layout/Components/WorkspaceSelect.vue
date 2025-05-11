@@ -77,6 +77,10 @@ const go = (id) => {
   router.get(route('workspace.table.index', { workspace: id }))
 }
 
+const toSettings = (id) => {
+    router.get(route('workspaces.settings', { id: id }))
+}
+
 </script>
 
 <template>
@@ -95,16 +99,22 @@ const go = (id) => {
         class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg border border-gray-600 shadow-lg py-2">
 
         <!-- Workspaces List -->
-        <div>
-          <div v-for="workspace in workspaces" :key="workspace.id" @click="selectWorkspace(workspace)"
-            class="flex items-center gap-2 py-2 px-2 mb-3 rounded-lg cursor-pointer hover:bg-gray-700"
-            :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }">
-            <img src="https://placehold.co/20x20" alt="Workspace Icon" class="w-5 h-5" />
-            <span class="flex-1">{{ workspace.name }}</span>
-              <span class="w-5 h-5 right-0"><img src="../../../assets/settings.svg"></span>
-            <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check"></i>
+          <div>
+              <div v-for="workspace in workspaces" :key="workspace.id" class="flex items-center gap-2 py-2 px-2 mb-3 rounded-lg hover:bg-gray-700">
+                  <div
+                      class="flex-1 flex items-center cursor-pointer"
+                      :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }"
+                      @click="selectWorkspace(workspace)"
+                  >
+                      <img src="https://placehold.co/20x20" alt="Workspace Icon" class="w-5 h-5" />
+                      <span class="ml-2">{{ workspace.name }}</span>
+                      <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check ml-auto"></i>
+                  </div>
+                  <button class="w-5 h-full" @click.stop="toSettings(workspace)">
+                      <img src="../../../assets/settings.svg" />
+                  </button>
+              </div>
           </div>
-        </div>
 
         <!-- Add New Workspace -->
         <div @click="toCreateWorkspace"

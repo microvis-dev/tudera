@@ -117,6 +117,30 @@ class WorkspaceController extends Controller
         return WorkspaceService::change($request->user(), $workspace) ? back() : back()->with('error', 'Workspace not found or you do not have permission to change it.');
     }
 
+    public function settings(Request $request, $id)
+    {
+        $user = $request->user();
+        $workspace = $user->workspaces()->findOrFail($id);
+
+        $workspaceUsers = UsersToWorkspace::where('workspace_id', $id)
+            ->with(['user', 'role'])
+            ->get()
+            ->map(function ($userWorkspace) {
+                return [
+                    'id' => $userWorkspace->user->id,
+                    'name' => $userWorkspace->user->name,
+                    'email' => $userWorkspace->user->email,
+                    'role' => $userWorkspace->user->roles,
+                    'joined_at' => $userWorkspace->created_at->format('Y-m-d'),
+                ];
+            });
+
+        return inertia('Workspaces/Settings/Index', [
+            'workspace' => $workspace,
+            'url' => url('api/v1/users-to-workspace/datatable')
+        ]);
+    }
+
     private function createDefaultLeadsTable(Workspace $workspace)
     {
         try {
@@ -143,3 +167,4 @@ class WorkspaceController extends Controller
 
 
 }
+

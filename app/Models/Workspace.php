@@ -36,7 +36,7 @@ class Workspace extends Model
 
             if ($users_to_workspace->save()) {
                 if (WorkspaceService::change($user, $model)) {
-                    $user->assignRole(RolesEnum::OWNER);
+                    $user->assignRole(RolesEnum::ADMIN);
                 }
             }
         });
