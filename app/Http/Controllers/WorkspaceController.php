@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
+use App\Services\PermissionService;
 use App\Services\WorkspaceService;
 use App\Services\WorkspaceTableService;
 use Exception;
@@ -73,6 +74,12 @@ class WorkspaceController extends Controller
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
             }
 
+            if ($user) {
+                if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+                    return redirect()->back()->with('error', 'You do not have permission to delete this workspace.');
+                }
+            }
+
             if ($workspace->users()->count() == 1) {
                 $workspace->delete();
             } else {
@@ -101,6 +108,12 @@ class WorkspaceController extends Controller
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to edit it.');
             }
 
+            if ($user) {
+                if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+                    return redirect()->back()->with('error', 'You do not have permission to update this workspace.');
+                }
+            }
+
             $workspace->update(['name' => strip_tags($request->name)]);
 
             return redirect()->back()->with('success', 'Workspace name updated successfully.');
@@ -124,6 +137,9 @@ class WorkspaceController extends Controller
     {
         $user = $request->user();
         $workspace = $user->workspaces()->findOrFail($id);
+        if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+            return redirect()->back()->with('error', 'You do not have permission to see this workspace.');
+        }
 
         $workspaceUsers = UsersToWorkspace::where('workspace_id', $id)
             ->with(['user', 'role'])

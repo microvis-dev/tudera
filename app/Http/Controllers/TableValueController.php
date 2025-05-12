@@ -23,17 +23,17 @@ class TableValueController extends Controller
         }
     }
 
-    public function create(Request $request, $table_id) { 
+    public function create(Request $request, $table_id) {
         return;
         try {
             $user = $request->user();
             $table = WorkspaceTable::findOrFail($table_id);
             $workspace = $table->workspace;
-        
+
             if (!$user->workspaces()->find($workspace->id)) {
                 return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
             }
-            
+
             return inertia('WorkspaceTable/CreateValue', [
                 'table' => $table
             ]);
@@ -41,10 +41,10 @@ class TableValueController extends Controller
             Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
             dd($e->getMessage());
             return redirect()->route('workspaces')->with('error', 'An error occurred while loading the create form.');
-        }   
+        }
     }
 
-    public function store(Request $request, $table_id) {    
+    public function store(Request $request, $table_id) {
         try {
             $columnType = WorkspaceColumn::where('id', $request->input('column_id'))->value('type');
 
@@ -79,7 +79,7 @@ class TableValueController extends Controller
             return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
             Log::error('Error in TableValueController store: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while saving the value.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 

@@ -14,24 +14,31 @@ class UsersToWorkspaceController extends Controller
     public function datatable(Request $request)
     {
         $usersSearch = new UsersToWorkspaceSearch();
-        $users = $usersSearch->search($request);
+        try {
+            $users = $usersSearch->search($request);
 
-        $data = [];
-        foreach ($users->get() as $user) {
-            $data[] = [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->pivot->role,
-            ];
+            $data = [];
+            foreach ($users->get() as $user) {
+                $data[] = [
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->pivot->role,
+                ];
+            }
+
+            return response()->json([
+                'draw' => $request->input('draw'),
+                'recordsTotal' => $usersSearch->total,
+                'recordsFiltered' => count($data),
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Not found'
+            ]);
         }
-
-        return response()->json([
-            'draw' => $request->input('draw'),
-            'recordsTotal' => $usersSearch->total,
-            'recordsFiltered' => count($data),
-            'data' => $data
-        ]);
     }
 
 
