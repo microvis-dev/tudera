@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Services\MessagingService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,6 +29,20 @@ class User extends Authenticatable
         'profile_image',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::created(function (User $user) {
+            MessagingService::sendToUser(
+                $user,
+                [MessagingService::TYPE_NOTIFICATION, MessagingService::TYPE_EMAIL],
+                'Welcome to Tudera!<br>We are glad to have you here. If you have any questions, feel free to reach out to us.',
+                'Welcome to Tudera',
+            );
+        });
+    }
+
     public function workspaces(): BelongsToMany {
         return $this->belongsToMany(Workspace::class, 'users_to_workspace', 'user_id', 'workspace_id');
     }
@@ -40,7 +55,7 @@ class User extends Authenticatable
         return $this->hasMany(TodoList::class);
     }
 
-    public function notifications(): HasMany 
+    public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class);
     }
