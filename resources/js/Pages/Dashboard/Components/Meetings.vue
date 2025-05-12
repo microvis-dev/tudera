@@ -3,6 +3,8 @@ import MeetingDropdown from './MeetingDropdown.vue';
 const props = defineProps({
     "profileImage": String
 })
+
+// TODO: test
 </script>
 
 <template>

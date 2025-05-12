@@ -5,7 +5,7 @@ import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 import { useTuderaStore } from "../../state/state";
-
+//test
 const tuderaState = useTuderaStore()
 
 defineOptions({
