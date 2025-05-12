@@ -110,7 +110,7 @@ class User extends Authenticatable
     public function getProfileImageAttribute(?string $value): ?string
     {
         if (!$value) {
-            return null;
+            return app('url')->asset("assets/user.png", false);
         }
 
         return Storage::disk("s3")->temporaryUrl($value, now()->addMinutes(5));

@@ -106,7 +106,7 @@ const toSettings = (id) => {
                       :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }"
                       @click="selectWorkspace(workspace)"
                   >
-                      <img src="https://placehold.co/20x20" alt="Workspace Icon" class="w-5 h-5" />
+                      <img :src="workspace.profile_image" alt="Workspace Icon" class="w-5 h-5" />
                       <span class="ml-2">{{ workspace.name }}</span>
                       <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check ml-auto"></i>
                   </div>

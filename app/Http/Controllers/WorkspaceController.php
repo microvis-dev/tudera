@@ -51,6 +51,9 @@ class WorkspaceController extends Controller
             $workspace->name = $request->input('name');
             $workspace->save();
             WorkspaceTableService::initDefaultTables($workspace);
+            if ($request->hasFile('profileImageFile')) {
+                $workspace->uploadProfileImage($request->file('profileImageFile'));
+            }
         });
 
         return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');

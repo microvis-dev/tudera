@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class Workspace extends Model
 {
@@ -63,4 +65,37 @@ class Workspace extends Model
     protected $casts = [
         'name' => 'string',
     ];
+
+    /**
+     * Profilkép feltöltése
+     *
+     * @param UploadedFile $image
+     * @return void
+     */
+    public function uploadProfileImage(UploadedFile $image): void
+    {
+        if ($this->profile_image) {
+            Storage::disk('s3')->delete($this->profile_image);
+        }
+
+        $filename = \Illuminate\Support\Str::uuid() . '.' . $image->getClientOriginalExtension();
+        $path = $image->storeAs('workspace_images', $filename, 's3');
+        $this->profile_image = $path;
+        $this->save();
+    }
+
+    /**
+     * Profilkép URL-jének lekérése
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    public function getProfileImageAttribute(?string $value): ?string
+    {
+        if (!$value) {
+            return app('url')->asset("assets/user.png", false);
+        }
+
+        return Storage::disk("s3")->temporaryUrl($value, now()->addMinutes(5));
+    }
 }

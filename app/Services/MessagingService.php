@@ -17,10 +17,14 @@ class MessagingService
 
     private static function sendMail(string $address, string $subject, string $content)
     {
-        Mail::html($content, function($message) use ($address, $subject) {
-            $message->to($address);
-            $message->subject($subject);
-        });
+        try {
+            Mail::html($content, function($message) use ($address, $subject) {
+                $message->to($address);
+                $message->subject($subject);
+            });
+        } catch (\Exception $e) {
+            \Log::error('Failed to send email: ' . $e->getMessage());
+        }
     }
 
     private static function sendNotification(User $user, $content)
