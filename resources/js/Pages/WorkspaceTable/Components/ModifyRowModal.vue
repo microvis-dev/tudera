@@ -80,14 +80,30 @@ const updateRowOrder = (isUp) => {
                 </button>
             </div>
             <div v-if="selected == 1" class="flex flex-row items-center">
-                <div class="hover:bg-[#3e3f45] hover:scale-125 mx-5 p-2 rounded-lg cursor-pointer">
-                    <svg v-if="arrowState.up" @click="updateRowOrder(true)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                <div
+                    :class="[
+                        'mx-5 p-2 rounded-lg',
+                        arrowState.up
+                            ? 'hover:bg-[#3e3f45] hover:scale-125 cursor-pointer'
+                            : 'opacity-50 cursor-not-allowed'
+                    ]"
+                    @click="arrowState.up && updateRowOrder(true)"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
                     </svg>
                 </div>
-                <div class="hover:bg-[#3e3f45] hover:scale-125 p-2 rounded-lg cursor-pointer">
-                    <svg v-if="arrowState.down" @click="updateRowOrder(false)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                <div
+                    :class="[
+                        'p-2 rounded-lg',
+                        arrowState.down
+                            ? 'hover:bg-[#3e3f45] hover:scale-125 cursor-pointer'
+                            : 'opacity-50 cursor-not-allowed'
+                    ]"
+                    @click="arrowState.down && updateRowOrder(false)"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" />
                     </svg>

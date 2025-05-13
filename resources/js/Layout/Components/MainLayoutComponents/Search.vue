@@ -132,8 +132,8 @@ const deleteNotification = (notification) => {
                 <div class="px-2">
                   <img src="../../../../assets/bell.svg" class="w-7 h-7">
                 </div>
-                <div class="flex flex-col px-2">
-                  <p class="text-sm" v-html="notification.value"></p>
+                <div class="flex flex-col px-2 mt-1">
+                <p class="text-sm" v-html="notification.value"></p>
                 </div>
                 <div>
                   <button @click="deleteNotification(notification)">delete</button>
