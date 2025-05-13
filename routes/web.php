@@ -67,7 +67,7 @@ Route::resource('workspace.table', WorkspaceTableController::class)
 
 // col
 Route::resource('table.columns', WorkspaceColumnController::class)
-    ->only(['create', 'store', 'destroy', 'update']);
+    ->only(['store', 'destroy', 'update']);
 Route::resource('table.values', TableValueController::class)
     ->only(['store', 'update', 'destroy']);
 
