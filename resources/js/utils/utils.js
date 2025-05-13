@@ -1,3 +1,16 @@
+export function getInputType(type) {
+    switch (type) {
+        case "integer":
+            return "number"
+        case "float":
+            return "number"
+        case "datetime":
+            return "datetime-local"
+        default:
+            return "text"
+    }
+}
+
 export function getDate(date) {
     const adjustedDate = new Date(date)
     adjustedDate.setHours(adjustedDate.getHours())
@@ -53,19 +66,6 @@ export function formatDateTimeToISO(date) {
     return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
-export function getInputType(type) {
-    switch (type) {
-        case "integer":
-            return "number"
-        case "float":
-            return "number"
-        case "datetime":
-            return "datetime-local"
-        default:
-            return "text"
-    }
-}
-
 export function getLatestDate(dates) {
     let latestDate = dates.sort((d1, d2) => new Date(d1) - new Date(d2))
     
@@ -74,4 +74,10 @@ export function getLatestDate(dates) {
 
 export function formatDate(date) {
     return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '.' 
+}
+
+export function findLatestDate(dates) {
+    dates = dates.map((date) => new Date(date))
+
+    return new Date(Math.max.apply(null, dates))
 }

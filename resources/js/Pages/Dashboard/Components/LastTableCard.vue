@@ -1,17 +1,12 @@
 <script setup>
 import { computed } from "vue";
+import { findLatestDate } from "@/resources/js/utils/utils";
 
 const props = defineProps({
     table: Object
 })
 
 const formatDate = () => {
-    const findLatestDate = (dates) => {
-        dates = dates.map((date) => new Date(date))
-
-        return new Date(Math.max.apply(null, dates))
-    }
-
     const dates = [
         props.table.updated_at,
         ...props.table.columns.map(col => col.updated_at),

@@ -38,14 +38,14 @@ class StatusSelectValueController extends Controller
         }
         
         if (!$this->statusValueExistsInColumn($validated['column_id'], $validated['value'], $defaultValues)) {
-            $newStatusValue = StatusSelectValue::create([
+            if ($defaultValues->contains('value', $validated['value'])) {
+                return redirect()->back()->with("message", "");
+            }
+            
+            StatusSelectValue::create([
                 'column_id' => $validated['column_id'],
                 'value' => $validated['value'],
             ]);
-
-            if ($defaultValues->contains('value', $newStatusValue->value)) {
-                return redirect()->back()->with("message", "");
-            }
             
             return redirect()->back()->with("success", "Status value added successfully.");
         } else {

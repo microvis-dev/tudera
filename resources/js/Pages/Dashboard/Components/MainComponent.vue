@@ -4,6 +4,7 @@ import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useTuderaStore } from '@/resources/js/state/state';
 import LastTableCard from './LastTableCard.vue';
+import { findLatestDate } from '@/resources/js/utils/utils';
 
 const tuderaState = useTuderaStore()
 const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
@@ -14,9 +15,24 @@ const addNewTable = () => {
 
 const lastTables = computed(() => {
   let tables = selectedWorkspace.value?.tables || []
-  let length = tables.length >= 4 ? 4 : tables.length
 
-  return tables ? [...tables].sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, length) : []
+  const latestDateTables = tables
+    .map((table) => {
+      const dates = [
+        table.updated_at,
+        ...table.columns.map((column) => column.updated_at),
+        ...table.columns.flatMap((column) => column.values.map((value) => value.updated_at))
+      ]
+
+      return {
+        ...table,
+        updated_at: findLatestDate(dates)
+      }
+    })
+
+  return latestDateTables
+    .sort((t1, t2) => t2.updated_at - t1.updated_at)
+    .slice(0, 4)
 })
 
 const redirect = (table) => {
