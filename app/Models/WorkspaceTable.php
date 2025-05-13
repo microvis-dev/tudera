@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\RolesEnum;
 use App\Services\MessagingService;
+use App\Services\PermissionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,9 +46,15 @@ class WorkspaceTable extends Model
      */
     protected $keyType = 'string';
 
-    private static function checkProtected(self $table)
+    private static function checkProtected(self $table, $roles)
     {
-        return $table->protected && !self::$bypassProtectionCheck;
+        if (!self::$bypassProtectionCheck) {
+            if (!PermissionService::userHasWorkspacePerm(auth()->user(), $table->workspace, $roles)) {
+                return true;
+            }
+            return $table->protected;
+        }
+        return false;
     }
 
     /**
@@ -73,18 +81,18 @@ class WorkspaceTable extends Model
         });
 
         self::creating(function ($model) {
-            if (static::checkProtected($model)) throw new \Exception("Cannot create protected tables.");
+            if (static::checkProtected($model, [RolesEnum::ADMIN, RolesEnum::EDITOR])) throw new \Exception("Cannot create protected tables.");
             if (!$model->id) {
                 $model->id = (string) Str::uuid();
             }
         });
 
         self::updating(function ($model) {
-            if (static::checkProtected($model)) throw new \Exception("Cannot update protected tables.");
+            if (static::checkProtected($model, [RolesEnum::ADMIN, RolesEnum::EDITOR])) throw new \Exception("Cannot update protected tables.");
         });
 
         self::deleting(function ($model) {
-            if (static::checkProtected($model)) throw new \Exception("Cannot delete protected tables.");
+            if (static::checkProtected($model, [RolesEnum::ADMIN, RolesEnum::EDITOR])) throw new \Exception("Cannot delete protected tables.");
         });
     }
 

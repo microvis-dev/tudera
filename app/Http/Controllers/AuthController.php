@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\MessagingService;
+use App\Services\WorkspaceService;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
@@ -29,7 +30,16 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
         
-        return redirect()->route("dashboard.index");
+        $user = $request->user();
+        if ($user->workspaces()->exists()) {
+            WorkspaceService::change($user, $user->workspaces()->first());
+
+            //return redirect()->intended('dashboard');
+            return redirect()->route("dashboard.index");
+        } else {
+            return redirect()->route('setup.workspace.create');
+        }
+
     }
 
     public function check_email(Request $request) {

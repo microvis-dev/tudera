@@ -2,7 +2,9 @@
 
 namespace App\Models\Search;
 
+use App\Enums\RolesEnum;
 use App\Models\Workspace;
+use App\Services\PermissionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
@@ -25,6 +27,12 @@ UsersToWorkspaceSearch extends Model
 
         if (!$workspace = Workspace::find($workspaceId)) {
             throw new NotFoundHttpException('Workspace not found.');
+        }
+
+        if ($user = auth()->user()) {
+            if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+                return redirect()->back()->with('error', 'You do not have permission to see the users of this workspace.');
+            }
         }
         $query = $workspace->users()
             ->select('users.id', 'users.name', 'users.email')

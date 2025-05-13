@@ -75,7 +75,6 @@ class UsersToWorkspaceController extends Controller
         }
 
         if ($workspace = Workspace::find($invite->workspace_id)) {
-            WorkspaceService::assign($user, $workspace);
             $invite->used = true;
             $invite->save();
 
