@@ -70,7 +70,7 @@ const checkSelectedWorkspace = (workspace) => {
 }
 
 const toCreateWorkspace = () => {
-  router.get(route('workspaces.create'))
+  router.get(route('setup.workspace.create'))
 }
 
 const go = (id) => {
