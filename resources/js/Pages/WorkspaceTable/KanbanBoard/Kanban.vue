@@ -18,10 +18,12 @@ const table_id = props.columns[0].table_id
 
 const statusColumnId = computed(() => props.selectedKanban?.column_id || null)
 
-const kanbanColumns = computed(() => {
+function groupRowsByOrder(values) {
     const rowGroups = {}
-    props.values?.forEach(value => {
+
+    values?.forEach((value) => {
         const rowKey = `row_${value.order}`
+
         if (!rowGroups[rowKey]) {
             rowGroups[rowKey] = { id: rowKey, values: {} }
         }
@@ -33,26 +35,44 @@ const kanbanColumns = computed(() => {
         }
     })
 
+    return rowGroups
+}
+
+function getTaskValues(row, statColId, columns) {
+    return Object.entries(row.values)
+        .filter(([colId]) => colId != statColId.toString())
+        .map(([colId, valueObj]) => {
+            const column = columns?.find((col) => col.id.toString() == colId.toString())
+
+            return {
+                columnName: column?.name || 'Unknown',
+                colId,
+                value: valueObj.value,
+                value_id: valueObj.id,
+                updated_at: valueObj.updated_at
+            }
+        })
+}
+
+function getStatusValue(task, values) {
+    const targetValue = values.find((v) => task.value_id == v.id)
+
+    if (!targetValue) return null
+
+    return values.find((v) => v.order == targetValue.order && v.column_id == targetValue.column_id)
+}
+
+function buildKanbanColumns(props, table_id, statusColumnId) {
+    const rowGroups = groupRowsByOrder(props.values)
     const statColId = statusColumnId.value
-    const options = (props.selectedKanban?.options || []).filter(option => option.value !== 'None')
+    const options = (props.selectedKanban?.options || [])
+        .filter((option) => option.value != 'None')
 
     return options.map((option) => {
         const columnTasks = Object.values(rowGroups)
-            .filter(row => row.values[statColId]?.value == option.value)
+            .filter((row) => row.values[statColId]?.value == option.value)
             .map((row) => {
-                const taskValues = Object.entries(row.values)
-                    .filter(([colId]) => colId != statColId.toString())
-                    .map(([colId, valueObj]) => {
-                        const column = props.columns?.find(col => col.id.toString() == colId.toString())
-
-                        return {
-                            columnName: column?.name || 'Unknown',
-                            colId,
-                            value: valueObj.value,
-                            value_id: valueObj.id,
-                            updated_at: valueObj.updated_at
-                        }
-                    })
+                const taskValues = getTaskValues(row, statColId, props.columns)
 
                 return {
                     id: row.id,
@@ -63,42 +83,34 @@ const kanbanColumns = computed(() => {
                 }
             })
 
-        const getStatusValue = (task) => {
-            const targetValue = props.values.find((v) => {
-                return task.value_id == v.id
-            })
-
-            const targetStatusValue = props.values.find((v) => {
-                return v.order == targetValue.order && v.column_id == targetValue.column_id
-            })
-
-            return targetStatusValue
-        }
-
         return {
             title: option.value,
             tasks: columnTasks,
             move(task) {
-                const statusValue = getStatusValue(task)
+                const parent = getStatusValue(task, props.values)
 
                 router.put(route("table.values.update", {
                     table: table_id,
-                    value: statusValue.id,
+                    value: parent.id,
                     new_value: option.value
                 }))
             }
         }
     })
-})
+}
 
-const update = (column, event) => {
-    const tasks = event.item._underlying_vm_;
+const kanbanColumns = computed(() =>
+    buildKanbanColumns(props, table_id, statusColumnId)
+)
 
+const updateTasks = (column, event) => {
+    const tasks = event.item._underlying_vm_
+    
     column.move(tasks)
 }
 
 const deleteOption = (column) => {
-    const optionToDelete = props.selectedKanban?.options?.find(opt =>
+    const optionToDelete = props.selectedKanban?.options?.find((opt) =>
         opt.value === column.title &&
         opt.column_id === props.selectedKanban.column_id
     )
@@ -121,9 +133,8 @@ const deleteOption = (column) => {
             }
         })
 
+        emit('back')
     }
-
-    emit('back')
 }
 </script>
 
@@ -144,7 +155,7 @@ const deleteOption = (column) => {
                 <p v-if="column.tasks.length == 0" class="text-gray-400 italic py-4 text-center">
                     No tasks in this column
                 </p>
-                <draggableComponent v-model="column.tasks" @add="update(column, $event)" :animation="200"
+                <draggableComponent v-model="column.tasks" @add="updateTasks(column, $event)" :animation="200"
                     ghost-class="ghost-card" group="tasks" item-key="id">
                     <template #item="{ element }">
                         <TaskCard :index="index" :task="element" class="mt-3 cursor-move"></TaskCard>

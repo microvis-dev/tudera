@@ -28,7 +28,8 @@ class AuthController extends Controller
         };
 
         $request->session()->regenerate();
-        return redirect()->intended('dashboard');
+        
+        return redirect()->route("dashboard.index");
     }
 
     public function check_email(Request $request) {

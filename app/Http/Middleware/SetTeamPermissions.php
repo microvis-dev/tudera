@@ -17,7 +17,7 @@ class SetTeamPermissions
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        $user = $request->user();
 
         if ($user) {
             $team = session(WorkspaceService::WORKSPACE_SESSION);
