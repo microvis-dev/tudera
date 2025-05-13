@@ -10,12 +10,15 @@ use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
+use App\Http\Controllers\StatusSelectValueController;
 use App\Http\Controllers\TodoListController;
+use App\Models\StatusSelectValue;
 
 // index
-Route::resource('/', IndexController::class)->only('index'); // ->middleware('auth')
+Route::resource('/', IndexController::class)->only('index')->middleware('auth');
 
 //auth
 Route::resource('auth', AuthController::class)->only(['index', 'create', 'store', 'destroy']);
@@ -36,19 +39,39 @@ Route::resource('signup', SetupController::class)->only(['create']);
 
 
 // workspaces
-Route::resource('workspaces', WorkspaceController::class)
+Route::get('workspaces/get', [WorkspaceController::class, 'get'])->name('workspaces.get')->middleware('auth');
+Route::post('/workspaces/change', [WorkspaceController::class, 'change'])->name('workspaces.change')->middleware('auth');
+Route::get('workspaces/{id}/settings', [WorkspaceController::class, 'settings'])->name('workspaces.settings')->middleware('auth');
+// users to workspace
+Route::get('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController::class, 'create'])
+    ->name('workspaces.user.create')
+    ->middleware('auth');
+
+Route::post('workspaces/join', [\App\Http\Controllers\UsersToWorkspaceController::class, 'store'])
+    ->name('workspaces.user.store')
+    ->middleware('auth');
+
+Route::get('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'show'])
+    ->name('workspaces.user.show')
+    ->middleware('auth');
+
+Route::post('workspaces/{id}/users/{user}/update', [\App\Http\Controllers\UsersToWorkspaceController::class, 'update'])
+    ->name('workspaces.user.update')
+    ->middleware('auth');
+
+Route::delete('workspaces/{id}/users/{user}', [\App\Http\Controllers\UsersToWorkspaceController::class, 'destroy'])
+    ->name('workspaces.user.destroy')
     ->middleware('auth');
 
 // workspace table
 Route::resource('workspace.table', WorkspaceTableController::class)
     ->shallow()->middleware('auth');
 
-
 // col
 Route::resource('table.columns', WorkspaceColumnController::class)
     ->only(['index', 'create', 'store', 'destroy', 'update']);
 Route::resource('table.values', TableValueController::class)
-    ->only(['create', 'store', 'update', 'destroy']);
+    ->only(['store', 'update', 'destroy']);
 
 // calendar
 Route::resource('calendar', CalendarController::class)
@@ -56,7 +79,8 @@ Route::resource('calendar', CalendarController::class)
 
 // dashboard
 Route::resource('dashboard', DashboardController::class)
-    ->only(['index']);
+    ->only(['index'])
+    ->middleware('auth');
 
 // todo list
 Route::resource('todolist', TodoListController::class)
@@ -65,3 +89,11 @@ Route::resource('todolist', TodoListController::class)
 // settings
 Route::resource('settings', SettingsController::class)
     ->only(['index'])->middleware('auth');
+
+// status select value
+Route::resource('selectvalues', StatusSelectValueController::class)
+    ->only(['store', 'update', 'destroy']);
+
+// notifications
+Route::resource('notification', NotificationController::class)
+    ->only(['store', 'destroy']);

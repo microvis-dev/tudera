@@ -40,8 +40,11 @@ class HandleInertiaRequests extends Middleware
     if ($user) {
         $user->load([
             'workspaces.tables',
+            'workspaces.tables.columns',
+            'workspaces.tables.columns.values',
             'workspaces.calendar_events',
             'todos',
+            'notifications'
         ]);
     }
     

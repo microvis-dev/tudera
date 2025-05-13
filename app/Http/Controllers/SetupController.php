@@ -34,7 +34,7 @@ class SetupController extends Controller
             $users_to_workspace->save();
         });
 
-        return redirect()->route('index')->with('success', 'Workspace created successfully!');
+        return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
         // return redirect()->intended('/')->with('success', 'Workspace created successfully!');
     }
 }

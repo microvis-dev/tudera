@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 11.44.2.
+ * Generated for Laravel 11.44.7.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -3319,6 +3319,20 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
             $instance->precompiler($precompiler);
+        }
+
+        /**
+         * Execute the given callback using a custom echo format.
+         *
+         * @param string $format
+         * @param callable $callback
+         * @return string 
+         * @static 
+         */
+        public static function usingEchoFormat($format, $callback)
+        {
+            /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
+            return $instance->usingEchoFormat($format, $callback);
         }
 
         /**
@@ -23183,6 +23197,36 @@ namespace Illuminate\Routing {
         public static function inertia($uri, $component, $props = [])
         {
             return \Illuminate\Routing\Router::inertia($uri, $component, $props);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Route {
+        /**
+         * 
+         *
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @param mixed $roles
+         * @static 
+         */
+        public static function role($roles = [])
+        {
+            return \Illuminate\Routing\Route::role($roles);
+        }
+
+        /**
+         * 
+         *
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @param mixed $permissions
+         * @static 
+         */
+        public static function permission($permissions = [])
+        {
+            return \Illuminate\Routing\Route::permission($permissions);
         }
 
             }

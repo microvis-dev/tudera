@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RolesEnum;
+use App\Models\Role;
 use App\Models\UsersToWorkspace;
 use App\Models\Workspace;
 use App\Models\WorkspaceTable;
-use App\Models\WorkspaceColumn;
-use App\Models\WorkspaceRow;
-use App\Models\TableValue;
+use App\Services\PermissionService;
+use App\Services\WorkspaceService;
+use App\Services\WorkspaceTableService;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
@@ -29,6 +31,11 @@ class WorkspaceController extends Controller
         }
     }
 
+    function get(Request $request) {
+        $workspace_id = session('current_workspace_id') ?? $request->user()->workspaces()->first()->id;
+        return response()->json($workspace_id);
+    }
+
     function create(Request $request) {
         $user = $request->user();
         $workspaces = $user->workspaces;
@@ -40,40 +47,39 @@ class WorkspaceController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-
         DB::transaction(function () use ($request) {
             $workspace = new Workspace();
             $workspace->name = $request->input('name');
             $workspace->save();
-            
-            $users_to_workspace = new UsersToWorkspace();
-
-            $users_to_workspace->workspace_id = $workspace->id;
-            $users_to_workspace->user_id = $request->user()->id;
-            $users_to_workspace->save();
-
-            // create leads
-            $this->createDefaultLeadsTable($workspace);
-
+            WorkspaceTableService::initDefaultTables($workspace);
+            if ($request->hasFile('profileImageFile')) {
+                $workspace->uploadProfileImage($request->file('profileImageFile'));
+            }
         });
 
-        return redirect()->route('index')->with('success', 'Workspace created successfully!');
+        return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
     }
 
     function show() {
-        
+
     }
 
     public function destroy(Request $request, $id) {
         try {
             $user = $request->user();
-    
+
             $workspace = $user->workspaces()->find($id);
-    
+
             if (!$workspace) {
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to delete it.');
             }
-            
+
+            if ($user) {
+                if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+                    return redirect()->back()->with('error', 'You do not have permission to delete this workspace.');
+                }
+            }
+
             if ($workspace->users()->count() == 1) {
                 $workspace->delete();
             } else {
@@ -83,6 +89,7 @@ class WorkspaceController extends Controller
             return redirect()->back()->with('success', 'Workspace deleted successfully.');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while deleting the workspace. Please try again later.');
         }
     }
@@ -91,18 +98,24 @@ class WorkspaceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|regex:/^\S.*$/'
         ]);
-        $workspace_id = $request->workspace_id;
-    
+        $workspace_id = $request->workspace;
+
         try {
             $user = $request->user();
             $workspace = $user->workspaces()->find($workspace_id);
-    
+
             if (!$workspace) {
                 return redirect()->back()->with('error', 'Workspace not found or you do not have permission to edit it.');
             }
-    
+
+            if ($user) {
+                if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+                    return redirect()->back()->with('error', 'You do not have permission to update this workspace.');
+                }
+            }
+
             $workspace->update(['name' => strip_tags($request->name)]);
-    
+
             return redirect()->back()->with('success', 'Workspace name updated successfully.');
         } catch (Exception $e) {
             dd($e->getMessage());
@@ -111,21 +124,40 @@ class WorkspaceController extends Controller
         }
     }
 
+    public function change(Request $request) {
+        $request->validate([
+            'workspace_id' => 'required|exists:workspaces,id',
+        ]);
 
-    private function createDefaultLeadsTable(Workspace $workspace)
-    {
-        try {
-            $leadsTable = new WorkspaceTable();
-            $leadsTable->workspace_id = $workspace->id;
-            $leadsTable->name = 'Leads';
-            $leadsTable->save();        
-            // todo fill
-        } catch (Exception $e) {
-            Log::error('Error creating default Leads table: ' . $e->getMessage());
-            dd($e->getMessage());
-            throw $e;
-        }
+        $workspace = Workspace::find($request->workspace_id);
+        return WorkspaceService::change($request->user(), $workspace) ? back() : back()->with('error', 'Workspace not found or you do not have permission to change it.');
     }
 
-    
+    public function settings(Request $request, $id)
+    {
+        $user = $request->user();
+        $workspace = $user->workspaces()->findOrFail($id);
+        if (!PermissionService::userHasWorkspacePerm($user, $workspace, [RolesEnum::ADMIN])) {
+            return redirect()->back()->with('error', 'You do not have permission to see this workspace.');
+        }
+
+        $workspaceUsers = UsersToWorkspace::where('workspace_id', $id)
+            ->with(['user', 'role'])
+            ->get()
+            ->map(function ($userWorkspace) {
+                return [
+                    'id' => $userWorkspace->user->id,
+                    'name' => $userWorkspace->user->name,
+                    'email' => $userWorkspace->user->email,
+                    'role' => $userWorkspace->user->roles,
+                    'joined_at' => $userWorkspace->created_at->format('Y-m-d'),
+                ];
+            });
+
+        return inertia('Workspaces/Settings/Index', [
+            'workspace' => $workspace,
+            'url' => url('api/v1/users-to-workspace/datatable')
+        ]);
+    }
 }
+

@@ -6,10 +6,13 @@ const isOpen = ref(false);
 const toggleDropdown = () => {
     isOpen.value = !isOpen.value;
 };
+const props = defineProps({
+    "profileImage": String
+})
 </script>
 
 <template>
-    <div class="flex flex-col pt-5 ps-5 pe-5">
+    <div class="flex flex-col pt-5 ps-5 pe-5 overflow-auto">
         <div class="flex items-center justify-between bg-[#2B2C30] p-2 cursor-pointer transition-all duration-500 ease-in-out"
             @click="toggleDropdown" :class="isOpen ? 'rounded-t-xl' : 'rounded-xl'">
             <div class="flex items-center w-full overflow-hidden">
@@ -31,9 +34,10 @@ const toggleDropdown = () => {
                     </div>
                 </div>
             </div>
-            <div class="bg-pink-500 w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center">
-                use
-            </div>
+            <div>
+        <img :src="props.profileImage" alt="Profile Image" v-if="props.profileImage"
+          class="w-10 h-10 me-2 object-cover rounded-full" />
+      </div>
         </div>
 
         <transition name="slide">

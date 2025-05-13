@@ -15,20 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-        
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        $workspace = Workspace::factory()->create([
-            'name' => 'Test Workspace'
-        ]);
-
-        UsersToWorkspace::factory()->create([
-            'user_id' => $user->id,
-            'workspace_id' => $workspace->id
+        $this->call([
+            RoleSeeder::class,
+            StatusSelectValueSeeder::class,
+            DefaultTableSeeder::class
         ]);
     }
 }

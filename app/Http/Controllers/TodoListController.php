@@ -57,7 +57,7 @@ class TodoListController extends Controller
                 'end_date' => $request->input('end_date'),
             ]);
 
-            return redirect()->route('dashboard.index')->with('success', 'ToDo item updated successfully!');
+            return redirect()->back()->with('success', 'ToDo item updated successfully!');
         } catch (Exception $e) {
             Log::error('Error updating ToDo item: ' . $e->getMessage());
             return redirect()->route('dashboard.index')->with('error', 'An error occurred while updating the ToDo item.');

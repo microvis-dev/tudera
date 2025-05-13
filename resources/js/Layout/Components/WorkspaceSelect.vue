@@ -11,25 +11,28 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
+
 const tuderaState = useTuderaStore()
 
-const page = usePage()
 const user = computed(() => {
-  return page.props.user
-})
-const workspaces = computed(() => {
-  return user.value.workspaces
+  return tuderaState.getUser()
 })
 
-watch(workspaces, () => { // lehetne jobb
-  let updatedWorkspace = workspaces.value.find(workspace => workspace.id === selectedWorkspace.value.id);
+const workspaces = computed(() => {
+  return tuderaState.getWorkspaces()
+})
+
+watch(workspaces, async () => {
+  let updatedWorkspace = workspaces.value.find(workspace => workspace.id == selectedWorkspace.value.id)
+
+  //await tuderaState.refreshSelectedWorkspace()
   emit('select-workspace', updatedWorkspace)
 }, { deep: true });
 
-const emit = defineEmits(['update:modelValue', 'dropdown-change', 'height-change', 'select-workspace']);
 
 const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
-emit('select-workspace', selectedWorkspace.value)
+//emit('select-workspace', selectedWorkspace.value)
 const dropdownOpen = ref(false);
 const dropdownElement = ref(null); // Reference to the dropdown element
 
@@ -52,13 +55,14 @@ const updateDropdownHeight = () => {
   }
 };
 
-const selectWorkspace = (workspace) => {
-  tuderaState.setWorkspace(workspace)
-
-  dropdownOpen.value = false;
-
-  emit('select-workspace', selectedWorkspace.value)
-  router.get(route('dashboard.index'))
+const selectWorkspace = async (workspace) => {
+    try {
+        await tuderaState.setWorkspace(workspace);
+        dropdownOpen.value = false;
+        emit('select-workspace', tuderaState.getSelectedWorkspace());
+    } catch (error) {
+        console.error("Failed to set workspace", error);
+    }
 };
 
 const checkSelectedWorkspace = (workspace) => {
@@ -73,10 +77,14 @@ const go = (id) => {
   router.get(route('workspace.table.index', { workspace: id }))
 }
 
+const toSettings = (id) => {
+    router.get(route('workspaces.settings', { id: id }))
+}
+
 </script>
 
 <template>
-  <div class="relative w-48">
+  <div class="relative w-full">
     <!-- Dropdown Button -->
     <button @click="dropdownOpen = !dropdownOpen"
       class="w-full flex items-center justify-between bg-[#2B2C30] text-white px-4 py-2 border border-gray-600"
@@ -88,23 +96,34 @@ const go = (id) => {
     <!-- Dropdown Menu with transition -->
     <transition name="slide-down">
       <div v-if="dropdownOpen" ref="dropdownElement"
-        class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg shadow-lg py-2">
+        class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg border border-gray-600 shadow-lg py-2">
 
         <!-- Workspaces List -->
-        <div>
-          <div v-for="workspace in workspaces" :key="workspace.id" @click="selectWorkspace(workspace)"
-            class="flex items-center gap-2 py-2 px-2 mb-3 rounded-lg cursor-pointer hover:bg-gray-700"
-            :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }">
-            <img src="https://placehold.co/20x20" alt="Workspace Icon" class="w-5 h-5" />
-            <span class="flex-1">{{ workspace.name }}</span>
-            <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check"></i>
+          <div>
+              <div v-for="workspace in workspaces" :key="workspace.id" class="flex items-center gap-2 py-2 px-2 mb-3 rounded-lg hover:bg-gray-700">
+                  <div
+                      class="flex-1 flex items-center cursor-pointer"
+                      :class="{ 'bg-gray-700': checkSelectedWorkspace(workspace) }"
+                      @click="selectWorkspace(workspace)"
+                  >
+                      <img :src="workspace.profile_image" alt="Workspace Icon" class="w-5 h-5" />
+                      <span class="ml-2">{{ workspace.name }}</span>
+                      <i v-if="checkSelectedWorkspace(workspace)" class="fas fa-check ml-auto"></i>
+                  </div>
+                  <button class="w-5 h-full" @click.stop="toSettings(workspace)">
+                      <img src="../../../assets/settings.svg" />
+                  </button>
+              </div>
           </div>
-        </div>
 
         <!-- Add New Workspace -->
         <div @click="toCreateWorkspace"
           class="px-4 py-2 text-sm flex justify-center text-gray-400 hover:text-white cursor-pointer">
           Add new workspace
+        </div>
+        <div
+          class="px-4 py-2 text-xs flex justify-center text-gray-400 hover:text-white cursor-pointer">
+          Join existing workspace
         </div>
       </div>
     </transition>

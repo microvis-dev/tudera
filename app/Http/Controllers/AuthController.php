@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\MessagingService;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use function PHPUnit\Framework\isEmpty;
 
 class AuthController extends Controller
 {
@@ -23,11 +25,10 @@ class AuthController extends Controller
             throw ValidationException::withMessages([
                 'email' => 'Auth failed'
             ]);
-        }; 
+        };
 
         $request->session()->regenerate();
-
-        return redirect()->intended('dashboard'); 
+        return redirect()->intended('dashboard');
     }
 
     public function check_email(Request $request) {
@@ -35,9 +36,9 @@ class AuthController extends Controller
             $request->validate([
                 'email' => 'required|string|email'
             ]);
-    
+
             $emailExists = User::where('email', $request->email)->exists();
-    
+
             return response()->json(["status" => "success", 'exists' => $emailExists]);
         } catch (Exception $e) {
             return response()->json(["status" => "error", "message" => $e->getMessage()]);
