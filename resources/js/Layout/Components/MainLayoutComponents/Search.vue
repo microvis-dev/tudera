@@ -105,7 +105,9 @@ const redirect = (result) => {
 const notifications = computed(() => tuderaState.getNotifications())
 
 const deleteNotification = (notification) => {
-  router.delete(route('notification.destroy'))
+  router.delete(route('notification.destroy', {
+    notification: notification.id
+  }))
 }
 </script>
 <template>
@@ -140,19 +142,25 @@ const deleteNotification = (notification) => {
             <h1 class="text-lg roboto-font-regular">Notifications</h1>
           </div>
           <div class="flex flex-col items-center">
-            <div v-for="(notification, i) in notifications" class="flex flex-col w-full justify-center rounded-[5px] items">
-              <div class="flex flex-row p-2 justify-between items-start">
+            <div v-for="(notification, i) in notifications" :key="i"
+              class="flex flex-col w-full justify-center rounded-[5px] p-2 border-b border-gray-700 last:border-b-0">
+              <div class="flex flex-row justify-between items-start w-full">
+              <div class="flex flex-row items-start">
                 <div class="px-2">
-                  <img src="../../../../assets/bell.svg" class="w-7 h-7">
+                <img src="../../../../assets/bell.svg" class="w-7 h-7">
                 </div>
                 <div class="flex flex-col px-2">
-                    <p class="text-sm" v-html="notification.value"></p>
+                <p class="text-sm" v-html="notification.value"></p>
                 </div>
-                <div>
-                  <button @click="deleteNotification(notification)">delete</button>
-                </div>
+              </div>
+              <div class="flex flex-col items-end space-y-1">
+                <button @click="deleteNotification(notification)" class="text-xs text-red-500 hover:text-red-400">X</button>
                 <p class="text-xs roboto-font-light text-[#B3B3B3]">{{ formatTimeAgo(notification.updated_at) }}</p>
               </div>
+              </div>
+            </div>
+            <div v-if="notifications.length === 0" class="text-sm text-gray-400 mt-4">
+              No new notifications.
             </div>
           </div>
         </div>

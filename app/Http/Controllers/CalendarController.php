@@ -23,10 +23,6 @@ class CalendarController extends Controller
         ]);    
     }
 
-    public function create() {
-        
-    }
-
     public function store(Request $request)
     {
         try {
@@ -70,7 +66,6 @@ class CalendarController extends Controller
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
             ]);
-            //dd($validated['start_date']);
             
             $workspace = $user->workspaces->find($workspace_id);
             if (!$workspace) {

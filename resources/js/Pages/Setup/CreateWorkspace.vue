@@ -1,9 +1,8 @@
 <script setup>
-import {computed, reactive, ref, watchEffect} from "vue";
+import {computed, ref } from "vue";
 import AuthLayout from "../../Layout/AuthLayout.vue";
 import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import CreateWorkspaceForm from '../../Components/CreateWorkspaceForm.vue';
 
 defineOptions({
     layout: AuthLayout

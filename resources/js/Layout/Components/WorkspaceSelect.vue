@@ -70,7 +70,10 @@ const checkSelectedWorkspace = (workspace) => {
 }
 
 const toCreateWorkspace = () => {
-  router.get(route('workspaces.create'))
+  router.get(route('setup.workspace.create'))
+}
+const toJoinWorkspace = () => {
+  router.get(route('workspaces.user.create'))
 }
 
 const go = (id) => {
@@ -85,7 +88,6 @@ const toSettings = (id) => {
 
 <template>
   <div class="relative w-full">
-    <!-- Dropdown Button -->
     <button @click="dropdownOpen = !dropdownOpen"
       class="w-full flex items-center justify-between bg-[#2B2C30] text-white px-4 py-2 border border-gray-600"
       :class="[dropdownOpen ? 'rounded-tl-lg rounded-tr-lg border-b-0' : 'rounded-lg']">
@@ -93,12 +95,9 @@ const toSettings = (id) => {
       <span class="w-5 h-5 right-0"><img src="../../../assets/openArrow.svg"></span>
     </button>
 
-    <!-- Dropdown Menu with transition -->
     <transition name="slide-down">
       <div v-if="dropdownOpen" ref="dropdownElement"
         class="absolute w-full bg-[#2B2C30] text-white rounded-br-lg rounded-bl-lg border border-gray-600 shadow-lg py-2">
-
-        <!-- Workspaces List -->
           <div>
               <div v-for="workspace in workspaces" :key="workspace.id" class="flex items-center gap-2 py-2 px-2 mb-3 rounded-lg hover:bg-gray-700">
                   <div
@@ -116,12 +115,11 @@ const toSettings = (id) => {
               </div>
           </div>
 
-        <!-- Add New Workspace -->
         <div @click="toCreateWorkspace"
           class="px-4 py-2 text-sm flex justify-center text-gray-400 hover:text-white cursor-pointer">
           Add new workspace
         </div>
-        <div
+        <div @click="toJoinWorkspace"
           class="px-4 py-2 text-xs flex justify-center text-gray-400 hover:text-white cursor-pointer">
           Join existing workspace
         </div>

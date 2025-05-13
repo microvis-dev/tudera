@@ -1,7 +1,7 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { ref, watchEffect, defineOptions, computed, reactive, onMounted } from "vue";
-import { useForm, router } from "@inertiajs/vue3";
+import { ref, defineOptions, computed, reactive, onMounted } from "vue";
+import { useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 defineOptions({

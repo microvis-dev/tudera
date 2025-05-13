@@ -1,8 +1,5 @@
 <script setup>
-import { compile, computed } from "vue";
-import { useTuderaStore } from "@/resources/js/state/state";
-
-const tuderaState = useTuderaStore();
+import { computed } from "vue";
 
 const props = defineProps({
     table: Object

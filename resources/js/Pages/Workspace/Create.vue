@@ -1,5 +1,5 @@
 <script setup>
-import { router, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 
 const props = defineProps({

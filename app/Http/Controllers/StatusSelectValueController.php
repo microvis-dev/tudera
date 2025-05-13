@@ -8,6 +8,16 @@ use Exception;
 
 class StatusSelectValueController extends Controller
 {
+    private function statusValueExistsInColumn($column_id, $value, $defaultValues) {
+        $exists = StatusSelectValue::where('column_id', $column_id)
+                            ->where('value', $value)
+                            ->exists();
+        
+        $inDefaults = $defaultValues->contains('value', $value);
+        
+        return $exists && !$inDefaults;
+    }
+
     public function store(Request $request) {
         $validated = $request->validate([
             'column_id' => 'required|exists:workspace_columns,id', 
@@ -27,23 +37,21 @@ class StatusSelectValueController extends Controller
             }
         }
         
-        $existingColumnValue = StatusSelectValue::where('column_id', $validated['column_id'])
-            ->where('value', $validated['value'])
-            ->first();
-            
-        if (!$existingColumnValue) {
-            StatusSelectValue::create([
+        if (!$this->statusValueExistsInColumn($validated['column_id'], $validated['value'], $defaultValues)) {
+            $newStatusValue = StatusSelectValue::create([
                 'column_id' => $validated['column_id'],
                 'value' => $validated['value'],
             ]);
-        }
-            
-        return redirect()->back()->with("message", "");
-    }
 
-    public function update(Request $request) {
-        
-    }
+            if ($defaultValues->contains('value', $newStatusValue->value)) {
+                return redirect()->back()->with("message", "");
+            }
+            
+            return redirect()->back()->with("success", "Status value added successfully.");
+        } else {
+            return redirect()->back()->with("error", "A status value with this name already exists for this column.");
+        }
+}
 
     public function destroy(StatusSelectValue $selectvalue)
     {
@@ -56,7 +64,7 @@ class StatusSelectValueController extends Controller
             
             return redirect()->back()->with('message', '');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting the status value: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while deleting the status value: ');
         }
     }
 }

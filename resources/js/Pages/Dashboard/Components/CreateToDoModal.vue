@@ -30,9 +30,7 @@ const createTodo = () => {
     }
 };
 
-const close = () => {
-    emit('exit');
-};
+const close = () => emit('exit')
 </script>
 
 <template>

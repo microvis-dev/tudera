@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\MessagingService;
+use App\Services\WorkspaceService;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use function PHPUnit\Framework\isEmpty;
 
 class AuthController extends Controller
 {
@@ -28,7 +27,16 @@ class AuthController extends Controller
         };
 
         $request->session()->regenerate();
-        return redirect()->intended('dashboard');
+        
+        $user = $request->user();
+        if ($user->workspaces()->exists()) {
+            WorkspaceService::change($user, $user->workspaces()->first());
+
+            return redirect()->route("dashboard.index");
+        } else {
+            return redirect()->route('setup.workspace.create');
+        }
+
     }
 
     public function check_email(Request $request) {

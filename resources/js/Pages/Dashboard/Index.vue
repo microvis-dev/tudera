@@ -3,12 +3,10 @@ import { computed } from "vue";
 import StatComponent from "../../Layout/Components/MainLayoutComponents/StatComponent.vue";
 import MainComponent from "./Components/MainComponent.vue";
 import TodoList from "./Components/TodoList.vue";
-import Meetings from "./Components/Meetings.vue";
 import { useTuderaStore } from "../../state/state";
 
 const tuderaState = useTuderaStore()
 
-const user = computed(() => tuderaState.getUser())
 const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const dateCheck = new Date();
@@ -78,11 +76,8 @@ const completedTasksLastMonth = computed(() => {
           </section>
         </section>
         <section class="w-full md:w-4/12">
-          <div class="w-full h-auto md:h-1/2 overflow-y-auto">
+          <div class="w-full h-auto md:h-full overflow-y-auto">
             <TodoList />
-          </div>
-          <div class="w-full h-auto md:h-1/2 overflow-y-auto">
-            <Meetings :profile-image='user.profile_image' />
           </div>
         </section>
       </div>

@@ -1,16 +1,11 @@
 <script setup>
-import { watch } from 'vue';
-import Badge from './Badge.vue'; // !
-
 const props = defineProps({
     task: {
         type: Object,
         required: true
     },
     index: Number
-});
-
-//const emit = defineEmits(['update'])
+})
 
 </script>
 

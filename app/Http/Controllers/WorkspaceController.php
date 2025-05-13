@@ -33,6 +33,13 @@ class WorkspaceController extends Controller
 
     function get(Request $request) {
         $workspace_id = session('current_workspace_id') ?? $request->user()->workspaces()->first()->id;
+        if ($user = auth()->user()) {
+            $selected = Workspace::find($workspace_id);
+            if (WorkspaceService::get($user)?->id !== $selected->id) {
+                WorkspaceService::change($user, $selected);
+            }
+        }
+
         return response()->json($workspace_id);
     }
 
@@ -60,10 +67,6 @@ class WorkspaceController extends Controller
         return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
     }
 
-    function show() {
-
-    }
-
     public function destroy(Request $request, $id) {
         try {
             $user = $request->user();
@@ -89,7 +92,6 @@ class WorkspaceController extends Controller
             return redirect()->back()->with('success', 'Workspace deleted successfully.');
         } catch (Exception $e) {
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
-            dd($e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while deleting the workspace. Please try again later.');
         }
     }
@@ -118,7 +120,6 @@ class WorkspaceController extends Controller
 
             return redirect()->back()->with('success', 'Workspace name updated successfully.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while updating the workspace name.');
         }

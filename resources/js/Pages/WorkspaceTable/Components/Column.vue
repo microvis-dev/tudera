@@ -1,10 +1,10 @@
 <script setup>
-import { useTuderaStore } from '@/resources/js/state/state'
-import { ref,watch, reactive, nextTick } from 'vue'
+import { ref, watch, reactive, nextTick, computed, onBeforeUnmount, onMounted } from 'vue'
 
 const props = defineProps({
     column: Object,
-    maxRows: Number
+    maxRows: Number,
+    columnCount: Number
 })
 
 const emit = defineEmits(['delete', 'update', 'move-left', 'move-right'])
@@ -43,11 +43,8 @@ const showSetting = () => {
     showSettingsBoolean.value = !showSettingsBoolean.value
 }
 
-// Hide settings when clicking outside
-import { onMounted, onBeforeUnmount } from 'vue'
 
 const handleClickOutside = (event) => {
-    // Find the settings menu and the button
     const settingsMenu = document.querySelector('.absolute.right-0.top-full')
     const settingsButton = event.target.closest('.cursor-pointer')
     if (
@@ -67,13 +64,18 @@ onBeforeUnmount(() => {
     document.removeEventListener('mousedown', handleClickOutside)
 })
 
+const arrowState = computed(() => ({
+    left: props.column.order > 2,
+    right: props.column.order < props.columnCount
+}))
+
 // move
-const moveLeft = () => { // ha order = 1 szurke nyil
+const moveLeft = () => { 
     let newOrder = props.column.order - 1
     emit('move-left', props.column, newOrder)
 }
 
-const moveRight = () => { // ha order = col length szurke nyil
+const moveRight = () => { 
     let newOrder = props.column.order + 1
     emit('move-right', props.column, newOrder)
 }
@@ -101,16 +103,19 @@ watch(() => props.maxRows, (newMaxRows) => {
                         d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
             </div>
-            <div v-if="showSettingsBoolean" class="absolute right-0 top-full mt-1 bg-[#3e3f45] rounded-md shadow-lg z-50 p-2 min-w-[150px] text-center">
+            <div v-if="showSettingsBoolean"
+                class="absolute right-0 top-full mt-1 bg-[#3e3f45] rounded-md shadow-lg z-50 p-2 min-w-[150px] text-center">
                 <div class="flex flex-row justify-around">
-                    <button @click="moveLeft" class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
+                    <button @click="moveLeft" v-if="arrowState.left"
+                        class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
                     </button>
-                    <button @click="moveRight" class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
+                    <button @click="moveRight" v-if="arrowState.right"
+                        class="text-sm py-1 px-2 hover:bg-gray-700 rounded text-left">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"

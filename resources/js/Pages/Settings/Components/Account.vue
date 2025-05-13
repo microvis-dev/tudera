@@ -1,17 +1,11 @@
 <script setup>
-import { computed, reactive, watchEffect } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { ref, computed, reactive, watchEffect } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
+import { useTuderaStore } from '@/resources/js/state/state';
 
-const page = usePage()
-
-const user = computed(() => {
-    return page.props.user
-})
-
-const flash = computed(() => {
-    return page.props.flash
-})
+const tuderaState = useTuderaStore()
+const user = computed(() => tuderaState.getUser())
 
 const viewState = reactive({
     formChanged: false,
@@ -19,11 +13,16 @@ const viewState = reactive({
     showDeleteUserForm: false,
     showChangePasswordForm: false,
     toggleForm(formName) {
+        const shouldBecomeVisible = !this[formName];
+
+
         this.showAccountSettingsForm = false;
         this.showDeleteUserForm = false;
-        this.showChangePasswordForm = !showChangePasswordForm;
+        this.showChangePasswordForm = false;
 
-        this[formName] = !this[formName];
+        if (shouldBecomeVisible) {
+            this[formName] = true;
+        }
     }
 })
 
@@ -55,6 +54,24 @@ const deleteUser = () => {
         accountSettingsForm.delete(route('user.destroy', { user: user.value.id }))
     }
 }
+
+const pictureForm = useForm(
+    {
+        pictureImage: null,
+    }
+);
+const handleProfilePictureUpload = () => {
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput.files.length > 0) {
+        pictureForm.pictureImage = fileInput.files[0];
+    } else {
+        pictureForm.pictureImage = null;
+    }
+    const formData = new FormData();
+    formData.append('profileImageFile', pictureForm.pictureImage);
+
+    pictureForm.post(route('user.picture.update'))
+}
 </script>
 <template>
     <div class="py-6 ps-6">
@@ -65,6 +82,13 @@ const deleteUser = () => {
         <section class="h-screen">
             <form>
                 <div class="flex flex-col mb-5">
+                    <label class="text-[#B3B3B3] roboto-font-regular">Profile Picture</label>
+                    <input type="file" accept="image/*" @change="handleProfilePictureUpload"
+                        class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm">
+                </div>
+            </form>
+            <form>
+                <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Name</label>
                     <input type="text"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
@@ -73,7 +97,7 @@ const deleteUser = () => {
             </form>
             <form class="flex flex-col mb-5">
                 <label class="mb-2 text-[#B3B3B3] roboto-font-regular">Password</label>
-                <button @click.prevent="viewState.toggleForm('showChangePasswordForm')" disabled
+                <button @click.prevent="viewState.toggleForm('showChangePasswordForm')"
                     class="px-4 py-2 w-fit font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Change password
                 </button>
@@ -81,32 +105,34 @@ const deleteUser = () => {
             <form v-if="viewState.showChangePasswordForm" @submit.prevent="saveUserChanges" class="space-y-4">
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Old Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.old_password">
+                        v-model="accountSettingsForm.old_password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">New Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.password">
+                        v-model="accountSettingsForm.password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Confirm New Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.password_confirmation">
+                        v-model="accountSettingsForm.password_confirmation">
                 </div>
                 <div class="flex justify-end">
-                    <button v-if="viewState.formChanged" type="submit"
-                        class="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit"
+                        :disabled="accountSettingsForm.old_password === '' && accountSettingsForm.password === '' && accountSettingsForm.password_confirmation === ''"
+                        class="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        :class="{ 'opacity-50 cursor-not-allowed': accountSettingsForm.old_password === '' && accountSettingsForm.password === '' && accountSettingsForm.password_confirmation === '' }">
                         Save
                     </button>
                 </div>
             </form>
             <div class="h-80 content-end">
                 <div class="flex flex-row justify-around">
-                    <button type="submit" disabled
+                    <button type="submit"
                         class="px-4 py-2 font-medium text-white bg-red-600 rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                         Delete Account
                     </button>

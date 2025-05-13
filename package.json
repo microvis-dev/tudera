@@ -4,7 +4,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test": "vitest"
+        "test": "vitest",
+        "test:integration": "mocha"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^5.2.4",
@@ -43,9 +44,11 @@
         "datatables.net-vue3": "^3.0.4",
         "jszip": "^3.10.1",
         "lv3-datatable": "^0.1.1",
+        "mocha": "11.2.2",
         "mosha-vue-toastify": "^1.0.23",
         "pdfmake": "^0.2.20",
         "pinia": "^3.0.1",
+        "selenium-webdriver": "^4.32.0",
         "vbootstrap": "^1.0.0",
         "vue3-draggable-next": "^4.1.4",
         "vue3-select2-component": "^0.1.7",

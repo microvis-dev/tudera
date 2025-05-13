@@ -12,14 +12,6 @@ use Exception;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      * @throws ValidationException
      */
@@ -30,7 +22,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:8|max:255',
             'phone' => 'string',
-            'profileImageFile' => 'required|image|mimes:png,jpg|max:2048',
+            'profileImageFile' => 'nullable|image|mimes:png,jpg|max:2048',
         ]);
 
         $redirectTo = $request->input('redirectTo', 'setup.workspace.create');
@@ -53,14 +45,6 @@ class UserController extends Controller
                 ->withErrors(['error' => 'Failed to create user'])
                 ->withInput();
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
     }
 
     public function update(Request $request, User $user)
@@ -99,7 +83,6 @@ class UserController extends Controller
 
             return redirect()->route('settings.index')->with('success', 'Profile updated successfully.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             return back()->withErrors(['error' => 'Failed to update profile.'])->withInput();
         }
     }
@@ -126,7 +109,6 @@ class UserController extends Controller
 
             return redirect()->route('auth.index')->with('success', 'Your account has been deleted successfully.');
         } catch (Exception $e) {
-            dd($e->getMessage());
             return back()->withErrors(['error' => 'Failed to delete account.']);
         }
     }

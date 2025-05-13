@@ -1,18 +1,14 @@
 <script setup>
 import { computed, reactive, watchEffect } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import Account from './Components/Account.vue';
+import { useTuderaStore } from '../../state/state';
 
-const page = usePage()
+const tuderaState = useTuderaStore()
 
-const user = computed(() => {
-    return page.props.user
-})
+const user = computed(() => tuderaState.getUser())
 
-const flash = computed(() => {
-    return page.props.flash
-})
 
 const viewState = reactive({
     formChanged: false,
@@ -63,13 +59,10 @@ const deleteUser = () => {
 
 <template>
     <div class="flex flex-col md:flex-row min-h-screen">
-        <!-- Sidebar Section -->
         <section class="w-full md:w-1/3 md:max-w-xs lg:max-w-sm xl:max-w-md md:h-screen flex flex-col border-b md:border-b-0 md:border-r border-slate-300 dark:border-slate-700 dark:bg-slate-800">
-            <!-- Sidebar Header -->
             <div class="p-4 sm:p-6 flex flex-row justify-start items-center border-b border-slate-300 dark:border-slate-700">
                 <h1 class="text-xl sm:text-2xl roboto-font-bold ml-2 sm:ml-0">Settings</h1>
             </div>
-            <!-- Sidebar Menu -->
             <nav class="flex flex-col p-4 sm:p-6 md:items-stretch md:flex-grow md:overflow-y-auto items" aria-label="Settings navigation">
                 <div class="menuItems w-full">
                     <h2
@@ -86,7 +79,6 @@ const deleteUser = () => {
             </nav>
         </section>
 
-        <!-- Main Content Section -->
         <main class="w-full md:w-2/3 p-4 sm:p-6 md:h-screen md:overflow-y-auto">
             <Account v-if="viewState.showAccountSettings" />
             

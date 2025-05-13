@@ -6,7 +6,6 @@ use App\Http\Controllers\TableValueController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkspaceColumnController;
 use App\Http\Controllers\WorkspaceController;
-use App\Http\Controllers\WorkspaceRowController;
 use App\Http\Controllers\WorkspaceTableController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CalendarController;
@@ -15,7 +14,6 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\StatusSelectValueController;
 use App\Http\Controllers\TodoListController;
-use App\Models\StatusSelectValue;
 
 // index
 Route::resource('/', IndexController::class)->only('index')->middleware('auth');
@@ -69,13 +67,13 @@ Route::resource('workspace.table', WorkspaceTableController::class)
 
 // col
 Route::resource('table.columns', WorkspaceColumnController::class)
-    ->only(['index', 'create', 'store', 'destroy', 'update']);
+    ->only(['store', 'destroy', 'update']);
 Route::resource('table.values', TableValueController::class)
     ->only(['store', 'update', 'destroy']);
 
 // calendar
 Route::resource('calendar', CalendarController::class)
-    ->only(['index', 'create', 'update', 'store', 'destroy']);
+    ->only(['index', 'update', 'store', 'destroy']);
 
 // dashboard
 Route::resource('dashboard', DashboardController::class)
@@ -84,7 +82,7 @@ Route::resource('dashboard', DashboardController::class)
 
 // todo list
 Route::resource('todolist', TodoListController::class)
-    ->only(['show', 'store', 'update', 'destroy']);
+    ->only(['store', 'update', 'destroy']);
 
 // settings
 Route::resource('settings', SettingsController::class)
@@ -92,7 +90,7 @@ Route::resource('settings', SettingsController::class)
 
 // status select value
 Route::resource('selectvalues', StatusSelectValueController::class)
-    ->only(['store', 'update', 'destroy']);
+    ->only(['store', 'destroy']);
 
 // notifications
 Route::resource('notification', NotificationController::class)

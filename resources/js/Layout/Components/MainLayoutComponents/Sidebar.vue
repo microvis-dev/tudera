@@ -1,12 +1,11 @@
 <script setup>
-import { computed, reactive, ref, inject, onMounted } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { computed, ref, onMounted } from 'vue';
+import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import dashboardIcon from '../../../../assets/graphUp.svg';
 import lead from '../../../../assets/lead.svg';
 import schedule from '../../../../assets/schedule.svg';
 import WorkspaceSelect from '../../Components/WorkspaceSelect.vue';
-import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 import { useTuderaStore } from '@/resources/js/state/state';
 
 const tuderaState = useTuderaStore()
@@ -67,7 +66,7 @@ const processTablesData = (workspaceTables) => {
 }
 
 
-const redirectToHome = () => { // click cursor
+const redirectToHome = () => {
   router.get(route('dashboard.index'))
 }
 

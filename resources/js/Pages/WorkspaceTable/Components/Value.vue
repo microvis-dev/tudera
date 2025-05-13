@@ -57,27 +57,6 @@ const saveEdit = () => {
     editState.isEditing = false
 }
 
-const saveEditOrDeleteIfEmpty = () => {
-    if (!editState.editedValue.trim() && props.value?.value) {
-        if (confirm("Are u sure?")) {
-            emit("update", "", props.value)
-        } else {
-            editState.editedValue = props.value.value
-        }
-    }
-    else if (editState.editedValue.trim() && editState.editedValue !== props.value?.value) {
-        emit("update", editState.editedValue, props.value)
-    }
-
-    editState.isEditing = false
-}
-
-const deleteValue = () => {
-    if (confirm("Are u sure?")) {
-        emit('delete', props.value)
-    }
-}
-
 // hideCustomStatusModal
 const hideCustomStatusModal = () => {
     showModal.value = false
@@ -85,15 +64,20 @@ const hideCustomStatusModal = () => {
 
 const saveCustomStatus = (column, value) => {
     router.post(route('selectvalues.store'), { column_id: column.id, value: value })
+    
+    editState.editedValue = value
+    saveEdit()
 }
+
 </script>
 
 <template>
     <div class="flex flex-col items-center justify-center">
         <div class="flex items-center justify-center py-2 px-3 duration-150 rounded-md w-full">
-            <div class="cursor-pointer text-center w-full" @dblclick="enableEditing">
+            <div id="valueEditor" class="cursor-pointer text-center w-full" @dblclick="enableEditing">
                 <div v-if="editState.isEditing">
-                    <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit">
+                    <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit"
+                        id="statusSelect">
                         <option v-for="option in columnOptions" :key="option.value" :value="option.value">
                             {{ option.value }}
                         </option>
@@ -103,7 +87,7 @@ const saveCustomStatus = (column, value) => {
                         ref="el => editState.valueInputTextField = el" :type="inputType" />
                 </div>
                 <div v-else class="text-center">
-                    <span class=" font-medium text-sm truncate">{{ value.value }}</span>
+                    <span id="valueSpan" class="font-medium text-sm truncate">{{ value.value }}</span>
                 </div>
             </div>
         </div>
