@@ -56,18 +56,14 @@ const updateIsDone = (todo) => {
     }, 5000);
 }
 
-const workspaceEvents = computed(() => tuderaState.getWorkspaceEvents()) 
-const eventCheckboxes = ref(Array(workspaceEvents.value.length).fill(false))
-
 const deleteCalendarEvent = (event, i) => {
-    setTimeout(() => {
-        if (eventCheckboxes.value[i]) {
-            router.delete(route('calendar.destroy', {
-                calendar: event.id
-            }))
-        }
-    }, 5000)
+    router.delete(route('calendar.destroy', {
+        calendar: event.id
+    }));
 }
+
+const workspaceEvents = computed(() => tuderaState.getWorkspaceEvents())
+const eventCheckboxes = ref(Array(workspaceEvents.value.length).fill(false))
 viewState.viewType = 'todos';
 </script>
 <template>
@@ -126,8 +122,10 @@ viewState.viewType = 'todos';
                 </div>
             </div>
             <div v-if="viewState.viewType === 'events'">
-                <div v-for="(event) in workspaceEvents" class="flex flex-row py-2 w-full items-center justify-center">
-                    <MeetingDropdown :name="event.title" :end-date="formatDate(event.end_date)"/>
+                <div v-for="(event, index) in workspaceEvents"
+                    class="flex flex-row py-2 w-full items-center justify-center">
+                    <MeetingDropdown :name="event.title" :end-date="formatDate(event.end_date)"
+                        @delete-calendar-event="deleteCalendarEvent(event, index)" />
                 </div>
             </div>
         </fieldset>

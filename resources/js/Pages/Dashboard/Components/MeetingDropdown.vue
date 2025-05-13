@@ -10,6 +10,10 @@ const props = defineProps({
     "name": String,
     "endDate": Date,
 })
+const emit = defineEmits(['deleteCalendarEvent'])
+const deleteCalendarEvent = () => {
+    emit('deleteCalendarEvent')
+}
 </script>
 
 <template>
@@ -46,7 +50,7 @@ const props = defineProps({
                         <p class="inline-block pe-3 roboto-font-light text-[#B3B3B3]">{{props.endDate}} </p>
                     </div>
                     <div class="flex justify-center">
-                        <button class="mt-4 bg-blue-500 p-2 px-4 rounded-full">XD</button>
+                        <button @click="deleteCalendarEvent()" class="mt-4 bg-red-500 p-2 px-4 rounded-full">Delete event</button>
                     </div>
                 </div>
             </div>
