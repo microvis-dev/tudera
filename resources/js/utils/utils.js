@@ -1,44 +1,44 @@
 export function getDate(date) {
-    const adjustedDate = new Date(date);
-    adjustedDate.setHours(adjustedDate.getHours());
-    adjustedDate.setMonth(adjustedDate.getMonth());
+    const adjustedDate = new Date(date)
+    adjustedDate.setHours(adjustedDate.getHours())
+    adjustedDate.setMonth(adjustedDate.getMonth())
 
-    return adjustedDate;
+    return adjustedDate
 }
 
 export function getWorkspaceEventDate(date) {
     const adjustedDate = getDate(date)
 
-    adjustedDate.setHours(adjustedDate.getHours() + 2);
-    return adjustedDate;
+    adjustedDate.setHours(adjustedDate.getHours() + 2)
+    return adjustedDate
 }
 
 export function formatTimeAgo(dateInput) {
-    if (!dateInput) return 'Never updated';
+    if (!dateInput) return 'Never updated'
 
-    const date = new Date(dateInput);
+    const date = new Date(dateInput)
     if (isNaN(date.getTime())) {
-        return 'Invalid date'; 
+        return 'Invalid date' 
     }
 
-    const now = new Date();
-    const diffMs = now - date;
+    const now = new Date()
+    const diffMs = now - date
 
-    const diffSec = Math.floor(diffMs / 1000);
-    const diffMin = Math.floor(diffSec / 60);
-    const diffHour = Math.floor(diffMin / 60);
-    const diffDay = Math.floor(diffHour / 24);
+    const diffSec = Math.floor(diffMs / 1000)
+    const diffMin = Math.floor(diffSec / 60)
+    const diffHour = Math.floor(diffMin / 60)
+    const diffDay = Math.floor(diffHour / 24)
 
     if (diffDay > 0) {
-        return `${diffDay} ${diffDay === 1 ? 'day' : 'days'} ago`;
+        return `${diffDay} ${diffDay === 1 ? 'day' : 'days'} ago`
     } else if (diffHour > 0) {
-        return `${diffHour} ${diffHour === 1 ? 'hour' : 'hours'} ago`;
+        return `${diffHour} ${diffHour === 1 ? 'hour' : 'hours'} ago`
     } else if (diffMin > 0) {
-        return `${diffMin} ${diffMin === 1 ? 'minute' : 'minutes'} ago`;
-    } else if (diffSec >= 0) { // Check for non-negative seconds for "just now"
-        return 'Just now';
+        return `${diffMin} ${diffMin === 1 ? 'minute' : 'minutes'} ago`
+    } else if (diffSec >= 0) { 
+        return 'Just now'
     } else {
-        return 'In the future'; // Or handle future dates as needed
+        return 'In the future' 
     }
 }
 

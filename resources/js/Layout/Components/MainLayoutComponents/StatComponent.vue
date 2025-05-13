@@ -14,7 +14,7 @@ const percentage = computed(() => {
     
     if (isNaN(value)) return 0
 
-    return value == Infinity ? "?" : value // ?
+    return value == Infinity ? " ∞" : value
 })
 
 </script>
