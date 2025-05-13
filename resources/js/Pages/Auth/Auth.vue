@@ -1,17 +1,14 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { computed, defineOptions, reactive } from "vue";
+import { computed, reactive } from "vue";
 import { useForm, router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import axios from "axios";
 import { useTuderaStore } from "../../state/state";
-//test
-const tuderaState = useTuderaStore()
 
 defineOptions({
     layout: AuthLayout
 })
-
 
 const viewState = reactive({
     isSignIn: true,
@@ -44,7 +41,7 @@ const isEmailExists = async (email) => {
             viewState.errorField = response.data.message
             return false
         }
-        else{
+        else {
             viewState.errorField = ""
         }
 
@@ -55,7 +52,7 @@ const isEmailExists = async (email) => {
 };
 
 const authErrors = computed(() => {
-    return tuderaState.getErrors()
+    return useTuderaStore().getErrors()
 })
 
 const continueAuth = async () => {
@@ -66,21 +63,21 @@ const continueAuth = async () => {
             viewState.authMethodDisabled = true
             viewState.passwordField = true
         }
-    else {
-        viewState.errorField = "This email address does not exist. Please sign up.";
-    }
-    } else {
-    if (!isExists) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(authForm.email)) {
-        viewState.errorField = "Please enter a valid email address.";
-        return;
+        else {
+            viewState.errorField = "This email address does not exist. Please sign up.";
         }
-        localStorage.setItem('userEmail', authForm.email)
-        router.get(route('signup.create'))
     } else {
-        viewState.errorField = "The email address already exist."
-    }
+        if (!isExists) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(authForm.email)) {
+                viewState.errorField = "Please enter a valid email address.";
+                return;
+            }
+            localStorage.setItem('userEmail', authForm.email)
+            router.get(route('signup.create'))
+        } else {
+            viewState.errorField = "The email address already exist."
+        }
 
     }
 }
@@ -97,7 +94,7 @@ const login = (() => {
             <img src="../../../assets/tuderaLogoWhite.svg" alt="Tudera Logo">
         </header>
         <main class="flex flex-col items-center py-10">
-            <h1 class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
+            <h1 id="welcomeMessage" class="roboto-font-bold text-3xl capitalize p-1">{{ message }}</h1>
             <p class="text-[#B3B3B3] text-center roboto-font-light text-sm mb-5 w-72">{{ message }}, Please enter
                 your details</p>
             <form @submit.prevent="" class="flex flex-col w-full">
@@ -124,7 +121,8 @@ const login = (() => {
                         placeholder=" "
                         :class="{ 'border outline-none ring-red-600 border-red-600': viewState.errorField !== '' }" />
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500 z-10" 
+                        stroke="currentColor"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500 z-10"
                         v-if="viewState.errorField !== ''">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
@@ -142,7 +140,8 @@ const login = (() => {
                         placeholder=" "
                         :class="{ 'border outline-none ring-red-600 border-red-600': authErrors.email }" />
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500 z-10" 
+                        stroke="currentColor"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-500 z-10"
                         v-if="authErrors.email">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
@@ -150,7 +149,9 @@ const login = (() => {
                     <label for="password"
                         class="absolute left-3 rounded-md top-1 text-[#B3B3B3] text-sm transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:[#B3B3B3] peer-focus:top-1 peer-focus:text-sm peer-focus:text-blue-500 roboto-font-light"
                         :class="{ 'text-red-500': authErrors.email }">Password</label>
-                    <span class="text-sm text-red-500 block mt-1" v-if="authErrors.email"><p>The password is incorrect</p></span>
+                    <span class="text-sm text-red-500 block mt-1" v-if="authErrors.email">
+                        <p>The password is incorrect</p>
+                    </span>
                 </div>
                 <div class="inline-flex items-center mb-5">
                     <label class="relative flex cursor-pointer items-center rounded-full p-3" for="ripple-on"
@@ -178,7 +179,8 @@ const login = (() => {
             </form>
         </main>
         <footer class="flex justify-center py-5">
-            <p v-if="!viewState.passwordField" class="text-center roboto-font-light text-sm w-xl mb-5 px-3 text-[#B3B3B3]">Join thousands of
+            <p v-if="!viewState.passwordField"
+                class="text-center roboto-font-light text-sm w-xl mb-5 px-3 text-[#B3B3B3]">Join thousands of
                 businesses
                 who trust our CRM to
                 streamline their customer relationships.

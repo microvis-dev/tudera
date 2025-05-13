@@ -1,9 +1,10 @@
 <script setup>
 import TaskCard from "./Components/TaskCard.vue"
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed } from 'vue'
 import draggableComponent from 'vue3-draggable-next'
 import { router } from "@inertiajs/vue3"
 import { route } from "ziggy-js"
+import { getLatestDate, formatDate } from "@/resources/js/utils/utils"
 
 const props = defineProps({
     selectedKanban: Object,
@@ -27,27 +28,29 @@ const kanbanColumns = computed(() => {
 
         rowGroups[rowKey].values[value.column_id] = {
             id: value.id,
-            value: value.value
+            value: value.value,
+            updated_at: value.updated_at
         }
     })
 
     const statColId = statusColumnId.value
     const options = (props.selectedKanban?.options || []).filter(option => option.value !== 'None')
 
-    return options.map((option, i) => {
+    return options.map((option) => {
         const columnTasks = Object.values(rowGroups)
             .filter(row => row.values[statColId]?.value == option.value)
-            .map((row, rowIndex) => {
+            .map((row) => {
                 const taskValues = Object.entries(row.values)
                     .filter(([colId]) => colId != statColId.toString())
-                    .map(([colId, valueObj], cIndex) => {
+                    .map(([colId, valueObj]) => {
                         const column = props.columns?.find(col => col.id.toString() == colId.toString())
 
                         return {
                             columnName: column?.name || 'Unknown',
                             colId,
                             value: valueObj.value,
-                            value_id: valueObj.id
+                            value_id: valueObj.id,
+                            updated_at: valueObj.updated_at
                         }
                     })
 
@@ -55,7 +58,7 @@ const kanbanColumns = computed(() => {
                     id: row.id,
                     title: taskValues[0]?.value || 'Untitled',
                     details: taskValues.slice(1),
-                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '.',
+                    date: formatDate(getLatestDate(taskValues.map((value) => value.updated_at))),
                     value_id: row.values[statColId].id
                 }
             })
@@ -76,11 +79,11 @@ const kanbanColumns = computed(() => {
             title: option.value,
             tasks: columnTasks,
             move(task) {
-                const parent = getStatusValue(task)
+                const statusValue = getStatusValue(task)
 
                 router.put(route("table.values.update", {
                     table: table_id,
-                    value: parent.id,
+                    value: statusValue.id,
                     new_value: option.value
                 }))
             }
