@@ -105,7 +105,9 @@ const redirect = (result) => {
 const notifications = computed(() => tuderaState.getNotifications())
 
 const deleteNotification = (notification) => {
-  router.delete(route('notification.destroy'))
+  router.delete(route('notification.destroy', {
+    notification: notification.id
+  }))
 }
 </script>
 <template>
@@ -140,13 +142,14 @@ const deleteNotification = (notification) => {
             <h1 class="text-lg roboto-font-regular">Notifications</h1>
           </div>
           <div class="flex flex-col items-center">
-            <div v-for="(notification, i) in notifications" class="flex flex-col w-full justify-center rounded-[5px] items">
+            <div v-for="(notification, i) in notifications"
+              class="flex flex-col w-full justify-center rounded-[5px] items">
               <div class="flex flex-row p-2 justify-between items-start">
                 <div class="px-2">
                   <img src="../../../../assets/bell.svg" class="w-7 h-7">
                 </div>
                 <div class="flex flex-col px-2">
-                    <p class="text-sm" v-html="notification.value"></p>
+                  <p class="text-sm" v-html="notification.value"></p>
                 </div>
                 <div>
                   <button @click="deleteNotification(notification)">delete</button>

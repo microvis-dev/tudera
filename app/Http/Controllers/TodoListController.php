@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class TodoListController extends Controller
 {
-    public function show() {
-
-    }
 
     public function store(Request $request) {
         $request->validate([
@@ -32,7 +29,6 @@ class TodoListController extends Controller
 
             return redirect()->back()->with('success', 'ToDo item created successfully!');
         } catch (Exception $e) {
-            dd($e->getMessage());
             Log::error('Hiba WorkspaceController: ' . $e->getMessage());
             return redirect()->route('dashboard.index')->with('error', 'An error occurred while updating the workspace name.');
         }

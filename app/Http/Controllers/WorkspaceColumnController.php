@@ -11,13 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class WorkspaceColumnController extends Controller
 {
-    public function index(Request $request, $table_id) {
-
-    }
-
-    function show() {
-
-    }
 
     public function create(Request $request, $table_id) {
         try {

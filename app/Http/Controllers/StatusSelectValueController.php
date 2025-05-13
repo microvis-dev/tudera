@@ -41,10 +41,6 @@ class StatusSelectValueController extends Controller
         return redirect()->back()->with("message", "");
     }
 
-    public function update(Request $request) {
-        
-    }
-
     public function destroy(StatusSelectValue $selectvalue)
     {
         try {

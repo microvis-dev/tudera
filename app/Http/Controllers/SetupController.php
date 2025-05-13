@@ -13,7 +13,7 @@ class SetupController extends Controller
         return inertia('Setup/CreateUser');
     }
 
-    public function createWorkspace(Request $request) {
+    public function createWorkspace() {
         return inertia('Setup/CreateWorkspace');
     }
 
@@ -35,6 +35,5 @@ class SetupController extends Controller
         });
 
         return redirect()->route('dashboard.index')->with('success', 'Workspace created successfully!');
-        // return redirect()->intended('/')->with('success', 'Workspace created successfully!');
     }
 }

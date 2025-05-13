@@ -21,7 +21,7 @@ class TableValue extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [ // !id
+    protected $fillable = [ 
         'column_id',
         'order',
         'value'
