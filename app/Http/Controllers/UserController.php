@@ -22,7 +22,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:8|max:255',
             'phone' => 'string',
-            'profileImageFile' => 'required|image|mimes:png,jpg|max:2048',
+            'profileImageFile' => 'nullable|image|mimes:png,jpg|max:2048',
         ]);
 
         $redirectTo = $request->input('redirectTo', 'setup.workspace.create');
