@@ -13,11 +13,16 @@ const viewState = reactive({
     showDeleteUserForm: false,
     showChangePasswordForm: false,
     toggleForm(formName) {
+        const shouldBecomeVisible = !this[formName];
+
+        
         this.showAccountSettingsForm = false;
         this.showDeleteUserForm = false;
-        this.showChangePasswordForm = !showChangePasswordForm;
+        this.showChangePasswordForm = false;
 
-        this[formName] = !this[formName];
+        if (shouldBecomeVisible) {
+            this[formName] = true;
+        }
     }
 })
 
@@ -67,7 +72,7 @@ const deleteUser = () => {
             </form>
             <form class="flex flex-col mb-5">
                 <label class="mb-2 text-[#B3B3B3] roboto-font-regular">Password</label>
-                <button @click.prevent="viewState.toggleForm('showChangePasswordForm')" disabled
+                <button @click.prevent="viewState.toggleForm('showChangePasswordForm')"
                     class="px-4 py-2 w-fit font-medium text-white bg-blue-600 rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Change password
                 </button>
@@ -77,23 +82,25 @@ const deleteUser = () => {
                     <label class="text-[#B3B3B3] roboto-font-regular">Old Password</label>
                     <input type="text"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.old_password">
+                        v-model="accountSettingsForm.old_password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">New Password</label>
                     <input type="text"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.password">
+                        v-model="accountSettingsForm.password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Confirm New Password</label>
                     <input type="text"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
-                        :value="accountSettingsForm.password_confirmation">
+                        v-model="accountSettingsForm.password_confirmation">
                 </div>
                 <div class="flex justify-end">
-                    <button v-if="viewState.formChanged" type="submit"
-                        class="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit"
+                        :disabled="accountSettingsForm.old_password === '' && accountSettingsForm.password === '' && accountSettingsForm.password_confirmation === ''"
+                        class="px-4 py-2 font-medium text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        :class="{ 'opacity-50 cursor-not-allowed': accountSettingsForm.old_password === '' && accountSettingsForm.password === '' && accountSettingsForm.password_confirmation === '' }">
                         Save
                     </button>
                 </div>
