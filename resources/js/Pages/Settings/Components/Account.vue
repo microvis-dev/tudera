@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, watchEffect } from 'vue';
+import { ref, computed, reactive, watchEffect } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useTuderaStore } from '@/resources/js/state/state';
@@ -15,7 +15,7 @@ const viewState = reactive({
     toggleForm(formName) {
         const shouldBecomeVisible = !this[formName];
 
-        
+
         this.showAccountSettingsForm = false;
         this.showDeleteUserForm = false;
         this.showChangePasswordForm = false;
@@ -54,6 +54,24 @@ const deleteUser = () => {
         accountSettingsForm.delete(route('user.destroy', { user: user.value.id }))
     }
 }
+
+const pictureForm = useForm(
+    {
+        pictureImage: null,
+    }
+);
+const handleProfilePictureUpload = () => {
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput.files.length > 0) {
+        pictureForm.pictureImage = fileInput.files[0];
+    } else {
+        pictureForm.pictureImage = null;
+    }
+    const formData = new FormData();
+    formData.append('profileImageFile', pictureForm.pictureImage);
+
+    pictureForm.post(route('user.picture.update'))
+}
 </script>
 <template>
     <div class="py-6 ps-6">
@@ -62,6 +80,13 @@ const deleteUser = () => {
     </div>
     <div class="p-6 flex-col items-start">
         <section class="h-screen">
+            <form>
+                <div class="flex flex-col mb-5">
+                    <label class="text-[#B3B3B3] roboto-font-regular">Profile Picture</label>
+                    <input type="file" accept="image/*" @change="handleProfilePictureUpload"
+                        class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm">
+                </div>
+            </form>
             <form>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Name</label>
