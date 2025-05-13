@@ -80,19 +80,19 @@ const deleteUser = () => {
             <form v-if="viewState.showChangePasswordForm" @submit.prevent="saveUserChanges" class="space-y-4">
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Old Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
                         v-model="accountSettingsForm.old_password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">New Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
                         v-model="accountSettingsForm.password">
                 </div>
                 <div class="flex flex-col mb-5">
                     <label class="text-[#B3B3B3] roboto-font-regular">Confirm New Password</label>
-                    <input type="text"
+                    <input type="password"
                         class="px-3 py-2 bg-[#1C1D21] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 placeholder-gray-500 text-sm"
                         v-model="accountSettingsForm.password_confirmation">
                 </div>
