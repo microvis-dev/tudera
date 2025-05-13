@@ -33,6 +33,13 @@ class WorkspaceController extends Controller
 
     function get(Request $request) {
         $workspace_id = session('current_workspace_id') ?? $request->user()->workspaces()->first()->id;
+        if ($user = auth()->user()) {
+            $selected = Workspace::find($workspace_id);
+            if (WorkspaceService::get($user)?->id !== $selected->id) {
+                WorkspaceService::change($user, $selected);
+            }
+        }
+
         return response()->json($workspace_id);
     }
 
