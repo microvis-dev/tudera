@@ -87,12 +87,12 @@ watchEffect(() => {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-      <div class="flex flex-row h-fit md:mt-0">
-        <div class="w-4/5">
+      <div class="flex flex-col md:flex-row h-fit md:mt-0">
+        <div class="w-full md:w-4/5 px-2 md:px-0">
           <Search />
         </div>
         <span class="hidden md:block h-10 w-0.5 bg-[#2B2C30] mt-1.5"></span>
-        <div class="w-1/5 mt-1 md:mt-0">
+        <div class="w-full md:w-1/5 mt-1 md:mt-0 px-2 md:px-0">
           <Profile :profile-image='user.profile_image' :name='user.name' :email="user.email" />
         </div>
       </div>

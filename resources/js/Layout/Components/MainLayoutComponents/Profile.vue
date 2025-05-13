@@ -42,12 +42,12 @@ const redirectToSettings = () => {
 <template>
   <div ref="profileRef" @click="openDropdown">
     <section class="flex flex-row h-fit items-center pt-1 justify-end md:justify-start md:ms-5 xl:justify-evenly">
-      <div>
+      <div class="flex-shrink-0">
         <img :src="props.profileImage" alt="Profile Image" v-if="props.profileImage"
           class="w-10 h-10 me-2 object-cover rounded-full" />
       </div>
-      <div class="hidden md:block">
-        <h3 class="text-md roboto-font-regular text-[#757575]">{{ props.name }}</h3>
+      <div class="hidden md:block overflow-hidden">
+        <h3 class="text-md roboto-font-regular text-[#757575] truncate max-w-[150px]">{{ props.name }}</h3>
         <p class="text-sm roboto-font-regular text-[#757575] truncate max-w-[150px]">{{ props.email }}</p>
       </div>
       <img src="../../../../assets/openArrow.svg" class="hidden md:block w-5 h-5 ms-5" :class="[!dropdownOpen ? '' : 'rotate-180']">
