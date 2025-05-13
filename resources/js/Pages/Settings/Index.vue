@@ -1,18 +1,14 @@
 <script setup>
 import { computed, reactive, watchEffect } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import Account from './Components/Account.vue';
+import { useTuderaStore } from '../../state/state';
 
-const page = usePage()
+const tuderaState = useTuderaStore()
 
-const user = computed(() => {
-    return page.props.user
-})
+const user = computed(() => tuderaState.getUser())
 
-const flash = computed(() => {
-    return page.props.flash
-})
 
 const viewState = reactive({
     formChanged: false,

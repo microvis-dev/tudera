@@ -1,6 +1,6 @@
 <script setup>
-import { computed, nextTick, reactive, watchEffect } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { router, useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { useTuderaStore } from '@/resources/js/state/state';
 
@@ -59,4 +59,3 @@ const deleteWorkspace = () => {
         </section>
     </div>
 </template>
-<style scoped></style>

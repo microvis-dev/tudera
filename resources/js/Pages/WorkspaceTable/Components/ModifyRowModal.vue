@@ -1,6 +1,5 @@
 <script setup>
-import { useTuderaStore } from '@/resources/js/state/state';
-import { computed, proxyRefs, reactive } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
     checkboxes: Array,

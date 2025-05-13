@@ -7,7 +7,6 @@ import { useTuderaStore } from "../../state/state";
 
 const tuderaState = useTuderaStore()
 
-const user = computed(() => tuderaState.getUser())
 const selectedWorkspace = computed(() => tuderaState.getSelectedWorkspace())
 
 const dateCheck = new Date();

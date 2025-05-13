@@ -7,8 +7,6 @@ import { createEventModalPlugin } from '@schedule-x/event-modal'
 import { createCurrentTimePlugin } from '@schedule-x/current-time'
 import { useForm } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import { router } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
 import { getDate, getWorkspaceEventDate } from '../../utils/utils';
 import {
   createCalendar,
@@ -19,7 +17,6 @@ import {
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
 import { useTuderaStore } from '../../state/state';
-import { reactive } from 'vue';
 import CreateToDoModal from '../Dashboard/Components/CreateToDoModal.vue';
 
 const eventsServicePlugin = createEventsServicePlugin();
@@ -36,8 +33,6 @@ const todos = computed(() => tuderaState.getTodos());
 const workspaceEvents = computed(() => {
   return props.workspace_events.filter(event => event.workspace_id === selectedWorkspace.value.id);
 });
-
-//const workspaceEvents = computed(() => tuderaState.getWorkspaceEvents())
 
 const getEvents = () => {
   let calendarEvents = [];

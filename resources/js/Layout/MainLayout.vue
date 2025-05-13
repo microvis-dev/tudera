@@ -1,24 +1,16 @@
 <script setup>
-import { nextTick, ref, watch, watchEffect } from "vue"
-import { usePage, Link } from '@inertiajs/vue3';
+import { ref, watch, watchEffect } from "vue"
 import { computed } from 'vue';
-import { route } from 'ziggy-js';
-import StatComponent from "./Components/MainLayoutComponents/StatComponent.vue";
 import Sidebar from "./Components/MainLayoutComponents/Sidebar.vue";
 import Search from "./Components/MainLayoutComponents/Search.vue";
 import Profile from "./Components/MainLayoutComponents/Profile.vue";
-import MainComponent from "../Pages/Dashboard/Components/MainComponent.vue";
-import TodoList from "../Pages/Dashboard/Components/TodoList.vue";
 import { useTuderaStore, useTuderaViewStore } from "../state/state";
 import { createToast } from "mosha-vue-toastify";
 import 'mosha-vue-toastify/dist/style.css';
 
-const page = usePage()
-
 const tuderaState = useTuderaStore()
 const tuderaViewState = useTuderaViewStore()
 const user = computed(() => tuderaState.getUser())
-const workspaces = computed(() => tuderaState.getWorkspaces())
 const isSidebarOpen = ref(false)
 
 const modalState = computed(() => tuderaViewState.getModal());

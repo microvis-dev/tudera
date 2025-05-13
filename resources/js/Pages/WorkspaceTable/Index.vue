@@ -207,6 +207,7 @@ const updateTable = () => {
     })
     updateName.value = !updateName.value
 }
+
 </script>
 
 <template>
@@ -265,7 +266,7 @@ const updateTable = () => {
                             <th v-for="column in sortedColumns" :key="column.id" scope="col"
                                 class="text-center text-lg border-r border-slate-500 uppercase tracking-wider min-w-[150px]">
                                 <Column :column="column" @delete="deleteColumn" @update="updateColumn"
-                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows" />
+                                    @move-left="colMoveLeft" @move-right="colMoveRight" :maxRows="maxRows" :columnCount="sortedColumns.length" />
                                 <input v-if="column.showInput" type="text" class="text-black w-full p-1 border rounded"
                                     @blur="column.showInput = false" @keyup.enter="column.showInput = false"
                                     placeholder="Enter value" />

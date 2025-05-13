@@ -50,4 +50,3 @@ const redirect = (table) => {
     </div>
   </section>
 </template>
-<style scoped></style>

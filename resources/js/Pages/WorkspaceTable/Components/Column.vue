@@ -1,10 +1,10 @@
 <script setup>
-import { useTuderaStore } from '@/resources/js/state/state'
-import { ref, watch, reactive, nextTick, computed } from 'vue'
+import { ref, watch, reactive, nextTick, computed, onBeforeUnmount, onMounted } from 'vue'
 
 const props = defineProps({
     column: Object,
-    maxRows: Number
+    maxRows: Number,
+    columnCount: Number
 })
 
 const emit = defineEmits(['delete', 'update', 'move-left', 'move-right'])
@@ -43,11 +43,8 @@ const showSetting = () => {
     showSettingsBoolean.value = !showSettingsBoolean.value
 }
 
-// Hide settings when clicking outside
-import { onMounted, onBeforeUnmount } from 'vue'
 
 const handleClickOutside = (event) => {
-    // Find the settings menu and the button
     const settingsMenu = document.querySelector('.absolute.right-0.top-full')
     const settingsButton = event.target.closest('.cursor-pointer')
     if (
@@ -68,18 +65,17 @@ onBeforeUnmount(() => {
 })
 
 const arrowState = computed(() => ({
-    left: props.column.order >= 3,
-    right: true // fix!
+    left: props.column.order > 2,
+    right: props.column.order < props.columnCount
 }))
-console.log(props.column.order)
 
 // move
-const moveLeft = () => { // ha order = 1 szurke nyil
+const moveLeft = () => { 
     let newOrder = props.column.order - 1
     emit('move-left', props.column, newOrder)
 }
 
-const moveRight = () => { // ha order = col length szurke nyil
+const moveRight = () => { 
     let newOrder = props.column.order + 1
     emit('move-right', props.column, newOrder)
 }

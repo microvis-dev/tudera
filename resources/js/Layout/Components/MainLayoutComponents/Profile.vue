@@ -15,6 +15,7 @@ const props = defineProps({
 const openDropdown = () => {
   dropdownOpen.value = !dropdownOpen.value
 }
+
 const handleClickOutside = (event) => {
   if ((profileRef.value && !profileRef.value.contains(event.target)) &&
     (dropdownRef.value && !dropdownRef.value.contains(event.target))) {
