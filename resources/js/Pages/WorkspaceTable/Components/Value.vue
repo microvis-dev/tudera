@@ -3,7 +3,7 @@ import { reactive, nextTick, ref, computed } from 'vue';
 import AddCustomStatusModal from './AddCustomStatusModal.vue';
 import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-import { getInputType } from '@/resources/js/utils/utils';
+import { getInputType, formatDateTimeToISO } from '@/resources/js/utils/utils';
 
 const props = defineProps({
     value: Object,
@@ -69,6 +69,9 @@ const saveCustomStatus = (column, value) => {
     saveEdit()
 }
 
+const formatValue = (value) => {
+    return props.column.type == "datetime" ? formatDateTimeToISO(value) : value
+}
 </script>
 
 <template>
@@ -87,7 +90,7 @@ const saveCustomStatus = (column, value) => {
                         ref="el => editState.valueInputTextField = el" :type="inputType" />
                 </div>
                 <div v-else class="text-center">
-                    <span id="valueSpan" class="font-medium text-sm truncate">{{ value.value }}</span>
+                    <span id="valueSpan" class="font-medium text-sm truncate">{{ formatValue(value.value) }}</span>
                 </div>
             </div>
         </div>

@@ -54,13 +54,16 @@ const updateTables = async (workspace) => {
 const processTablesData = (workspaceTables) => {
     if (!workspaceTables || !Array.isArray(workspaceTables)) return
 
-    workspaceTables.forEach((table) => {
+    [...workspaceTables]
+    .sort((t1, t2) => new Date(t1.created_at) - new Date(t2.created_at))
+    .forEach((table) => {
         let tableObj = {
             id: table.id,
             name: table.name,
             img: lead,
             url: { name: 'table.show', params: { table: table.id } }
         }
+        
         tables.value.push(tableObj)
     })
 }

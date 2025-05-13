@@ -2,7 +2,7 @@
 import { ref, reactive, onUnmounted, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import { getDate } from '@/resources/js/utils/utils';
+import { getDate, formatDateTimeToISO } from '@/resources/js/utils/utils';
 import CreateToDoModal from '@/resources/js/Pages/Dashboard/Components/CreateToDoModal.vue';
 import { useTuderaStore, useTuderaViewStore } from '@/resources/js/state/state';
 import MeetingDropdown from './MeetingDropdown.vue';
@@ -24,16 +24,6 @@ const hideAddTodoModal = () => {
     viewState.addTodoModal = false
 }
 
-const formatDate = (date) => {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const hours = String(d.getHours() - 2).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
-}
 const currentTime = ref(new Date());
 const timer = setInterval(() => {
     currentTime.value = new Date();
@@ -113,7 +103,7 @@ viewState.viewType = 'todos';
                     </div>
                     <div class="w-7/12 text-center rounded-xl p-1"
                         :class="{ 'text-gray-500 line-through': todo.is_done, 'bg-red-500': lateToDate(todo) }">
-                        <p>{{ formatDate(todo.end_date) }}</p>
+                        <p>{{ formatDateTimeToISO(todo.end_date) }}</p>
                     </div>
                 </div>
                 <div class="flex justify-center mt-5">
@@ -124,7 +114,7 @@ viewState.viewType = 'todos';
             <div v-if="viewState.viewType === 'events'">
                 <div v-for="(event, index) in workspaceEvents"
                     class="flex flex-row py-2 w-full items-center justify-center">
-                    <MeetingDropdown :name="event.title" :end-date="formatDate(event.end_date)"
+                    <MeetingDropdown :name="event.title" :end-date="formatDateTimeToISO(event.end_date)"
                         @delete-calendar-event="deleteCalendarEvent(event, index)" />
                 </div>
             </div>
