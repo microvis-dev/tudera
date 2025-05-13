@@ -64,7 +64,11 @@ const hideCustomStatusModal = () => {
 
 const saveCustomStatus = (column, value) => {
     router.post(route('selectvalues.store'), { column_id: column.id, value: value })
+    
+    editState.editedValue = value
+    saveEdit()
 }
+
 </script>
 
 <template>
@@ -72,7 +76,8 @@ const saveCustomStatus = (column, value) => {
         <div class="flex items-center justify-center py-2 px-3 duration-150 rounded-md w-full">
             <div id="valueEditor" class="cursor-pointer text-center w-full" @dblclick="enableEditing">
                 <div v-if="editState.isEditing">
-                    <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit" id="statusSelect">
+                    <select v-if="column.type == 'status'" v-model="editState.editedValue" @change="saveEdit"
+                        id="statusSelect">
                         <option v-for="option in columnOptions" :key="option.value" :value="option.value">
                             {{ option.value }}
                         </option>

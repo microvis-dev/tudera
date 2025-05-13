@@ -8,10 +8,14 @@ use Exception;
 
 class StatusSelectValueController extends Controller
 {
-    private function statusValueExistsInColumn($column_id, $value) {
-        return StatusSelectValue::where('column_id', $column_id)
-                              ->where('value', $value)
-                              ->exists();
+    private function statusValueExistsInColumn($column_id, $value, $defaultValues) {
+        $exists = StatusSelectValue::where('column_id', $column_id)
+                            ->where('value', $value)
+                            ->exists();
+        
+        $inDefaults = $defaultValues->contains('value', $value);
+        
+        return $exists && !$inDefaults;
     }
 
     public function store(Request $request) {
@@ -33,12 +37,17 @@ class StatusSelectValueController extends Controller
             }
         }
         
-        if (!$this->statusValueExistsInColumn($validated['column_id'], $validated['value'])) {
-            StatusSelectValue::create([
+        if (!$this->statusValueExistsInColumn($validated['column_id'], $validated['value'], $defaultValues)) {
+            $newStatusValue = StatusSelectValue::create([
                 'column_id' => $validated['column_id'],
                 'value' => $validated['value'],
             ]);
-            return redirect()->back()->with("message", "Status value added successfully.");
+
+            if ($defaultValues->contains('value', $newStatusValue->value)) {
+                return redirect()->back()->with("message", "");
+            }
+            
+            return redirect()->back()->with("success", "Status value added successfully.");
         } else {
             return redirect()->back()->with("error", "A status value with this name already exists for this column.");
         }
