@@ -9,14 +9,14 @@ import {
 } from "@vue/test-utils";
 import Auth from "@/resources/js/Pages/Auth/Auth.vue";
 
-describe("Auth unit test", () => {
+describe("Auth component unit test", () => {
     let wrapper
 
     beforeEach(async () => {
         wrapper = mount(Auth)
         await wrapper.vm.$nextTick()
     })
-
+    
     test("Welcome view test", async () => {
         let welcomeMessage = wrapper.find("#welcomeMessage");
         const signInRadio = wrapper.find('#sign-in')

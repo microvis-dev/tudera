@@ -9,7 +9,7 @@ import {
 } from "@vue/test-utils";
 import Value from "@/resources/js/Pages/WorkspaceTable/Components/Value.vue";
 
-describe("Value unit test", () => {
+describe("Value component unit test", () => {
     const value = {
         created_at: null,
         updated_at: null,
@@ -29,25 +29,18 @@ describe("Value unit test", () => {
     const column = {
         created_at: null,
         updated_at: null,
-        id: 7,
+        id: 12,
         table_id: "aa24da9e-e817-4726-aefc-ccc29cfdb5d6",
-        name: "Leads",
+        name: "Test Status Column",
         order: 1,
-        type: "string"
+        type: "status"
     }
-    const options = [{
+
+    const statusOptions = [{
         created_at: null,
         updated_at: null,
         id: 10,
         column_id: 12,
-        value: "done"
-    }]
-
-    const statusOptions = [{ // Átnevezve
-        created_at: null,
-        updated_at: null,
-        id: 10,
-        column_id: 12, // Illeszkedik a statusTypeTestColumn.id-hoz
         value: "done"
     }, {
         created_at: null,
@@ -55,7 +48,7 @@ describe("Value unit test", () => {
         id: 11,
         column_id: 12,
         value: "in-progress"
-    }];
+    }]
 
     let wrapper
 
@@ -77,14 +70,33 @@ describe("Value unit test", () => {
     })
 
     test("Status value select and change test", async () => {
-        var valueEditor = wrapper.find("#valueEditor")
+        await wrapper.setProps({
+            value: statusValue,
+            column: column,
+            options: statusOptions
+        })
+        await wrapper.vm.$nextTick()
 
-        await valueEditor.trigger("dblclick")
+        var valueEditor = wrapper.find("#valueEditor")
+        await valueEditor.trigger('dblclick')
+        await wrapper.vm.$nextTick()
+
         var statusSelect = wrapper.find("#statusSelect")
+        expect(statusSelect.exists()).toBeTruthy()
+
+        await statusSelect.setValue("in-progress")
+        await statusSelect.trigger("change")
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.emitted()).toHaveProperty("update")
+
+        expect(wrapper.emitted()["update"][0]).toEqual([
+            "in-progress",
+            statusValue
+        ])
     })
 
     test("Non status value shows right test", async () => {
-        // switch props
         await wrapper.setProps({
             value: value
         })
