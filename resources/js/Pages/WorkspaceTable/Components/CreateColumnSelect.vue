@@ -26,7 +26,6 @@ const send = () => {
             <option value="float">Number</option>
             <option value="datetime">Datetime</option>
             <option value="status">Status</option>
-            <option value="ref">Reference</option>
         </select>
     </div>
     <div v-if="columnForm.type">

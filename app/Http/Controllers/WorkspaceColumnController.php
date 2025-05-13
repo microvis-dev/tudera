@@ -12,29 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class WorkspaceColumnController extends Controller
 {
 
-    public function create(Request $request, $table_id) {
-        try {
-            $user = $request->user();
-            $table = WorkspaceTable::findOrFail($table_id);
-            $workspace = $table->workspace;
-
-            if (!$user->workspaces()->find($workspace->id)) {
-                return redirect()->route('workspaces')->with('error', 'You do not have permission to modify this table.');
-            }
-
-            return inertia('WorkspaceTable/CreateColumn', [
-                'table' => $table
-            ]);
-        } catch (Exception $e) {
-            Log::error('Hiba WorkspaceColumnController create: ' . $e->getMessage());
-            return redirect()->route('workspaces')->with('error', $e->getMessage());
-        }
+    private function columnExistsInTable($table_id, $column_name) {
+        return WorkspaceColumn::where('table_id', $table_id)
+                             ->where('name', strip_tags($column_name))
+                             ->exists();
     }
 
     public function store(Request $request, $table_id) {
         $request->validate([
             'name' => 'string|max:255|min:3',
-            'type' => 'required|in:string,integer,float,datetime,status,ref'
+            'type' => 'required|in:string,integer,float,datetime,status'
         ]);
 
         try {
@@ -44,6 +31,10 @@ class WorkspaceColumnController extends Controller
 
             if (!$user->workspaces()->find($workspace->id)) {
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
+            }
+            
+            if ($this->columnExistsInTable($table_id, $request->input('name'))) {
+                return redirect()->back()->with('error', 'A column with this name already exists in the table.');
             }
 
             $column = new WorkspaceColumn();
@@ -62,7 +53,7 @@ class WorkspaceColumnController extends Controller
 
     public function update(Request $request, $table_id, $column_id) {
         $request->validate([
-            'name' => 'nullable|string|max:255|regex:/^\S.*$/', // a valuenal is legyen opcionalis
+            'name' => 'nullable|string|max:255|regex:/^\S.*$/',
             'order' => 'nullable|integer|min:1'
         ]);
 
@@ -80,6 +71,13 @@ class WorkspaceColumnController extends Controller
                 return redirect()->back()->with('error', 'You do not have permission to modify this table.');
             }
 
+            if ($request->has('name') && $column->name !== strip_tags($request->name)) {
+                if ($this->columnExistsInTable($table_id, $request->name)) {
+                    return redirect()->back()->with('error', 'A column with this name already exists in the table.');
+                }
+                $column->name = strip_tags($request->name);
+            }
+
             if ($request->has('order')) {
                 $newOrder = intval($request->order);
 
@@ -92,14 +90,10 @@ class WorkspaceColumnController extends Controller
                     $nextToCol->save();
 
                     $column->order = $newOrder;
-                    $column->save();
                 }
             }
 
-            if ($request->has('name')) {
-                $column->name = strip_tags($request->name);
-                $column->save();
-            }
+            $column->save();
 
             return redirect()->back()->with('success', 'Column updated successfully!');
         } catch (Exception $e) {

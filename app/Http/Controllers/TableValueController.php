@@ -58,7 +58,7 @@ class TableValueController extends Controller
             return redirect()->back()->with('success', 'Value added successfully.');
         } catch (Exception $e) {
             Log::error('Error in TableValueController store: ' . $e->getMessage());
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', "An error occurred while storing the value.");
         }
     }
 
