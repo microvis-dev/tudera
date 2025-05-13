@@ -59,20 +59,23 @@ const sortedColumns = computed(() => {
 })
 
 const sortedTable = computed(() => {
-    let returnValue = Array(sortedColumns.value.length).fill().map(() => [])
+    let tableData = Array(sortedColumns.value.length)
+        .fill(null)
+        .map(() => [])
 
     sortedColumns.value.forEach((col, colIndex) => {
         let columnValues = []
+
         props.table_values.forEach((value) => {
             if (value.column_id === col.id) {
                 columnValues[value.order - 1] = value
             }
         })
 
-        returnValue[colIndex] = columnValues
+        tableData[colIndex] = columnValues
     })
 
-    return returnValue
+    return tableData
 })
 
 const maxRows = computed(() => {

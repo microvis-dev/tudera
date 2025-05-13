@@ -2,8 +2,6 @@
 import { useTuderaStore } from '@/resources/js/state/state';
 import { computed, proxyRefs, reactive } from 'vue';
 
-const tuderaState = useTuderaStore()
-
 const props = defineProps({
     checkboxes: Array,
     table: Array
@@ -39,10 +37,10 @@ const deleteRows = () => {
     emit('delete', rowsToDelete.flat(Infinity), updatedTable)
 }
 
-const arrowState = reactive({ // disabled!
+const arrowState = computed(() => ({ // disabled! atika frontendet ra
     up: !props.checkboxes.at(0),
     down: !props.checkboxes.at(props.checkboxes.length - 1),
-})
+}))
 
 const updateRowOrder = (isUp) => {
     const selectedRowIndex = props.checkboxes.findIndex(checkbox => checkbox == true)

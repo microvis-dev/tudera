@@ -1,6 +1,6 @@
 <script setup>
 import AuthLayout from "../../Layout/AuthLayout.vue";
-import { ref, watchEffect, defineOptions } from "vue";
+import { ref, watchEffect } from "vue";
 import MainLayout from "../../Layout/MainLayout.vue";
 
 const props = defineProps({

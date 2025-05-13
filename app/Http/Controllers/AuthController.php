@@ -29,10 +29,13 @@ class AuthController extends Controller
         };
 
         $request->session()->regenerate();
-        $user = auth()->user();
+        
+        $user = $request->user();
         if ($user->workspaces()->exists()) {
             WorkspaceService::change($user, $user->workspaces()->first());
-            return redirect()->intended('dashboard');
+
+            //return redirect()->intended('dashboard');
+            return redirect()->route("dashboard.index");
         } else {
             return redirect()->route('setup.workspace.create');
         }

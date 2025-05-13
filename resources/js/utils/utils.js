@@ -54,3 +54,13 @@ export function getInputType(type) {
             "text"
     }
 }
+
+export function getLatestDate(dates) {
+    let latestDate = dates.sort((d1, d2) => new Date(d1) - new Date(d2))
+    
+    return new Date(latestDate[0])
+}
+
+export function formatDate(date) {
+    return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '.' 
+}
